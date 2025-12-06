@@ -1,621 +1,200 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<title>眼科随机化分组系统</title>
-<style>
-  body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","PingFang SC","Microsoft YaHei",sans-serif; margin:24px; color:#222; }
-  h1,h2,h3 { margin:8px 0; }
-  .container { max-width:1200px; margin:0 auto; }
-  .card { border:1px solid #eee; border-radius:8px; padding:16px; margin-bottom:16px; background:#fff; }
-  .row { display:flex; gap:16px; flex-wrap:wrap; }
-  .col { flex:1; min-width:280px; }
-  .muted { color:#666; }
-  .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; background:#f2f2f2; margin-right:6px; }
-  .btn { display:inline-block; border:1px solid #ccc; border-radius:6px; padding:8px 12px; background:#fafafa; cursor:pointer; }
-  .btn:hover { background:#f0f0f0; }
-  .btn.primary { border-color:#1976d2; background:#1976d2; color:#fff; }
-  .btn.danger { border-color:#c03b2b; color:#c03b2b; }
-  .table { width:100%; border-collapse:collapse; margin-top:8px; }
-  .table th,.table td { border:1px solid #eee; padding:8px; text-align:left; }
-  .table th { background:#fafafa; }
-  .divider { height:1px; background:#eee; margin:16px 0; }
-  .chip { display:inline-block; border:1px solid #ddd; border-radius:16px; padding:4px 10px; margin:4px 6px 0 0; font-size:12px; background:#fcfcfc; }
-  .section-title { font-weight:600; margin-top:8px; }
-  .small { font-size:12px; }
-  .pill { display:inline-block; padding:3px 8px; border-radius:999px; font-size:12px; }
-  .pill.green { background:#e8f6ec; color:#1f8f4a; }
-  .pill.gray { background:#eef1f5; color:#4a5667; }
-  .pill.red { background:#fdecea; color:#c03b2b; }
-  .flex-between { display:flex; justify-content:space-between; align-items:center; }
-  .toolbar { display:flex; gap:8px; flex-wrap:wrap; }
-  /* Modal */
-  .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.3); display:none; align-items:center; justify-content:center; z-index:999; }
-  .modal { width:560px; max-width:90vw; background:#fff; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
-  .modal header { padding:12px 16px; border-bottom:1px solid #eee; font-weight:600; display:flex; justify-content:space-between; align-items:center; }
-  .modal .content { padding:16px; max-height:60vh; overflow:auto; }
-  .modal footer { padding:12px 16px; border-top:1px solid #eee; display:flex; gap:8px; justify-content:flex-end; }
-  .input { width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; margin:6px 0 10px; }
-  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  /* Tree view */
-  .tree { padding-left:12px; }
-  .tree ul { list-style:none; padding-left:16px; border-left:1px dashed #ddd; }
-  .tree li { margin:6px 0; }
-  .node { display:inline-block; padding:4px 8px; border:1px solid #ddd; border-radius:6px; background:#fafafa; }
-</style>
+  <meta charset="UTF-8">
+  <title>中央随机化分配模拟工具</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f6fa; }
+    .container { max-width: 950px; margin: 30px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #ececec; padding: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .label { display: inline-block; min-width: 90px; font-weight: bold; }
+    input, select { padding: 3px 8px; }
+    .group-input { width: 45px; }
+    .btn { padding: 4px 14px; border: none; border-radius: 4px; background: #3478f7; color: #fff; cursor: pointer; font-size: 14px;}
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+    .result-table th, .result-table td { border: 1px solid #e3e6ef; padding: 7px 3px; font-size: 14px; text-align: center;}
+    .result-table th { background: #f3f4f8; }
+    .tag { display:inline-block; background: #f0f2f7; color: #3478f7; border-radius: 3px; padding: 1px 7px; margin-right: 3px; font-size:13px;}
+    .dim-label { color:#666; font-size:13px; }
+    .row { display:flex; gap:14px; }
+  </style>
 </head>
 <body>
 <div class="container">
-  <h1>眼科随机化分组系统</h1>
-  <p class="muted">双视图：表格形态与树状关系图；支持新增/编辑维度与分组。</p>
-
-  <!-- 项目列表页 -->
-  <div id="projectListView">
-    <div class="card">
-      <div class="flex-between">
-        <h2>项目列表</h2>
-      </div>
-      <div id="projectList" class="row"></div>
-    </div>
+  <div style="font-size:18px; font-weight:bold; margin-bottom:18px;">中央随机化分组分配模拟</div>
+  <!-- 配置区 -->
+  <div class="form-group">
+    <span class="label">项目名称:</span>
+    <input type="text" id="projectName" value="青少年近视分组研究">
+  </div>
+  <div class="form-group">
+    <span class="label">参与人数:</span>
+    <input type="number" id="totalNum" value="100" min="2" max="500">
+  </div>
+  <div class="form-group">
+    <span class="label">分组数量:</span>
+    <select id="groupNum" onchange="renderGroupInputs()">
+      <option value="2" selected>2组</option>
+      <option value="3">3组</option>
+      <option value="4">4组</option>
+    </select>
+    <span class="label">分组比例:</span>
+    <span id="groupInputs"></span>
+  </div>
+  <div class="form-group">
+    <span class="label">随机方式:</span>
+    <select id="randType">
+      <option value="simple">完全随机</option>
+      <option value="stratified">自定义分层随机</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <span class="label">维度设置:</span>
+    <span class="dim-label">年龄[6-8, 9-11, 12-14]；性别[男, 女]；屈光度[0~200, 201~400]</span>
+    <br><span style="color:#aaa;font-size:12px;">（默认三维组合，适合演示）</span>
+  </div>
+  <div class="form-group">
+    <button class="btn" onclick="doAllocate()">分配</button>
   </div>
 
-  <!-- 项目详情页 -->
-  <div id="projectDetailView" style="display:none;">
-    <div class="card">
-      <div class="flex-between">
-        <div>
-          <h2 id="detailProjectName">项目名称</h2>
-          <p id="detailProjectDesc" class="muted">项目简介</p>
-        </div>
-        <div class="toolbar">
-          <button class="btn" onclick="showProjectList()">← 返回列表</button>
-          <button class="btn" onclick="toggleViewMode()">
-            切换展示形态：<span id="viewModeLabel">表格</span>
-          </button>
-          <button class="btn" onclick="openGroupModal()">新增分组</button>
-          <button class="btn" onclick="openDimensionModal()">创建/编辑维度</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="section-title">项目状态</div>
-          <p>
-            <span id="detailProjectStatus" class="pill gray">未开始</span>
-            <span class="badge"><span id="detailCount"></span>/<span id="detailTotal"></span></span>
-          </p>
-          <div class="small muted">约束：参与者同一时刻仅能加入同一组织的一个项目；分配受分组比例与分层名额控制。</div>
-        </div>
-        <div class="col">
-          <div class="section-title">分组比例</div>
-          <div id="detailGroupRatio"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 视图容器：表格 or 树 -->
-    <div id="tableView">
-      <div class="card">
-        <h3>分组与人数</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>分组名称</th>
-              <th>描述</th>
-              <th>比例</th>
-              <th>当前人数</th>
-              <th>最大人数（按比例估算）</th>
-            </tr>
-          </thead>
-          <tbody id="groupTableBody"></tbody>
-        </table>
-        <p class="small muted">最大人数 = 项目总人数 × 分组比例；实际分配按各分层内比例保持均衡。</p>
-      </div>
-
-      <div class="card">
-        <h3>维度设定（分层逻辑）</h3>
-        <div class="row">
-          <div class="col">
-            <div class="section-title">年龄</div>
-            <div id="ageDim"></div>
-          </div>
-          <div class="col">
-            <div class="section-title">性别</div>
-            <div id="genderDim"></div>
-          </div>
-          <div class="col">
-            <div class="section-title">屈光度范围</div>
-            <div id="refractionDim"></div>
-          </div>
-        </div>
-        <div class="divider"></div>
-        <div class="section-title">分层组合示例</div>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>年龄层</th>
-              <th>性别</th>
-              <th>屈光度层</th>
-              <th>示例分配分组</th>
-            </tr>
-          </thead>
-          <tbody id="strataExampleBody"></tbody>
-        </table>
-      </div>
-
-      <div class="card">
-        <h3>参与者列表</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>姓名</th>
-              <th>年龄</th>
-              <th>性别</th>
-              <th>屈光度</th>
-              <th>所在分层</th>
-              <th>所属分组</th>
-            </tr>
-          </thead>
-          <tbody id="participantTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="treeView" style="display:none;">
-      <div class="card">
-        <h3>树状关系图</h3>
-        <div class="tree" id="treeContainer"></div>
-        <p class="small muted">结构：项目 → 分组 → 维度 → 分层组合 → 参与者示例。用于直观看清层级与归属。</p>
-      </div>
-    </div>
-  </div>
+  <!-- 结果展示 -->
+  <div id="result"></div>
 </div>
-
-<!-- 分组弹窗 -->
-<div id="groupModal" class="modal-backdrop">
-  <div class="modal">
-    <header>
-      <span>新增分组</span>
-      <button class="btn" onclick="closeGroupModal()">✕</button>
-    </header>
-    <div class="content">
-      <label>分组名称</label>
-      <input id="groupNameInput" class="input" placeholder="例如：实验组A" />
-      <label>分组描述</label>
-      <input id="groupDescInput" class="input" placeholder="简要说明分组用途" />
-      <div class="grid-2">
-        <div>
-          <label>比例（0-1）</label>
-          <input id="groupRatioInput" class="input" type="number" step="0.01" min="0" max="1" placeholder="例如：0.5" />
-        </div>
-        <div class="small muted" style="align-self:end;">提示：各分组比例之和应≈1</div>
-      </div>
-    </div>
-    <footer>
-      <button class="btn" onclick="closeGroupModal()">取消</button>
-      <button class="btn primary" onclick="saveGroup()">保存分组</button>
-    </footer>
-  </div>
-</div>
-
-<!-- 维度弹窗 -->
-<div id="dimModal" class="modal-backdrop">
-  <div class="modal">
-    <header>
-      <span>创建 / 编辑维度</span>
-      <button class="btn" onclick="closeDimensionModal()">✕</button>
-    </header>
-    <div class="content">
-      <h4>年龄层值</h4>
-      <div id="dimAgeEditor"></div>
-      <button class="btn small" onclick="addDimValue('age')">+ 添加年龄层</button>
-      <div class="divider"></div>
-
-      <h4>性别</h4>
-      <div id="dimGenderEditor"></div>
-      <button class="btn small" onclick="addDimValue('gender')">+ 添加性别项</button>
-      <div class="divider"></div>
-
-      <h4>屈光度范围</h4>
-      <div id="dimRefEditor"></div>
-      <button class="btn small" onclick="addDimValue('refraction')">+ 添加屈光度层</button>
-      <p class="small muted">可编辑、删除层值；保存后立即更新分层示例与树状图。</p>
-    </div>
-    <footer>
-      <button class="btn" onclick="closeDimensionModal()">取消</button>
-      <button class="btn primary" onclick="saveDimensions()">保存维度</button>
-    </footer>
-  </div>
-</div>
-
 <script>
-  // 示例数据
-  const sampleProjects = [
-    {
-      id: 'p1',
-      name: '近视防控研究A',
-      desc: '评估干预措施对不同年龄与屈光度人群的影响。',
-      total: 100,
-      status: '进行中',
-      groups: [
-        { name: '实验组', desc: '接受干预', ratio: 0.5 },
-        { name: '对照组', desc: '常规随访', ratio: 0.5 }
-      ],
-      dimensions: {
-        age: ['4-7', '7-10', '11-14'],
-        gender: ['男', '女'],
-        refraction: ['-0.7-1.0D', '1.1-1.3D', '1.4-1.7D']
-      },
-      participants: [
-        { name: '张三', age: 8, gender: '男', refraction: '1.1D', strata: { age: '7-10', gender: '男', ref: '1.1-1.3D' }, group: '实验组' },
-        { name: '李四', age: 12, gender: '女', refraction: '1.5D', strata: { age: '11-14', gender: '女', ref: '1.4-1.7D' }, group: '对照组' },
-        { name: '王五', age: 6, gender: '男', refraction: '0.9D', strata: { age: '4-7', gender: '男', ref: '-0.7-1.0D' }, group: '实验组' },
-        { name: '赵六', age: 9, gender: '女', refraction: '1.2D', strata: { age: '7-10', gender: '女', ref: '1.1-1.3D' }, group: '对照组' }
-      ]
-    },
-    {
-      id: 'p2',
-      name: '屈光度变化追踪B',
-      desc: '记录不同性别与年龄层在随访期的屈光度变化趋势。',
-      total: 80,
-      status: '未开始',
-      groups: [
-        { name: '实验组', desc: '方案B干预', ratio: 0.4 },
-        { name: '对照组', desc: '常规方案', ratio: 0.6 }
-      ],
-      dimensions: {
-        age: ['4-7', '7-10', '11-14'],
-        gender: ['男', '女'],
-        refraction: ['-0.7-1.0D', '1.1-1.3D', '1.4-1.7D']
-      },
-      participants: []
+  // 维度设置
+  const ages = ['6-8', '9-11', '12-14'];
+  const genders = ['男', '女'];
+  const degrees = ['0~200', '201~400'];
+  // 动态渲染分组比例输入
+  function renderGroupInputs() {
+    let groupNum = Number(document.getElementById('groupNum').value);
+    let html = '';
+    for(let i=0; i<groupNum; i++) {
+      html += `<input type="number" class="group-input" id="groupRatio${i}" value="1" min="1">`;
+      html += `<span class="tag">组${String.fromCharCode(65+i)}</span>`;
     }
-  ];
+    document.getElementById('groupInputs').innerHTML = html;
+  }
+  renderGroupInputs();
 
-  let projects = JSON.parse(JSON.stringify(sampleProjects));
-  let currentProjectId = null;
-  let viewMode = 'table'; // table | tree
-
-  function computeStats(project) {
-    const count = project.participants.length;
-    const groupCounts = {};
-    project.groups.forEach(g => groupCounts[g.name] = 0);
-    project.participants.forEach(p => { groupCounts[p.group] = (groupCounts[p.group] || 0) + 1; });
-    return { count, groupCounts };
+  // 生成样本
+  function genSamples(total) {
+    let samples = [];
+    let i = 0;
+    while(samples.length < total) {
+      let age = ages[Math.floor(Math.random()*ages.length)];
+      let gender = genders[Math.floor(Math.random()*genders.length)];
+      let degree = degrees[Math.floor(Math.random()*degrees.length)];
+      samples.push({
+        id: ++i,
+        name: `受试者${i}`,
+        gender,
+        age,
+        degree
+      });
+    }
+    return samples;
   }
 
-  function renderProjectList() {
-    const listEl = document.getElementById('projectList');
-    listEl.innerHTML = '';
-    projects.forEach(project => {
-      const { count } = computeStats(project);
-      const card = document.createElement('div');
-      card.className = 'card col';
-      const statusColor = project.status === '进行中' ? 'green' : (project.status === '未开始' ? 'gray' : 'red');
-      card.innerHTML = `
-        <h3>${project.name}</h3>
-        <p class="muted">${project.desc}</p>
-        <p>
-          <span class="pill ${statusColor}">${project.status}</span>
-          <span class="badge">${count}/${project.total}</span>
-        </p>
-        <div class="small muted">分组比例：${project.groups.map(g => `${g.name} ${Math.round(g.ratio*100)}%`).join('， ')}</div>
-        <div style="margin-top:8px;">
-          <button class="btn" onclick="showProjectDetail('${project.id}')">查看详情</button>
-        </div>
-      `;
-      listEl.appendChild(card);
+  // 分层分组
+  function stratifiedAllocate(samples, groupNum, ratios) {
+    // 统计每个分层下的样本
+    let stratums = {};
+    samples.forEach(s => {
+      let key = `${s.gender}|${s.age}|${s.degree}`;
+      if(!stratums[key]) stratums[key] = [];
+      stratums[key].push(s);
     });
-  }
-
-  function showProjectList() {
-    document.getElementById('projectDetailView').style.display = 'none';
-    document.getElementById('projectListView').style.display = 'block';
-  }
-
-  function renderDimChips(el, arr) {
-    el.innerHTML = arr.map(v => `<span class="chip">${v}</span>`).join('');
-  }
-
-  function showProjectDetail(id) {
-    currentProjectId = id;
-    const project = projects.find(p => p.id === id);
-    if (!project) return;
-
-    const { count, groupCounts } = computeStats(project);
-
-    document.getElementById('detailProjectName').textContent = project.name;
-    document.getElementById('detailProjectDesc').textContent = project.desc;
-    const statusEl = document.getElementById('detailProjectStatus');
-    statusEl.textContent = project.status;
-    statusEl.className = 'pill ' + (project.status === '进行中' ? 'green' : (project.status === '未开始' ? 'gray' : 'red'));
-    document.getElementById('detailCount').textContent = count;
-    document.getElementById('detailTotal').textContent = project.total;
-
-    document.getElementById('detailGroupRatio').innerHTML = project.groups
-      .map(g => `<span class="badge">${g.name}: ${Math.round(g.ratio * 100)}%</span>`).join(' ');
-
-    // 分组表格
-    const tbody = document.getElementById('groupTableBody');
-    tbody.innerHTML = '';
-    project.groups.forEach(g => {
-      const max = Math.round(project.total * g.ratio);
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${g.name}</td>
-        <td>${g.desc || '-'}</td>
-        <td>${Math.round(g.ratio * 100)}%</td>
-        <td>${groupCounts[g.name] || 0}</td>
-        <td>${max}</td>
-      `;
-      tbody.appendChild(tr);
+    // 每层分组配额
+    let stratumKeys = Object.keys(stratums);
+    let result = {};  // groupName -> []
+    for(let i=0; i<groupNum; i++) result[`组${String.fromCharCode(65+i)}`] = [];
+    stratumKeys.forEach(key => {
+      let arr = stratums[key];
+      let total = arr.length;
+      let groupQuota = ratios.map(r => Math.floor(total * r / ratios.reduce((a,b)=>a+b)));
+      // 补齐四舍五入误差
+      let sum = groupQuota.reduce((a,b)=>a+b), diff = total-sum;
+      for(let i=0; i<diff; i++) groupQuota[i%groupQuota.length]++;
+      // shuffle
+      arr.sort(()=>Math.random()-0.5);
+      let idx = 0;
+      for(let g=0; g<groupNum; g++) {
+        let gn = `组${String.fromCharCode(65+g)}`;
+        for(let k=0; k<groupQuota[g]; k++) {
+          let s = arr[idx++];
+          if(s) { s.group = gn; result[gn].push(s); }
+        }
+      }
     });
+    return result;
+  }
 
-    // 维度 chips
-    renderDimChips(document.getElementById('ageDim'), project.dimensions.age);
-    renderDimChips(document.getElementById('genderDim'), project.dimensions.gender);
-    renderDimChips(document.getElementById('refractionDim'), project.dimensions.refraction);
+  // 完全随机分配
+  function simpleRandomAllocate(samples, groupNum, ratios) {
+    let total = samples.length;
+    let groupQuota = ratios.map(r => Math.floor(total * r / ratios.reduce((a,b)=>a+b)));
+    // 补齐误差
+    let sum = groupQuota.reduce((a,b)=>a+b), diff = total-sum;
+    for(let i=0; i<diff; i++) groupQuota[i%groupNum]++;
+    // shuffle
+    samples.sort(()=>Math.random()-0.5);
+    let result = {}; for(let i=0; i<groupNum; i++) result[`组${String.fromCharCode(65+i)}`]=[];
+    let idx = 0;
+    for(let g=0; g<groupNum; g++) {
+      let gn = `组${String.fromCharCode(65+g)}`;
+      for(let k=0; k<groupQuota[g]; k++) {
+        let s = samples[idx++];
+        if(s) { s.group = gn; result[gn].push(s);}
+      }
+    }
+    return result;
+  }
 
-    // 分层组合示例（取前三种组合并随机展示目标分组）
-    const strataBody = document.getElementById('strataExampleBody');
-    strataBody.innerHTML = '';
-    const sampleCombos = [
-      { age: project.dimensions.age[0], gender: project.dimensions.gender[0], ref: project.dimensions.refraction[0] },
-      { age: project.dimensions.age[1] || project.dimensions.age[0], gender: project.dimensions.gender[1] || project.dimensions.gender[0], ref: project.dimensions.refraction[1] || project.dimensions.refraction[0] },
-      { age: project.dimensions.age[2] || project.dimensions.age[0], gender: project.dimensions.gender[0], ref: project.dimensions.refraction[2] || project.dimensions.refraction[0] }
-    ];
-    sampleCombos.forEach(sc => {
-      const targetGroup = pickGroupByRatio(project.groups);
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${sc.age}</td>
-        <td>${sc.gender}</td>
-        <td>${sc.ref}</td>
-        <td><span class="badge">${targetGroup}</span>（示例）</td>
-      `;
-      strataBody.appendChild(tr);
-    });
-
-    // 参与者列表
-    const pbody = document.getElementById('participantTableBody');
-    pbody.innerHTML = '';
-    if (!project.participants.length) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td colspan="6" class="muted">暂无参与者</td>`;
-      pbody.appendChild(tr);
+  function doAllocate() {
+    let projectName = document.getElementById('projectName').value;
+    let totalNum = Number(document.getElementById('totalNum').value);
+    let groupNum = Number(document.getElementById('groupNum').value);
+    let ratios = [];
+    for(let i=0; i<groupNum; i++) ratios.push(Number(document.getElementById('groupRatio'+i).value));
+    let randType = document.getElementById('randType').value;
+    let samples = genSamples(totalNum);
+    let result = {};
+    if(randType === 'stratified') {
+      result = stratifiedAllocate(samples, groupNum, ratios);
     } else {
-      project.participants.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${p.name}</td>
-          <td>${p.age}</td>
-          <td>${p.gender}</td>
-          <td>${p.refraction}</td>
-          <td>${p.strata.age} / ${p.strata.gender} / ${p.strata.ref}</td>
-          <td>${p.group}</td>
-        `;
-        pbody.appendChild(tr);
-      });
+      result = simpleRandomAllocate(samples, groupNum, ratios);
     }
-
-    // 视图切换状态
-    document.getElementById('viewModeLabel').textContent = viewMode === 'table' ? '表格' : '树状';
-    document.getElementById('tableView').style.display = (viewMode === 'table') ? 'block' : 'none';
-    document.getElementById('treeView').style.display = (viewMode === 'tree') ? 'block' : 'none';
-
-    // 渲染树状视图
-    renderTree(project);
-
-    document.getElementById('projectListView').style.display = 'none';
-    document.getElementById('projectDetailView').style.display = 'block';
-  }
-
-  // 比例选组（演示）
-  function pickGroupByRatio(groups) {
-    const r = Math.random();
-    let acc = 0;
-    for (const g of groups) {
-      acc += g.ratio;
-      if (r <= acc) return g.name;
-    }
-    return groups[groups.length - 1].name;
-  }
-
-  function toggleViewMode() {
-    viewMode = (viewMode === 'table') ? 'tree' : 'table';
-    document.getElementById('viewModeLabel').textContent = viewMode === 'table' ? '表格' : '树状';
-    if (currentProjectId) showProjectDetail(currentProjectId);
-  }
-
-  // ========== 分组弹窗 ==========
-  function openGroupModal() {
-    document.getElementById('groupModal').style.display = 'flex';
-    document.getElementById('groupNameInput').value = '';
-    document.getElementById('groupDescInput').value = '';
-    document.getElementById('groupRatioInput').value = '';
-  }
-  function closeGroupModal() {
-    document.getElementById('groupModal').style.display = 'none';
-  }
-  function saveGroup() {
-    const name = document.getElementById('groupNameInput').value.trim();
-    const desc = document.getElementById('groupDescInput').value.trim();
-    const ratio = parseFloat(document.getElementById('groupRatioInput').value);
-    if (!name || isNaN(ratio)) { alert('请填写分组名称与有效比例'); return; }
-    const project = projects.find(p => p.id === currentProjectId);
-    // 简单校验：比例总和不强制为1，但给出提醒
-    const totalRatio = project.groups.reduce((s,g)=>s+g.ratio,0) + ratio;
-    if (Math.abs(totalRatio - 1) > 0.05) {
-      if (!confirm('新增后分组比例总和与1差距较大，是否继续？')) return;
-    }
-    project.groups.push({ name, desc, ratio });
-    closeGroupModal();
-    showProjectDetail(currentProjectId);
-  }
-
-  // ========== 维度弹窗 ==========
-  function openDimensionModal() {
-    document.getElementById('dimModal').style.display = 'flex';
-    renderDimEditors();
-  }
-  function closeDimensionModal() {
-    document.getElementById('dimModal').style.display = 'none';
-  }
-
-  function renderDimEditors() {
-    const project = projects.find(p => p.id === currentProjectId);
-    renderEditorList('dimAgeEditor', project.dimensions.age, 'age');
-    renderEditorList('dimGenderEditor', project.dimensions.gender, 'gender');
-    renderEditorList('dimRefEditor', project.dimensions.refraction, 'refraction');
-  }
-
-  function renderEditorList(containerId, arr, dimKey) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    arr.forEach((val, idx) => {
-      const row = document.createElement('div');
-      row.className = 'row';
-      row.innerHTML = `
-        <div class="col" style="min-width:200px;">
-          <input class="input" value="${val}" data-dim="${dimKey}" data-index="${idx}" />
-        </div>
-        <div class="col" style="flex:0 0 auto; min-width:160px;">
-          <button class="btn" onclick="removeDimValue('${dimKey}', ${idx})">删除</button>
-        </div>
-      `;
-      container.appendChild(row);
+    // 展示
+    let html = `<div style="margin:20px 0;font-weight:bold;font-size:16px;">${projectName} 分配结果 (${randType==='simple'?'完全随机':'分层随机'})</div>`;
+    html += `<table class="result-table"><thead><tr><th style="width:120px;">组别</th><th style="width:80px;">人数</th><th>样本明细（部分）</th></tr></thead><tbody>`;
+    Object.keys(result).forEach(gn => {
+      let arr = result[gn];
+      let detail = arr.map(s=>`<span style="display:inline-block;padding:2px 6px;margin:2px;background:#f0f2f7;border-radius:3px;">${s.name}-${s.gender}-${s.age}-${s.degree}</span>`);
+      html += `<tr><td>${gn}</td><td>${arr.length}</td><td>${detail}</td></tr>`;
     });
-  }
+    html += `</tbody></table>`;
 
-  function addDimValue(dimKey) {
-    const project = projects.find(p => p.id === currentProjectId);
-    const value = prompt('请输入新层值');
-    if (!value) return;
-    if (dimKey === 'age') project.dimensions.age.push(value);
-    if (dimKey === 'gender') project.dimensions.gender.push(value);
-    if (dimKey === 'refraction') project.dimensions.refraction.push(value);
-    renderDimEditors();
-  }
-
-  function removeDimValue(dimKey, idx) {
-    const project = projects.find(p => p.id === currentProjectId);
-    project.dimensions[dimKey].splice(idx,1);
-    renderDimEditors();
-  }
-
-  function saveDimensions() {
-    // 读取编辑器中的最新值
-    const project = projects.find(p => p.id === currentProjectId);
-    const inputs = document.querySelectorAll('#dimModal .input[data-dim]');
-    const nextDims = { age: [], gender: [], refraction: [] };
-    inputs.forEach(inp => {
-      const key = inp.getAttribute('data-dim');
-      const val = inp.value.trim();
-      const idx = parseInt(inp.getAttribute('data-index'),10);
-      nextDims[key][idx] = val;
-    });
-    // 清理空值
-    nextDims.age = nextDims.age.filter(v=>v && v.length);
-    nextDims.gender = nextDims.gender.filter(v=>v && v.length);
-    nextDims.refraction = nextDims.refraction.filter(v=>v && v.length);
-    // 应用
-    project.dimensions = nextDims;
-    closeDimensionModal();
-    showProjectDetail(currentProjectId);
-  }
-
-  // ========== 树状视图渲染 ==========
-  function renderTree(project) {
-    const container = document.getElementById('treeContainer');
-    container.innerHTML = '';
-    const root = document.createElement('div');
-    root.innerHTML = `
-      <div class="node">项目：${project.name}（${project.participants.length}/${project.total}）</div>
-      <ul id="treeGroups"></ul>
-    `;
-    container.appendChild(root);
-    const groupUl = root.querySelector('#treeGroups');
-
-    project.groups.forEach(g => {
-      const gLi = document.createElement('li');
-      gLi.innerHTML = `
-        <div class="node">分组：${g.name} · 比例 ${Math.round(g.ratio*100)}% · ${g.desc || '-'}</div>
-        <ul class="dim-ul"></ul>
-      `;
-      groupUl.appendChild(gLi);
-
-      const dimUl = gLi.querySelector('.dim-ul');
-      // 三维度节点
-      const ageLi = document.createElement('li');
-      ageLi.innerHTML = `<div class="node">维度：年龄（${project.dimensions.age.length}层）</div><ul></ul>`;
-      const genderLi = document.createElement('li');
-      genderLi.innerHTML = `<div class="node">维度：性别（${project.dimensions.gender.length}层）</div><ul></ul>`;
-      const refLi = document.createElement('li');
-      refLi.innerHTML = `<div class="node">维度：屈光度（${project.dimensions.refraction.length}层）</div><ul></ul>`;
-      dimUl.appendChild(ageLi);
-      dimUl.appendChild(genderLi);
-      dimUl.appendChild(refLi);
-
-      const ageUl = ageLi.querySelector('ul');
-      project.dimensions.age.forEach(a => {
-        const li = document.createElement('li');
-        li.innerHTML = `<div class="node">年龄层：${a}</div>`;
-        ageUl.appendChild(li);
-      });
-
-      const genderUl = genderLi.querySelector('ul');
-      project.dimensions.gender.forEach(gd => {
-        const li = document.createElement('li');
-        li.innerHTML = `<div class="node">性别：${gd}</div>`;
-        genderUl.appendChild(li);
-      });
-
-      const refUl = refLi.querySelector('ul');
-      project.dimensions.refraction.forEach(rf => {
-        const li = document.createElement('li');
-        li.innerHTML = `<div class="node">屈光度层：${rf}</div>`;
-        refUl.appendChild(li);
-      });
-
-      // 示例：分层组合节点（取少量组合）
-      const strataLi = document.createElement('li');
-      strataLi.innerHTML = `<div class="node">分层组合（示例）</div><ul></ul>`;
-      dimUl.appendChild(strataLi);
-      const strataUl = strataLi.querySelector('ul');
-      const combos = buildSampleCombos(project);
-      combos.forEach(c => {
-        const n = document.createElement('li');
-        n.innerHTML = `<div class="node">${c.age} / ${c.gender} / ${c.ref}</div>`;
-        strataUl.appendChild(n);
-      });
-
-      // 参与者挂载（属于该分组的参与者）
-      const participantsLi = document.createElement('li');
-      participantsLi.innerHTML = `<div class="node">参与者（归属 ${g.name}）</div><ul></ul>`;
-      dimUl.appendChild(participantsLi);
-      const pUl = participantsLi.querySelector('ul');
-      project.participants.filter(p => p.group === g.name).forEach(p => {
-        const li = document.createElement('li');
-        li.innerHTML = `<div class="node">${p.name}（${p.age}岁，${p.gender}，${p.refraction}） · ${p.strata.age}/${p.strata.gender}/${p.strata.ref}</div>`;
-        pUl.appendChild(li);
-      });
-    });
-  }
-
-  function buildSampleCombos(project) {
-    const A = project.dimensions.age;
-    const G = project.dimensions.gender;
-    const R = project.dimensions.refraction;
-    const out = [];
-    if (A.length && G.length && R.length) {
-      out.push({ age: A[0], gender: G[0], ref: R[0] });
-      out.push({ age: A[Math.min(1,A.length-1)], gender: G[Math.min(1,G.length-1)], ref: R[Math.min(1,R.length-1)] });
-      out.push({ age: A[Math.min(2,A.length-1)], gender: G[0], ref: R[Math.min(2,R.length-1)] });
+    // 分层分布统计
+    if(randType==='stratified') {
+      html += `<div style="margin:18px 0 6px 0;font-weight:bold;">分层分组统计（每个分层在各组人数）</div>`;
+      html += `<table class="result-table"><thead><tr><th>性别</th><th>年龄</th><th>屈光度</th>`;
+      for(let i=0;i<groupNum;i++) html += `<th>组${String.fromCharCode(65+i)}</th>`;
+      html += `</tr></thead><tbody>`;
+      for(let g of genders) for(let a of ages) for(let d of degrees) {
+        html += `<tr><td>${g}</td><td>${a}</td><td>${d}</td>`;
+        for(let i=0;i<groupNum;i++) {
+          let gn = `组${String.fromCharCode(65+i)}`;
+          let cnt = result[gn].filter(s=>s.gender===g&&s.age===a&&s.degree===d).length;
+          html += `<td>${cnt}</td>`;
+        }
+        html += `</tr>`;
+      }
+      html += `</tbody></table>`;
     }
-    return out;
-  }
 
-  // 初始化
-  renderProjectList();
+    document.getElementById('result').innerHTML = html;
+  }
 </script>
 </body>
 </html>
