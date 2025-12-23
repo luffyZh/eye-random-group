@@ -347,7 +347,7 @@
 
           <!-- 顶部：基本信息卡片 -->
           <div
-            class="relative bg-white rounded-2xl p-10 border border-slate-100 shadow-sm relative overflow-hidden"
+            class="relative bg-white rounded-2xl px-10 py-12 border border-slate-100 shadow-sm relative overflow-hidden"
           >
             <div
               class="absolute top-0 right-0 w-32 h-32 bg-brand-50 rounded-bl-full -mr-10 -mt-10 opacity-50 pointer-events-none"
@@ -362,11 +362,28 @@
                     儿童电子屏幕影响对照试验
                   </h2>
                   <span
-                    class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded border border-emerald-200"
-                    >进行中</span>
+                  class="flex justify-center items-center gap-2 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded border border-emerald-200"
+                  >
+                    <span class="flex h-3 w-3 relative">
+                      <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+                      ></span>
+                      <span
+                        class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"
+                      ></span>
+                    </span>
+                    进行中
+                  </span>
                 </div>
                 <p class="text-slate-500 text-sm mb-4 font-mono">
-                  TAG: CHILD_ELESCREEN
+                  <span
+                    class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200 tracking-wider"
+                    >项目负责人: 徐医生</span
+                  > 
+                  <span
+                    class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200 tracking-wider"
+                    >项目码: CHILD_ELESCREEN</span
+                  > 
                 </p>
                 <p class="text-slate-600 max-w-2xl leading-relaxed">
                   本项目旨在通过为期两年的跟踪调查，对比分析高频使用电子设备与低频使用电子设备的6-14岁儿童在视力、注意力以及心理健康方面的差异。数据将用于优化青少年近视防控策略。
@@ -398,7 +415,7 @@
             </div>
             <!-- ✅ 新增的录入按钮 (核心操作) ✅ -->
             <!-- 点击触发 openEnrollDrawer() 打开抽屉 -->
-            <button onclick="openEnrollDrawer()" class="absolute w-[240px] bottom-[12px] right-10 px-4 py-1.5 text-xs justify-center font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-lg shadow-brand-500/30 flex items-center transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+            <button onclick="openEnrollDrawer()" class="absolute w-[240px] bottom-[12px] right-10 px-4 py-2 text-xs justify-center font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-lg shadow-brand-500/30 flex items-center transition-all transform hover:-translate-y-0.5 active:translate-y-0">
                 <i class="ri-user-add-line mr-1.5 text-base"></i> 录入受试者
             </button>
           </div>
