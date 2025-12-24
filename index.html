@@ -621,7 +621,7 @@
                   <!-- Row 1 -->
                   <tr class="hover:bg-slate-50/80 transition-colors">
                     <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                      CHILD_ELE_001
+                      CHILD_ELESCREEN_001
                     </td>
                     <td class="px-6 py-4 font-semibold text-slate-800">
                       张小明
@@ -650,7 +650,7 @@
                   <!-- Row 2 -->
                   <tr class="hover:bg-slate-50/80 transition-colors">
                     <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                      CHILD_ELE_002
+                      CHILD_ELESCREEN_002
                     </td>
                     <td class="px-6 py-4 font-semibold text-slate-800">李雅</td>
                     <td class="px-6 py-4 text-slate-600">6岁</td>
@@ -677,7 +677,7 @@
                   <!-- Row 3 -->
                   <tr class="hover:bg-slate-50/80 transition-colors">
                     <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                      CHILD_ELE_003
+                      CHILD_ELESCREEN_003
                     </td>
                     <td class="px-6 py-4 font-semibold text-slate-800">王强</td>
                     <td class="px-6 py-4 text-slate-600">11岁</td>
@@ -982,7 +982,7 @@
                                               <div class="border-t border-white/20 pt-4 flex justify-between items-center">
                                                   <div>
                                                       <p class="text-indigo-100 text-xs">随机化编号</p>
-                                                      <p class="font-mono font-bold text-lg" id="res-id">CHILD_ELE_047</p>
+                                                      <p class="font-mono font-bold text-lg" id="res-id">CHILD_ELESCREEN_047</p>
                                                   </div>
                                                   <i class="ri-flask-line text-3xl opacity-50"></i>
                                               </div>
@@ -1344,7 +1344,7 @@
                   // 随机分配组别
                   const isExperiement = Math.random() > 0.5;
                   document.getElementById('res-group-name').innerText = isExperiement ? "实验组 (高频)" : "对照组 (低频)";
-                  document.getElementById('res-id').innerText = "CHILD_ELE_" + Math.floor(100 + Math.random() * 900); // 随机生成ID
+                  document.getElementById('res-id').innerText = "CHILD_ELESCREEN_" + Math.floor(100 + Math.random() * 900); // 随机生成ID
                   
                   // 动态显示 Tag
                   document.getElementById('res-tag-age').innerText = (age <= 7) ? "4-7岁" : (age <= 10 ? "7-10岁" : "10-14岁");
