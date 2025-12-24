@@ -177,10 +177,9 @@
                 >
               </label>
             </div>
-            <button
-              class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105"
-            >
-              <i class="ri-add-line text-lg"></i> 新增项目
+            <!-- 找到这个按钮：在 id="view-projects" 内部 -->
+            <button onclick="openNewProjectDrawer()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
+                <i class="ri-add-line text-lg"></i> 新增项目
             </button>
           </div>
 
@@ -1197,6 +1196,146 @@
               </div>
           </div>
       </div>
+      <!-- ================== 新增项目抽屉 (New Project Drawer) ================== -->
+      <div id="new-project-drawer" class="relative z-50 hidden" role="dialog" aria-modal="true">
+          <div id="np-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" onclick="closeNewProjectDrawer()"></div>
+
+          <div class="fixed inset-0 overflow-hidden">
+              <div class="absolute inset-0 overflow-hidden">
+                  <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+                      <div id="np-panel" class="pointer-events-auto w-screen max-w-md transform translate-x-full transition-transform duration-300 ease-in-out">
+                          <div class="flex h-full flex-col bg-white shadow-2xl">
+                              
+                              <!-- Header -->
+                              <div class="px-6 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                                  <div>
+                                      <h2 class="text-lg font-bold text-slate-800">创建新项目</h2>
+                                      <p class="text-xs text-slate-500 mt-1">建立新的随机化对照试验</p>
+                                  </div>
+                                  <button onclick="closeNewProjectDrawer()" class="text-slate-400 hover:text-slate-600"><i class="ri-close-line text-2xl"></i></button>
+                              </div>
+
+                              <!-- Body -->
+                              <div class="flex-1 overflow-y-auto px-6 py-6 scroll-smooth">
+                                  <form id="new-project-form" class="space-y-6">
+                                      
+                                      <!-- 1. 项目名称 -->
+                                      <div>
+                                          <label class="block text-sm font-bold text-slate-700 mb-2">项目名称</label>
+                                          <input type="text" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="例如：儿童近视防控临床研究">
+                                      </div>
+
+                                      <!-- 2. 项目代码 -->
+                                      <div>
+                                          <label class="block text-sm font-bold text-slate-700 mb-2">项目码 (Project Code)</label>
+                                          <div class="relative">
+                                              <input type="text" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm font-mono uppercase focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="MYOPIA_CTRL_2024">
+                                              <i class="ri-barcode-line absolute right-3 top-2.5 text-slate-400"></i>
+                                          </div>
+                                      </div>
+
+                                      <!-- 3. 项目描述 -->
+                                      <div>
+                                          <label class="block text-sm font-bold text-slate-700 mb-2">项目描述</label>
+                                          <textarea rows="3" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="简述项目的研究目的、背景及主要入排标准..."></textarea>
+                                      </div>
+
+                                      <!-- 4. 关联中心 (模拟 MultiSelect) -->
+                                      <div class="relative">
+                                          <label class="block text-sm font-bold text-slate-700 mb-2">关联研究中心</label>
+                                          <button type="button" onclick="toggleCenterSelect()" class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                                              <span id="center-display-text" class="text-slate-500">请选择参与中心...</span>
+                                              <i class="ri-arrow-down-s-line text-slate-400"></i>
+                                          </button>
+                                          
+                                          <!-- 下拉面板 -->
+                                          <div id="center-dropdown" class="hidden absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-48 overflow-y-auto p-2 space-y-1 animate-fade-in">
+                                              <label class="flex items-center p-2 hover:bg-slate-50 rounded cursor-pointer">
+                                                  <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500 border-slate-300" value="徐州眼视光中心" onchange="updateCenterDisplay()">
+                                                  <span class="ml-2 text-sm text-slate-700">徐州眼视光中心</span>
+                                              </label>
+                                              <label class="flex items-center p-2 hover:bg-slate-50 rounded cursor-pointer">
+                                                  <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500 border-slate-300" value="上海眼科中心" onchange="updateCenterDisplay()">
+                                                  <span class="ml-2 text-sm text-slate-700">上海眼科中心</span>
+                                              </label>
+                                              <label class="flex items-center p-2 hover:bg-slate-50 rounded cursor-pointer">
+                                                  <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500 border-slate-300" value="北京同仁医院" onchange="updateCenterDisplay()">
+                                                  <span class="ml-2 text-sm text-slate-700">北京同仁医院</span>
+                                              </label>
+                                          </div>
+                                      </div>
+
+                                      <!-- 5. 人数与分组配置 (联动区域) -->
+                                      <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-4">
+                                          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
+                                              <i class="ri-group-line mr-1"></i> 规模与分组设定
+                                          </h4>
+                                          
+                                          <!-- 总人数 -->
+                                          <div>
+                                              <label class="block text-sm font-bold text-slate-700 mb-2">项目总人数</label>
+                                              <input type="number" id="np-total-count" value="100" min="2" oninput="syncGroupCounts()" class="w-full rounded-lg border-slate-300 bg-white border px-3 py-2.5 text-sm font-bold text-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors">
+                                          </div>
+
+                                          <!-- 分组列表 -->
+                                          <div class="space-y-3">
+                                              <!-- 分组 1 -->
+                                              <div class="flex items-center gap-2">
+                                                  <!-- Icon (点击可切换) -->
+                                                  <div onclick="rotateIcon(this)" class="w-10 h-10 flex-shrink-0 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center cursor-pointer hover:bg-indigo-200 transition-colors" title="点击切换图标">
+                                                      <i class="ri-flask-line text-lg"></i>
+                                                  </div>
+                                                  <!-- 名称 -->
+                                                  <div class="flex-1">
+                                                      <input type="text" value="实验组" class="w-full text-sm border-0 bg-transparent border-b border-slate-200 focus:border-indigo-500 focus:ring-0 px-1 py-1 text-slate-700 font-medium placeholder-slate-400" placeholder="分组名称">
+                                                  </div>
+                                                  <!-- 人数 -->
+                                                  <div class="w-20 relative">
+                                                      <input type="number" id="np-group-1" value="50" oninput="validateSum()" class="w-full text-sm text-center border border-slate-200 rounded-md py-1.5 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-white">
+                                                      <span class="absolute right-1 top-1.5 text-[10px] text-slate-400">人</span>
+                                                  </div>
+                                              </div>
+
+                                              <!-- 分组 2 -->
+                                              <div class="flex items-center gap-2">
+                                                  <!-- Icon (点击可切换) -->
+                                                  <div onclick="rotateIcon(this)" class="w-10 h-10 flex-shrink-0 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center cursor-pointer hover:bg-emerald-200 transition-colors" title="点击切换图标">
+                                                      <i class="ri-shield-check-line text-lg"></i>
+                                                  </div>
+                                                  <!-- 名称 -->
+                                                  <div class="flex-1">
+                                                      <input type="text" value="对照组" class="w-full text-sm border-0 bg-transparent border-b border-slate-200 focus:border-emerald-500 focus:ring-0 px-1 py-1 text-slate-700 font-medium placeholder-slate-400" placeholder="分组名称">
+                                                  </div>
+                                                  <!-- 人数 -->
+                                                  <div class="w-20 relative">
+                                                      <input type="number" id="np-group-2" value="50" oninput="validateSum()" class="w-full text-sm text-center border border-slate-200 rounded-md py-1.5 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 bg-white">
+                                                      <span class="absolute right-1 top-1.5 text-[10px] text-slate-400">人</span>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          
+                                          <!-- 校验提示信息 -->
+                                          <div id="np-validation-msg" class="text-xs text-right text-emerald-600 font-medium h-4">
+                                              <i class="ri-checkbox-circle-line align-bottom"></i> 分组人数合计匹配 (100人)
+                                          </div>
+                                      </div>
+
+                                  </form>
+                              </div>
+
+                              <!-- Footer -->
+                              <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+                                  <button onclick="closeNewProjectDrawer()" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">取消</button>
+                                  <button onclick="createNewProject()" class="px-6 py-2 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-lg shadow-brand-500/30 transition-all flex items-center">
+                                      <i class="ri-add-circle-line mr-2"></i> 创建项目
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
     </main>
 
     <!-- 简单的 JS 逻辑处理页面切换 -->
@@ -1573,6 +1712,128 @@
               alert("【自由匹配模式】配置已保存！\n自定义因子配额表已生效。");
               closeConfigDrawer();
           }
+      }
+
+      /* ================= 新增项目抽屉逻辑 ================= */
+      // 1. 打开/关闭逻辑
+      function openNewProjectDrawer() {
+          const drawer = document.getElementById('new-project-drawer');
+          const panel = document.getElementById('np-panel');
+          const backdrop = document.getElementById('np-backdrop');
+          
+          drawer.classList.remove('hidden');
+          setTimeout(() => {
+              backdrop.classList.remove('opacity-0');
+              panel.classList.remove('translate-x-full');
+          }, 10);
+          
+          // 初始化一次状态
+          syncGroupCounts();
+      }
+
+      function closeNewProjectDrawer() {
+          const drawer = document.getElementById('new-project-drawer');
+          const panel = document.getElementById('np-panel');
+          const backdrop = document.getElementById('np-backdrop');
+          
+          panel.classList.add('translate-x-full');
+          backdrop.classList.add('opacity-0');
+          // 关闭下拉选框
+          document.getElementById('center-dropdown').classList.add('hidden');
+          
+          setTimeout(() => drawer.classList.add('hidden'), 300);
+      }
+
+      // 2. 关联中心 MultiSelect 逻辑
+      function toggleCenterSelect() {
+          const dropdown = document.getElementById('center-dropdown');
+          dropdown.classList.toggle('hidden');
+      }
+
+      function updateCenterDisplay() {
+          const checked = Array.from(document.querySelectorAll('#center-dropdown input:checked')).map(el => el.value);
+          const displaySpan = document.getElementById('center-display-text');
+          
+          if (checked.length === 0) {
+              displaySpan.innerText = "请选择参与中心...";
+              displaySpan.classList.add('text-slate-500');
+              displaySpan.classList.remove('text-slate-800');
+          } else {
+              displaySpan.innerText = `已选择 ${checked.length} 个中心`;
+              displaySpan.classList.remove('text-slate-500');
+              displaySpan.classList.add('text-slate-800');
+          }
+      }
+
+      // 3. 人数联动核心逻辑
+      function syncGroupCounts() {
+          const totalInput = document.getElementById('np-total-count');
+          const group1Input = document.getElementById('np-group-1');
+          const group2Input = document.getElementById('np-group-2');
+          
+          let total = parseInt(totalInput.value) || 0;
+          
+          // 简单的平分逻辑：总数/2
+          let half = Math.floor(total / 2);
+          let remainder = total - half;
+          
+          group1Input.value = half;
+          group2Input.value = remainder;
+          
+          validateSum();
+      }
+
+      function validateSum() {
+          const total = parseInt(document.getElementById('np-total-count').value) || 0;
+          const g1 = parseInt(document.getElementById('np-group-1').value) || 0;
+          const g2 = parseInt(document.getElementById('np-group-2').value) || 0;
+          const sum = g1 + g2;
+          const msgDiv = document.getElementById('np-validation-msg');
+          
+          if (sum === total) {
+              msgDiv.className = "text-xs text-right text-emerald-600 font-medium h-4 transition-colors";
+              msgDiv.innerHTML = `<i class="ri-checkbox-circle-line align-bottom"></i> 分组人数合计匹配 (${sum}人)`;
+          } else {
+              msgDiv.className = "text-xs text-right text-red-500 font-medium h-4 transition-colors";
+              const diff = sum - total;
+              msgDiv.innerHTML = `<i class="ri-error-warning-line align-bottom"></i> 人数不匹配 (当前:${sum}, 需:${total}, 差:${diff > 0 ? '+'+diff : diff})`;
+          }
+      }
+
+      // 4. Icon 切换逻辑 (简单的轮播)
+      const ICON_LIST = ['ri-flask-line', 'ri-shield-check-line', 'ri-eye-line', 'ri-heart-pulse-line', 'ri-capsule-line'];
+
+      function rotateIcon(el) {
+          const iconEl = el.querySelector('i');
+          // 获取当前 class
+          const currentClass = Array.from(iconEl.classList).find(c => c.startsWith('ri-'));
+          let idx = ICON_LIST.indexOf(currentClass);
+          
+          // 下一个
+          let nextIdx = (idx + 1) % ICON_LIST.length;
+          
+          iconEl.classList.remove(currentClass);
+          iconEl.classList.add(ICON_LIST[nextIdx]);
+      }
+
+      // 5. 创建按钮逻辑 (Mock)
+      function createNewProject() {
+          // 简单的校验
+          const total = parseInt(document.getElementById('np-total-count').value) || 0;
+          const g1 = parseInt(document.getElementById('np-group-1').value) || 0;
+          const g2 = parseInt(document.getElementById('np-group-2').value) || 0;
+
+          if (g1 + g2 !== total) {
+              alert("分组人数之和必须等于项目总人数，请检查！");
+              return;
+          }
+          
+          alert("新项目创建成功！\n页面将自动跳转至项目详情...");
+          closeNewProjectDrawer();
+          // 模拟跳转
+          setTimeout(() => {
+              openProjectDetail();
+          }, 500);
       }
 
       // 初始化
