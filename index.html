@@ -461,10 +461,9 @@
               class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center"
             >
               <h3 class="text-lg font-bold text-slate-800">分组与维度概览</h3>
-              <button
-                class="text-xs text-brand-600 hover:text-brand-700 font-medium"
-              >
-                管理分组配置
+              <!-- 👇 修改这里：添加 onclick 事件 👇 -->
+              <button onclick="openConfigDrawer()" class="text-sm text-brand-600 hover:text-brand-700 font-medium flex items-center">
+                  <i class="ri-settings-4-line mr-1"></i> 管理项目分组配置
               </button>
             </div>
             <div
@@ -1039,6 +1038,165 @@
               </div>
           </div>
       </div>
+      <!-- ================== 分组配置抽屉 (Config Drawer) ================== -->
+      <div id="config-drawer" class="relative z-50 hidden" role="dialog" aria-modal="true">
+          <div id="config-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" onclick="closeConfigDrawer()"></div>
+
+          <div class="fixed inset-0 overflow-hidden">
+              <div class="absolute inset-0 overflow-hidden">
+                  <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+                      <!-- 宽抽屉：max-w-2xl 因为自由匹配需要横向展示两个组 -->
+                      <div id="config-panel" class="pointer-events-auto w-screen max-w-2xl transform translate-x-full transition-transform duration-300 ease-in-out">
+                          <div class="flex h-full flex-col bg-white shadow-2xl">
+                              
+                              <!-- Header -->
+                              <div class="px-6 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                                  <div>
+                                      <h2 class="text-lg font-bold text-slate-800">随机化与分组配置</h2>
+                                      <p class="text-xs text-slate-500 mt-1">定义入组规则与分层因子</p>
+                                  </div>
+                                  <button onclick="closeConfigDrawer()" class="text-slate-400 hover:text-slate-600"><i class="ri-close-line text-2xl"></i></button>
+                              </div>
+
+                              <!-- Body -->
+                              <div class="flex-1 overflow-y-auto px-6 py-6 scroll-smooth space-y-8">
+                                  
+                                  <!-- 1. 匹配模式选择 -->
+                                  <div>
+                                      <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-l-4 border-brand-500 pl-3">第一步：选择匹配模式</h3>
+                                      <div class="grid grid-cols-2 gap-4">
+                                          <!-- 随机匹配选项 -->
+                                          <label class="relative cursor-pointer group">
+                                              <input type="radio" name="matchMode" value="random" class="peer sr-only" checked onchange="toggleMatchMode()">
+                                              <div class="p-4 rounded-xl border-2 border-slate-200 hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all h-full">
+                                                  <div class="flex items-center gap-2">
+                                                      <i class="ri-shuffle-line text-xl text-slate-400 peer-checked:text-brand-600"></i>
+                                                      <span class="font-bold text-slate-700 peer-checked:text-brand-700">
+                                                        随机匹配 (Random)
+                                                      </span>
+                                                      <!-- Tooltip -->
+                                                      <div class="relative z-10">
+                                                          <i class="ri-question-line text-slate-400 cursor-help"></i>
+                                                          <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                                              系统通过算法完全随机且均匀地分配受试者，消除人为偏差。
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                  <p class="text-xs text-slate-500 mt-2 leading-relaxed">适用于标准RCT试验，核心宗旨是随机且均匀。</p>
+                                              </div>
+                                          </label>
+
+                                          <!-- 自由匹配选项 -->
+                                          <label class="relative cursor-pointer group">
+                                              <input type="radio" name="matchMode" value="free" class="peer sr-only" onchange="toggleMatchMode()">
+                                              <div class="p-4 rounded-xl border-2 border-slate-200 hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all h-full">
+                                                  <div class="flex items-center gap-2">
+                                                    <i class="ri-equalizer-line text-xl text-slate-400 peer-checked:text-brand-600"></i>
+                                                    <span class="font-bold text-slate-700 peer-checked:text-brand-700">自由匹配 (Free)</span>
+                                                    <!-- Tooltip -->
+                                                    <div class="relative z-10">
+                                                        <i class="ri-question-line text-slate-400 cursor-help"></i>
+                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                                            允许管理员手动干预每个分层因子下的人数配额。
+                                                        </div>
+                                                    </div>
+                                                  </div>
+                                                  <p class="text-xs text-slate-500 mt-2 leading-relaxed">自定义每个条件组合下的人数，需保证总量平衡。</p>
+                                              </div>
+                                          </label>
+                                      </div>
+                                  </div>
+
+                                  <!-- 2. 维度选择 -->
+                                  <div>
+                                      <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-l-4 border-indigo-500 pl-3">第二步：选择分层维度</h3>
+                                      <div class="space-y-3" id="dimension-list">
+                                          <!-- 动态生成或者静态写死均可，这里演示静态结构但带Value -->
+                                          <label class="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                              <input type="checkbox" name="dims" value="gender" class="h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500" checked>
+                                              <div class="ml-3">
+                                                  <span class="block text-sm font-medium text-slate-700">性别维度</span>
+                                                  <span class="block text-xs text-slate-500">因子: 男、女</span>
+                                              </div>
+                                          </label>
+                                          <label class="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                              <input type="checkbox" name="dims" value="age" class="h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500" checked>
+                                              <div class="ml-3">
+                                                  <span class="block text-sm font-medium text-slate-700">年龄分层</span>
+                                                  <span class="block text-xs text-slate-500">因子: 4-7岁、8-10岁、11-14岁</span>
+                                              </div>
+                                          </label>
+                                          <label class="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                              <input type="checkbox" name="dims" value="diopter" class="h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500" checked>
+                                              <div class="ml-3">
+                                                  <span class="block text-sm font-medium text-slate-700">屈光度范围</span>
+                                                  <span class="block text-xs text-slate-500">因子: -1.0~-0.5、-0.4~0</span>
+                                              </div>
+                                          </label>
+                                      </div>
+                                      
+                                      <!-- 只有自由匹配模式下才显示的生成按钮 -->
+                                      <div id="free-generate-area" class="mt-4 hidden animate-fade-in">
+                                          <button type="button" onclick="generateFactors()" class="w-full py-2 bg-indigo-50 text-indigo-600 border border-indigo-200 rounded-lg font-bold hover:bg-indigo-100 transition-colors flex justify-center items-center">
+                                              <i class="ri-function-line mr-2"></i> 生成匹配因子组合
+                                          </button>
+                                      </div>
+                                  </div>
+
+                                  <!-- 3. 自由匹配配置区 (仅在生成后显示) -->
+                                  <div id="matrix-config-area" class="hidden animate-fade-in space-y-4">
+                                      <div class="flex items-center justify-between">
+                                          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider border-l-4 border-amber-500 pl-3">第三步：配置人数配额</h3>
+                                          <button type="button" onclick="resetDistribution()" class="text-xs text-slate-400 hover:text-brand-600"><i class="ri-refresh-line"></i> 重置均匀分配</button>
+                                      </div>
+
+                                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                          <!-- 实验组卡片 -->
+                                          <div class="border border-indigo-100 rounded-xl bg-indigo-50/30 overflow-hidden">
+                                              <div class="bg-indigo-100/50 px-4 py-3 flex justify-between items-center border-b border-indigo-100">
+                                                  <div class="flex items-center gap-2">
+                                                      <i class="ri-flask-line text-indigo-600"></i>
+                                                      <span class="font-bold text-indigo-900 text-sm">实验组</span>
+                                                  </div>
+                                                  <span class="text-xs font-mono bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-600" id="exp-total-badge">0 / 50</span>
+                                              </div>
+                                              <div class="p-3 max-h-60 overflow-y-auto custom-scrollbar" id="exp-factor-list">
+                                                  <!-- JS 动态填充因子行 -->
+                                              </div>
+                                          </div>
+
+                                          <!-- 对照组卡片 -->
+                                          <div class="border border-emerald-100 rounded-xl bg-emerald-50/30 overflow-hidden">
+                                              <div class="bg-emerald-100/50 px-4 py-3 flex justify-between items-center border-b border-emerald-100">
+                                                  <div class="flex items-center gap-2">
+                                                      <i class="ri-shield-check-line text-emerald-600"></i>
+                                                      <span class="font-bold text-emerald-900 text-sm">对照组</span>
+                                                  </div>
+                                                  <span class="text-xs font-mono bg-white px-2 py-0.5 rounded border border-emerald-200 text-emerald-600" id="ctrl-total-badge">0 / 50</span>
+                                              </div>
+                                              <div class="p-3 max-h-60 overflow-y-auto custom-scrollbar" id="ctrl-factor-list">
+                                                  <!-- JS 动态填充因子行 -->
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <p class="text-[10px] text-slate-400 text-center">* 修改数值后，系统将自动校验总人数是否匹配项目设定 (50人/组)。</p>
+                                  </div>
+
+                              </div>
+
+                              <!-- Footer -->
+                              <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+                                  <button onclick="closeConfigDrawer()" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">取消</button>
+                                  <button onclick="saveConfiguration()" class="px-6 py-2 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-lg shadow-brand-500/30 flex items-center">
+                                      <i class="ri-save-3-line mr-2"></i> 保存配置
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
     </main>
 
     <!-- 简单的 JS 逻辑处理页面切换 -->
@@ -1231,6 +1389,190 @@
 
           // 清空表单值 (可选)
           document.getElementById('enroll-form').reset();
+      }
+
+      /* ================= 分组配置抽屉逻辑 (Config Logic) ================= */
+      // 定义维度数据源 (模拟数据库定义)
+      const DIMENSION_DATA = {
+          gender: { name: '性别', options: ['男', '女'] },
+          age: { name: '年龄', options: ['4-7', '8-10', '11-14'] },
+          diopter: { name: '屈光度', options: ['-1.0~-0.5', '-0.4~0'] }
+      };
+
+      // 预设每组总人数 (模拟项目设置)
+      const GROUP_TARGET_COUNT = 50; 
+
+      function openConfigDrawer() {
+          const drawer = document.getElementById('config-drawer');
+          const panel = document.getElementById('config-panel');
+          const backdrop = document.getElementById('config-backdrop');
+          
+          drawer.classList.remove('hidden');
+          setTimeout(() => {
+              backdrop.classList.remove('opacity-0');
+              panel.classList.remove('translate-x-full');
+          }, 10);
+
+          // 默认触发一次状态检查
+          toggleMatchMode();
+      }
+
+      function closeConfigDrawer() {
+          const drawer = document.getElementById('config-drawer');
+          const panel = document.getElementById('config-panel');
+          const backdrop = document.getElementById('config-backdrop');
+          
+          panel.classList.add('translate-x-full');
+          backdrop.classList.add('opacity-0');
+          setTimeout(() => drawer.classList.add('hidden'), 300);
+      }
+
+      // 切换匹配模式
+      function toggleMatchMode() {
+          const mode = document.querySelector('input[name="matchMode"]:checked').value;
+          const generateBtn = document.getElementById('free-generate-area');
+          const matrixArea = document.getElementById('matrix-config-area');
+
+          if (mode === 'random') {
+              generateBtn.classList.add('hidden');
+              matrixArea.classList.add('hidden');
+          } else {
+              generateBtn.classList.remove('hidden');
+              // 如果之前生成过，可以选择不隐藏 matrixArea，或者强制隐藏要求重新生成
+              // 这里选择隐藏，要求用户显式点击生成
+              matrixArea.classList.add('hidden'); 
+          }
+      }
+
+      // 核心：生成全排列因子
+      function generateFactors() {
+          // 1. 获取选中的维度
+          const checkedDims = Array.from(document.querySelectorAll('input[name="dims"]:checked')).map(el => el.value);
+          
+          if (checkedDims.length === 0) {
+              alert("请至少选择一个维度！");
+              return;
+          }
+
+          // 2. 准备全排列数据 [[男, 女], [4-7, 8-10...], ...]
+          const arraysToCombine = checkedDims.map(key => DIMENSION_DATA[key].options);
+
+          // 3. 计算笛卡尔积 (Cartesian Product)
+          const combinations = arraysToCombine.reduce((a, b) => {
+              return a.flatMap(d => b.map(e => [d, e].flat().join('_')));
+          }); // 注意：这里简化了逻辑，如果只有一个维度，reduce可能需要特判，但在UI上通常至少选一个
+
+          // 修复 reduce 对单数组的情况 (如果只选了性别)
+          let factors = [];
+          if (checkedDims.length === 1) {
+              factors = arraysToCombine[0];
+          } else {
+              factors = combinations;
+          }
+
+          // 4. 渲染界面
+          renderFactorList('exp-factor-list', factors, 'exp', GROUP_TARGET_COUNT);
+          renderFactorList('ctrl-factor-list', factors, 'ctrl', GROUP_TARGET_COUNT);
+
+          // 5. 显示区域
+          document.getElementById('matrix-config-area').classList.remove('hidden');
+          
+          // 6. 初始化校验状态
+          validateTotal('exp');
+          validateTotal('ctrl');
+      }
+
+      // 渲染单个组的因子列表 + 自动均分
+      function renderFactorList(containerId, factors, prefix, totalCount) {
+          const container = document.getElementById(containerId);
+          container.innerHTML = ''; // 清空
+
+          const count = factors.length;
+          const baseVal = Math.floor(totalCount / count);
+          let remainder = totalCount % count;
+
+          factors.forEach((factor, index) => {
+              // 均匀分配算法：把余数分给前几个
+              let val = baseVal;
+              if (remainder > 0) {
+                  val += 1;
+                  remainder--;
+              }
+
+              const row = document.createElement('div');
+              row.className = "flex items-center justify-between mb-2 last:mb-0 p-2 rounded hover:bg-white/50 border border-transparent hover:border-slate-200 transition-colors";
+              
+              // 解析因子名称，稍微美化一下显示
+              // e.g., "男_4-7_-1.0~0.5" -> Tags
+              const tagsHtml = factor.split('_').map(t => 
+                  `<span class="text-[10px] bg-white border border-slate-200 px-1 rounded text-slate-600 mr-1">${t}</span>`
+              ).join('');
+
+              row.innerHTML = `
+                  <div class="flex-1 truncate mr-2" title="${factor}">
+                      ${tagsHtml}
+                  </div>
+                  <input type="number" 
+                        class="w-12 h-7 text-xs text-center border border-slate-300 rounded focus:ring-1 focus:ring-brand-500 focus:border-brand-500 bg-white group-input-${prefix}" 
+                        value="${val}" 
+                        min="0"
+                        oninput="validateTotal('${prefix}')">
+              `;
+              container.appendChild(row);
+          });
+      }
+
+      // 校验总人数
+      function validateTotal(prefix) {
+          const inputs = document.querySelectorAll(`.group-input-${prefix}`);
+          let sum = 0;
+          inputs.forEach(input => sum += (parseInt(input.value) || 0));
+
+          const badge = document.getElementById(`${prefix}-total-badge`);
+          badge.innerText = `${sum} / ${GROUP_TARGET_COUNT}`;
+
+          if (sum === GROUP_TARGET_COUNT) {
+              badge.className = "text-xs font-mono bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200 text-emerald-700 font-bold transition-colors";
+          } else {
+              badge.className = "text-xs font-mono bg-red-100 px-2 py-0.5 rounded border border-red-200 text-red-700 font-bold transition-colors";
+          }
+          
+          return sum === GROUP_TARGET_COUNT;
+      }
+
+      // 重置回均匀分配
+      function resetDistribution() {
+          generateFactors();
+      }
+
+      // 保存配置
+      function saveConfiguration() {
+          const mode = document.querySelector('input[name="matchMode"]:checked').value;
+          
+          if (mode === 'random') {
+              // 随机模式，只需保存选中的维度
+              const checkedDims = Array.from(document.querySelectorAll('input[name="dims"]:checked'));
+              if (checkedDims.length === 0) {
+                  alert("请至少选择一个分层维度");
+                  return;
+              }
+              alert("【随机匹配模式】配置已保存！\n系统将按照选中维度进行动态区组随机化。");
+              closeConfigDrawer();
+          } else {
+              // 自由模式，需要校验人数
+              const expValid = validateTotal('exp');
+              const ctrlValid = validateTotal('ctrl');
+
+              if (!expValid || !ctrlValid) {
+                  alert("保存失败：\n各组分配人数之和必须等于总人数 (" + GROUP_TARGET_COUNT + "人)。\n请调整红色标记的组别。");
+                  return;
+              }
+
+              // 收集数据示例
+              // 实际开发中这里会把 matrix 数据打包发给后端
+              alert("【自由匹配模式】配置已保存！\n自定义因子配额表已生效。");
+              closeConfigDrawer();
+          }
       }
 
       // 初始化
