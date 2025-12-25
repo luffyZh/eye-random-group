@@ -187,7 +187,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             <!-- 示例卡片 1 -->
             <div
-              class="min-w-[320px] rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+              class="min-w-[320px] bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer relative overflow-hidden"
               onclick="openProjectDetail()"
             >
               <div class="flex justify-between items-start mb-4">
@@ -881,153 +881,193 @@
                               </div>
 
                               <!-- 2. 抽屉主体内容区 (Scrollable) -->
-                              <div class="relative flex-1 overflow-y-auto px-6 py-6 scroll-smooth">
-                                  
-                                  <!-- 状态 A: 填写表单 -->
-                                  <form id="enroll-form" class="space-y-8 animate-fade-in">
-                                      <!-- 基础信息块 -->
-                                      <div>
-                                          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-l-4 border-brand-500 pl-3">个人基本信息</h3>
-                                          <div class="space-y-4">
-                                              <div>
-                                                  <label class="block text-sm font-medium text-slate-700 mb-1">真实姓名</label>
-                                                  <input type="text" id="input-name" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="输入受试者姓名">
-                                              </div>
-                                              <div class="grid grid-cols-2 gap-4">
-                                                  <div>
-                                                      <label class="block text-sm font-medium text-slate-700 mb-1">性别</label>
-                                                      <select id="input-gender" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500">
-                                                          <option value="male">男</option>
-                                                          <option value="female">女</option>
-                                                      </select>
-                                                  </div>
-                                                  <div>
-                                                      <label class="block text-sm font-medium text-slate-700 mb-1">年龄 (周岁)</label>
-                                                      <input type="number" id="input-age" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500" placeholder="例如: 8">
-                                                      <p class="text-[10px] text-slate-400 mt-1">限制范围: 6-14岁</p>
-                                                  </div>
-                                              </div>
-                                              <div>
-                                                  <label class="block text-sm font-medium text-slate-700 mb-1">手机号 / 唯一ID</label>
-                                                  <input type="text" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500" placeholder="仅用于查重">
-                                              </div>
-                                          </div>
-                                      </div>
+                              <div class="relative flex-1 overflow-y-auto px-6 py-6 scroll-smooth">  
+                                <!-- 状态 A: 填写表单 -->
+                                <form id="enroll-form" class="space-y-8 animate-fade-in">
+                                    <!-- 基础信息块 -->
+                                    <div>
+                                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-l-4 border-brand-500 pl-3">个人基本信息</h3>
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-700 mb-1">真实姓名</label>
+                                                <input type="text" id="input-name" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="输入受试者姓名">
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-700 mb-1">性别</label>
+                                                    <select id="input-gender" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500">
+                                                        <option value="male">男</option>
+                                                        <option value="female">女</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-700 mb-1">年龄 (周岁)</label>
+                                                    <input type="number" id="input-age" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500" placeholder="例如: 8">
+                                                    <p class="text-[10px] text-slate-400 mt-1">限制范围: 6-14岁</p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-700 mb-1">手机号 / 唯一ID</label>
+                                                <input type="text" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500" placeholder="仅用于查重">
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                      <!-- 维度指标块 -->
-                                      <div>
-                                          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-l-4 border-amber-500 pl-3">纳入排除指标 (维度)</h3>
-                                          <div class="space-y-4">
-                                              <div>
-                                                  <label class="block text-sm font-medium text-slate-700 mb-1">双眼平均近视度数 (D)</label>
-                                                  <div class="relative">
-                                                      <input type="number" id="input-myopia" step="0.25" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 pl-3" placeholder="-1.50">
-                                                      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                                          <span class="text-slate-400 text-xs">Diopters</span>
-                                                      </div>
-                                                  </div>
-                                                  <p class="text-[10px] text-slate-400 mt-1">纳入标准: 0.00D 至 -6.00D</p>
-                                              </div>
-                                              
-                                              <!-- 既往病史 (Radio) -->
-                                              <div>
-                                                  <label class="block text-sm font-medium text-slate-700 mb-2">是否存在眼部手术史？</label>
-                                                  <div class="flex space-x-4">
-                                                      <label class="flex items-center">
-                                                          <input type="radio" name="history" value="yes" class="h-4 w-4 text-brand-600 border-slate-300 focus:ring-brand-500">
-                                                          <span class="ml-2 text-sm text-slate-700">是 (排除)</span>
-                                                      </label>
-                                                      <label class="flex items-center">
-                                                          <input type="radio" name="history" value="no" checked class="h-4 w-4 text-brand-600 border-slate-300 focus:ring-brand-500">
-                                                          <span class="ml-2 text-sm text-slate-700">否 (纳入)</span>
-                                                      </label>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </form>
+                                    <!-- 维度指标块 -->
+                                    <div>
+                                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-l-4 border-amber-500 pl-3">纳入排除指标 (维度)</h3>
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-700 mb-1">双眼平均近视度数 (D)</label>
+                                                <div class="relative">
+                                                    <input type="number" id="input-myopia" step="0.25" class="block w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 pl-3" placeholder="-1.50">
+                                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                        <span class="text-slate-400 text-xs">Diopters</span>
+                                                    </div>
+                                                </div>
+                                                <p class="text-[10px] text-slate-400 mt-1">纳入标准: 0.00D 至 -6.00D</p>
+                                            </div>
+                                            
+                                            <!-- 既往病史 (Radio) -->
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-700 mb-2">是否存在眼部手术史？</label>
+                                                <div class="flex space-x-4">
+                                                    <label class="flex items-center">
+                                                        <input type="radio" name="history" value="yes" class="h-4 w-4 text-brand-600 border-slate-300 focus:ring-brand-500">
+                                                        <span class="ml-2 text-sm text-slate-700">是 (排除)</span>
+                                                    </label>
+                                                    <label class="flex items-center">
+                                                        <input type="radio" name="history" value="no" checked class="h-4 w-4 text-brand-600 border-slate-300 focus:ring-brand-500">
+                                                        <span class="ml-2 text-sm text-slate-700">否 (纳入)</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
 
-                                  <!-- 状态 B: 匹配计算中 (Loading) -->
-                                  <div id="enroll-loading" class="hidden h-full flex flex-col items-center justify-center space-y-6">
-                                      <div class="relative">
-                                          <div class="w-20 h-20 rounded-full border-4 border-slate-100"></div>
-                                          <div class="absolute top-0 left-0 w-20 h-20 rounded-full border-4 border-brand-500 border-t-transparent animate-spin"></div>
-                                          <i class="ri-cpu-line absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl text-brand-600"></i>
-                                      </div>
-                                      <div class="text-center">
-                                          <h3 class="text-lg font-bold text-slate-800">正在计算分组...</h3>
-                                          <p class="text-sm text-slate-500 mt-1">校验纳入排除标准 / 生成随机种子</p>
-                                      </div>
-                                  </div>
+                                <!-- 状态 B: 匹配计算中 (Loading) -->
+                                <div id="enroll-loading" class="hidden h-full flex flex-col items-center justify-center space-y-6">
+                                    <div class="relative">
+                                        <div class="w-20 h-20 rounded-full border-4 border-slate-100"></div>
+                                        <div class="absolute top-0 left-0 w-20 h-20 rounded-full border-4 border-brand-500 border-t-transparent animate-spin"></div>
+                                        <i class="ri-cpu-line absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl text-brand-600"></i>
+                                    </div>
+                                    <div class="text-center">
+                                        <h3 class="text-lg font-bold text-slate-800">正在计算分组...</h3>
+                                        <p class="text-sm text-slate-500 mt-1">校验纳入排除标准 / 生成随机种子</p>
+                                    </div>
+                                </div>
 
-                                  <!-- 状态 C: 匹配结果 (Result) -->
-                                  <div id="enroll-result" class="hidden h-full flex-col items-center pt-10">
-                                      <!-- 成功模版 -->
-                                      <div id="result-success" class="hidden w-full text-center">
-                                          <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-emerald-50">
-                                              <i class="ri-check-line text-4xl text-emerald-600"></i>
-                                          </div>
-                                          <h3 class="text-2xl font-bold text-slate-800 mb-2">入组成功</h3>
-                                          <p class="text-slate-500 mb-8">受试者符合所有纳入标准，已完成随机化分配。</p>
-                                          
-                                          <!-- 分配卡片 -->
-                                          <div class="bg-gradient-to-br from-indigo-500 to-brand-600 rounded-2xl p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden mb-8 transform transition-all hover:scale-105">
-                                              <div class="absolute top-0 right-0 -mr-6 -mt-6 w-24 h-24 bg-white opacity-10 rounded-full"></div>
-                                              <div class="absolute bottom-0 left-0 -ml-6 -mb-6 w-24 h-24 bg-white opacity-10 rounded-full"></div>
-                                              
-                                              <p class="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1">Assigned Group</p>
-                                              <h2 class="text-3xl font-bold mb-4" id="res-group-name">实验组 (高频)</h2>
-                                              
-                                              <div class="border-t border-white/20 pt-4 flex justify-between items-center">
-                                                  <div>
-                                                      <p class="text-indigo-100 text-xs">随机化编号</p>
-                                                      <p class="font-mono font-bold text-lg" id="res-id">CHILD_ELESCREEN_047</p>
-                                                  </div>
-                                                  <i class="ri-flask-line text-3xl opacity-50"></i>
-                                              </div>
-                                          </div>
+                                <!-- 状态 C: 匹配结果 (Result) -->
+                                <div id="enroll-result" class="hidden h-full flex flex-col items-center pt-6 px-1">
+                                    
+                                    <!-- C-1: 随机匹配成功 (单卡展示 - 原有逻辑) -->
+                                    <div id="result-success" class="hidden w-full text-center animate-fade-in">
+                                        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-emerald-50">
+                                            <i class="ri-magic-line text-3xl text-emerald-600"></i>
+                                        </div>
+                                        <h3 class="text-xl font-bold text-slate-800 mb-1">随机分配完成</h3>
+                                        <p class="text-sm text-slate-500 mb-6">受试者已自动分配至指定组别。</p>
+                                        
+                                        <!-- 分配卡片 -->
+                                        <div class="bg-gradient-to-br from-indigo-500 to-brand-600 rounded-2xl p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden mb-6 mx-4">
+                                            <div class="absolute top-0 right-0 -mr-6 -mt-6 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+                                            <p class="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1">Assigned Group</p>
+                                            <h2 class="text-3xl font-bold mb-4" id="res-group-name">实验组 (高频)</h2>
+                                            <div class="border-t border-white/20 pt-4 flex justify-between items-center">
+                                                <div>
+                                                    <p class="text-indigo-100 text-xs">随机化编号</p>
+                                                    <p class="font-mono font-bold text-lg" id="res-id">CHILD_ELE_047</p>
+                                                </div>
+                                                <i class="ri-flask-line text-3xl opacity-50"></i>
+                                            </div>
+                                        </div>
+                                        <!-- 维度标签展示 -->
+                                        <div id="res-tags-container" class="mx-4 bg-slate-50 rounded-xl p-3 border border-slate-100 text-left text-sm text-slate-600 space-y-2">
+                                            <!-- JS 填充 -->
+                                        </div>
+                                    </div>
 
-                                          <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 text-left text-sm text-slate-600 space-y-2">
-                                              <div class="flex justify-between">
-                                                  <span>分层因素(年龄):</span>
-                                                  <span class="font-medium text-slate-800" id="res-tag-age">7-10岁</span>
-                                              </div>
-                                              <div class="flex justify-between">
-                                                  <span>分层因素(度数):</span>
-                                                  <span class="font-medium text-slate-800" id="res-tag-myopia">-1.00 ~ 0.00</span>
-                                              </div>
-                                          </div>
-                                      </div>
+                                    <!-- C-2: 自由匹配选择 (双卡选择 - 新增逻辑) -->
+                                    <div id="result-selection" class="hidden w-full text-center animate-fade-in">
+                                        <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-indigo-50">
+                                            <i class="ri-hand-coin-line text-3xl text-indigo-600"></i>
+                                        </div>
+                                        <h3 class="text-xl font-bold text-slate-800 mb-1">符合入组条件</h3>
+                                        <p class="text-sm text-slate-500 mb-6">请手动选择受试者归属的组别。</p>
 
-                                      <!-- 失败模版 -->
-                                      <div id="result-fail" class="hidden w-full text-center">
-                                          <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-red-50">
-                                              <i class="ri-close-line text-4xl text-red-600"></i>
-                                          </div>
-                                          <h3 class="text-2xl font-bold text-slate-800 mb-2">筛选失败</h3>
-                                          <p class="text-slate-500 mb-8">受试者不符合项目纳入标准。</p>
+                                        <!-- 当前受试者的维度信息 (顶部提示) -->
+                                        <div class="mx-1 mb-6 flex flex-wrap gap-2 justify-center">
+                                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded border border-slate-200 font-medium" id="sel-tag-age">年龄: --</span>
+                                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded border border-slate-200 font-medium" id="sel-tag-myopia">度数: --</span>
+                                        </div>
 
-                                          <div class="bg-red-50 border border-red-100 rounded-xl p-6 text-left mb-8">
-                                              <h4 class="text-red-800 font-bold mb-2 flex items-center"><i class="ri-alert-fill mr-2"></i> 原因详情</h4>
-                                              <p class="text-red-600 text-sm" id="fail-reason">年龄 15 岁超出纳入范围 [6-14]。</p>
-                                          </div>
-                                      </div>
-                                  </div>
+                                        <!-- 选择卡片 Grid -->
+                                        <div class="grid grid-cols-2 gap-4 w-full">
+                                            
+                                            <!-- 选项 A: 实验组 -->
+                                            <div onclick="selectGroupOption('exp')" id="card-exp" class="group cursor-pointer bg-white border-2 border-slate-200 hover:border-indigo-300 rounded-xl p-4 transition-all relative">
+                                                <div class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-300 group-hover:border-indigo-400 flex items-center justify-center">
+                                                    <div class="w-2.5 h-2.5 rounded-full bg-indigo-600 opacity-0 transition-opacity selection-dot"></div>
+                                                </div>
+                                                <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center mb-3">
+                                                    <i class="ri-flask-line text-xl"></i>
+                                                </div>
+                                                <h4 class="text-left font-bold text-slate-800 text-sm">实验组</h4>
+                                                <p class="text-left text-xs text-slate-400 mt-1">Experimental</p>
+                                            </div>
 
+                                            <!-- 选项 B: 对照组 -->
+                                            <div onclick="selectGroupOption('ctrl')" id="card-ctrl" class="group cursor-pointer bg-white border-2 border-slate-200 hover:border-emerald-300 rounded-xl p-4 transition-all relative">
+                                                <div class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-300 group-hover:border-emerald-400 flex items-center justify-center">
+                                                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-600 opacity-0 transition-opacity selection-dot"></div>
+                                                </div>
+                                                <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center mb-3">
+                                                    <i class="ri-shield-check-line text-xl"></i>
+                                                </div>
+                                                <h4 class="text-left font-bold text-slate-800 text-sm">对照组</h4>
+                                                <p class="text-left text-xs text-slate-400 mt-1">Control Group</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <!-- C-3: 失败 (通用) -->
+                                    <div id="result-fail" class="hidden w-full text-center animate-fade-in">
+                                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-red-50">
+                                            <i class="ri-close-line text-3xl text-red-600"></i>
+                                        </div>
+                                        <h3 class="text-xl font-bold text-slate-800 mb-1">筛选失败</h3>
+                                        <p class="text-sm text-slate-500 mb-6">受试者不符合项目纳入标准。</p>
+
+                                        <div class="bg-red-50 border border-red-100 rounded-xl p-4 text-left mx-4">
+                                            <h4 class="text-red-800 font-bold mb-1 flex items-center text-sm"><i class="ri-alert-fill mr-1.5"></i> 原因详情</h4>
+                                            <p class="text-red-600 text-xs" id="fail-reason">--</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="absolute bottom-2 left-2 right-2 border-red-500 border rounded-md bg-red-50 p-4 text-sm text-slate-600 mt-2">
+                                  <b class="text-red-800">*主动匹配筛选：</b>这个只有<b class="text-red-800">超级管理员</b>才有的权限，无论是自由匹配还是随机匹配，所有受试者都是算法控制分组的，用户只能在自由匹配中干预因子维度的数量，如果想人为介入干预分组，那么就要通过这种分配方式。</p>
                               </div>
 
                               <!-- 3. 抽屉底部操作区 -->
                               <div class="flex-shrink-0 px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-                                  <button type="button" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none" onclick="closeEnrollDrawer()">取消</button>
+                                  <button type="button" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none transition-colors" onclick="closeEnrollDrawer()">取消</button>
                                   
-                                  <!-- 提交按钮 -->
-                                  <button id="btn-match" type="button" class="px-6 py-2 text-sm font-bold text-white bg-brand-600 rounded-lg shadow hover:bg-brand-700 focus:outline-none flex items-center" onclick="startMatching()">
-                                      <i class="ri-user-search-line mr-2"></i> 匹配筛选
+                                  <!-- 1. 自由匹配按钮 (新增) -->
+                                  <button id="btn-match-free" type="button" class="px-4 py-2 text-sm font-bold text-indigo-600 bg-white border border-indigo-200 rounded-lg hover:bg-indigo-50 focus:outline-none flex items-center transition-colors" onclick="startMatching('free')">
+                                    <i class="ri-hand-coin-line mr-2"></i> 主动匹配筛选
                                   </button>
 
-                                  <!-- 成功后的“继续”按钮 (默认隐藏) -->
-                                  <button id="btn-finish" type="button" class="hidden px-6 py-2 text-sm font-bold text-white bg-emerald-600 rounded-lg shadow hover:bg-emerald-700 focus:outline-none flex items-center" onclick="resetAndClose()">
-                                      <i class="ri-check-double-line mr-2"></i> 完成并录入下一个
+                                  <!-- 2. 随机匹配按钮 (原有) -->
+                                  <button id="btn-match-random" type="button" class="px-6 py-2 text-sm font-bold text-white bg-brand-600 rounded-lg shadow hover:bg-brand-700 focus:outline-none flex items-center transition-colors" onclick="startMatching('random')">
+                                    <i class="ri-shuffle-line mr-2"></i> 匹配筛选
+                                  </button>
+
+                                  <!-- 3. 完成按钮 (默认隐藏) -->
+                                  <button id="btn-finish" type="button" class="hidden px-6 py-2 text-sm font-bold text-white bg-emerald-600 rounded-lg shadow hover:bg-emerald-700 focus:outline-none flex items-center transition-colors" onclick="resetAndClose()">
+                                    <i class="ri-check-double-line mr-2"></i> 完成并录入下一个
                                   </button>
                               </div>
 
@@ -1404,14 +1444,14 @@
           // alert("数据已保存至列表");
       }
 
-      // 模拟匹配逻辑
-      function startMatching() {
+      // 模拟匹配逻辑 (支持 random 和 free 两种模式)
+      function startMatching(mode) {
           // 1. 获取输入值
           const age = parseInt(document.getElementById('input-age').value);
           const myopia = parseFloat(document.getElementById('input-myopia').value);
-          const history = document.querySelector('input[name="history"]:checked').value;
+          const history = document.querySelector('input[name="history"]:checked').value; // 这里假设你在HTML里加上了 name="history"
           
-          // 简单的表单校验
+          // 简单的校验
           if (!age || isNaN(myopia)) {
               alert("请完整填写年龄和近视度数");
               return;
@@ -1420,86 +1460,145 @@
           // 2. 切换 UI 到 Loading 状态
           document.getElementById('enroll-form').classList.add('hidden');
           document.getElementById('enroll-loading').classList.remove('hidden');
-          document.getElementById('btn-match').classList.add('hidden'); // 隐藏匹配按钮
+          
+          // 隐藏底部所有操作按钮
+          document.getElementById('btn-match-random').classList.add('hidden');
+          document.getElementById('btn-match-free').classList.add('hidden');
 
-          // 3. 模拟网络请求延迟 (1.5秒)
+          // 3. 模拟算法延迟
           setTimeout(() => {
               document.getElementById('enroll-loading').classList.add('hidden');
               document.getElementById('enroll-result').classList.remove('hidden');
               
-              // 4. 执行筛选逻辑 (Mock Logic)
+              // 4. 通用校验逻辑 (入排标准)
               let passed = true;
               let failReason = "";
 
-              // 逻辑：年龄必须在 6-14 岁
               if (age < 6 || age > 14) {
                   passed = false;
                   failReason = `年龄 ${age} 岁不符合纳入标准 [6-14岁]`;
-              }
-              // 逻辑：度数必须在 0 到 -6.00 之间 (这里假设输入负数)
-              else if (myopia > 0 || myopia < -6.00) {
+              } else if (myopia > 0 || myopia < -6.00) {
                   passed = false;
                   failReason = `屈光度 ${myopia}D 超出研究范围 [0.00 ~ -6.00D]`;
-              }
-              // 逻辑：不能有手术史
-              else if (history === 'yes') {
+              } else if (history === 'yes') { // 假设 yes 是有病史
                   passed = false;
                   failReason = `存在既往眼部手术史，符合排除标准。`;
               }
 
-              // 5. 展示对应结果
-              if (passed) {
-                  // 成功逻辑
-                  document.getElementById('result-success').classList.remove('hidden');
-                  document.getElementById('btn-finish').classList.remove('hidden'); // 显示完成按钮
-                  
-                  // 随机分配组别
-                  const isExperiement = Math.random() > 0.5;
-                  document.getElementById('res-group-name').innerText = isExperiement ? "实验组 (高频)" : "对照组 (低频)";
-                  document.getElementById('res-id').innerText = "CHILD_ELESCREEN_" + Math.floor(100 + Math.random() * 900); // 随机生成ID
-                  
-                  // 动态显示 Tag
-                  document.getElementById('res-tag-age').innerText = (age <= 7) ? "4-7岁" : (age <= 10 ? "7-10岁" : "10-14岁");
-                  document.getElementById('res-tag-myopia').innerText = myopia + "D";
-
-              } else {
-                  // 失败逻辑
+              if (!passed) {
+                  // --- 失败流程 ---
                   document.getElementById('result-fail').classList.remove('hidden');
                   document.getElementById('fail-reason').innerText = failReason;
-                  // 失败时，虽然没有完成，但也显示一个关闭/重置按钮
-                  document.getElementById('btn-finish').innerText = "重新录入";
-                  document.getElementById('btn-finish').classList.remove('hidden', 'bg-emerald-600', 'hover:bg-emerald-700');
-                  document.getElementById('btn-finish').classList.add('bg-slate-600', 'hover:bg-slate-700');
-                  document.getElementById('btn-finish').onclick = function() {
-                      resetFormState();
-                  };
+                  
+                  // 显示重置按钮
+                  const btnFinish = document.getElementById('btn-finish');
+                  btnFinish.innerText = "重新录入";
+                  btnFinish.classList.remove('hidden', 'bg-emerald-600', 'hover:bg-emerald-700');
+                  btnFinish.classList.add('bg-slate-600', 'hover:bg-slate-700');
+                  btnFinish.onclick = function() { resetFormState(); };
+                  return;
               }
 
-          }, 1500);
+              // --- 成功流程 ---
+              
+              // 计算分层因子 Tag (通用)
+              const tagAge = (age <= 7) ? "4-7岁" : (age <= 10 ? "7-10岁" : "10-14岁");
+              const tagMyopia = (myopia >= -0.5) ? "-0.50~0.00D" : (myopia >= -1.0 ? "-1.00~-0.50D" : "<-1.00D");
+
+              if (mode === 'random') {
+                  // === 随机匹配逻辑 ===
+                  document.getElementById('result-success').classList.remove('hidden');
+                  document.getElementById('btn-finish').classList.remove('hidden'); 
+                  
+                  // 随机分配
+                  const isExperiement = Math.random() > 0.5;
+                  document.getElementById('res-group-name').innerText = isExperiement ? "实验组 (高频)" : "对照组 (低频)";
+                  document.getElementById('res-id').innerText = "CHILD_ELE_" + Math.floor(1000 + Math.random() * 9000);
+                  
+                  // 填充 Random 下的 tags
+                  const tagsHtml = `
+                      <div class="flex justify-between"><span>分层因素(年龄):</span><span class="font-medium text-slate-800">${tagAge}</span></div>
+                      <div class="flex justify-between"><span>分层因素(度数):</span><span class="font-medium text-slate-800">${tagMyopia}</span></div>
+                  `;
+                  document.getElementById('res-tags-container').innerHTML = tagsHtml;
+
+              } else {
+                  // === 自由匹配逻辑 ===
+                  document.getElementById('result-selection').classList.remove('hidden');
+                  
+                  // 填充顶部提示 Tag
+                  document.getElementById('sel-tag-age').innerText = `年龄: ${tagAge}`;
+                  document.getElementById('sel-tag-myopia').innerText = `度数: ${tagMyopia}`;
+
+                  // 重置卡片选中状态
+                  clearSelectionStyles();
+                  
+                  // 此时不显示“完成”按钮，等待用户点击卡片
+              }
+
+          }, 1000); // 1秒动画
       }
 
-      // 重置抽屉内部状态
+      // 自由模式：点击卡片选择组别
+      function selectGroupOption(group) {
+          // 1. 清除旧样式
+          clearSelectionStyles();
+
+          // 2. 选中当前样式
+          const card = document.getElementById(`card-${group}`);
+          const dot = card.querySelector('.selection-dot');
+          
+          // 样式变化: 边框变色, 背景微变, 圆点显示
+          if (group === 'exp') {
+              card.classList.add('border-indigo-500', 'bg-indigo-50', 'ring-1', 'ring-indigo-500');
+              card.classList.remove('border-slate-200');
+          } else {
+              card.classList.add('border-emerald-500', 'bg-emerald-50', 'ring-1', 'ring-emerald-500');
+              card.classList.remove('border-slate-200');
+          }
+          dot.classList.remove('opacity-0');
+
+          // 3. 显示底部完成按钮
+          const btnFinish = document.getElementById('btn-finish');
+          btnFinish.innerText = "确认分配并录入下一个";
+          btnFinish.classList.remove('hidden', 'bg-slate-600', 'hover:bg-slate-700');
+          btnFinish.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+          btnFinish.onclick = resetAndClose;
+      }
+
+      // 辅助：清除所有卡片选中态
+      function clearSelectionStyles() {
+          ['exp', 'ctrl'].forEach(g => {
+              const card = document.getElementById(`card-${g}`);
+              const dot = card.querySelector('.selection-dot');
+              
+              // 恢复默认
+              card.className = "group cursor-pointer bg-white border-2 border-slate-200 rounded-xl p-4 transition-all relative hover:border-gray-300"; 
+              // 重新加上 hover 颜色 (简单起见，这里直接重置为初始class比较干净，上面这行略粗暴，下面细致还原)
+              if(g === 'exp') card.classList.add('hover:border-indigo-300');
+              else card.classList.add('hover:border-emerald-300');
+              
+              dot.classList.add('opacity-0');
+          });
+      }
+
+      // 覆盖原有的 resetFormState，确保新按钮被重置
       function resetFormState() {
           // UI 显示重置
           document.getElementById('enroll-form').classList.remove('hidden');
           document.getElementById('enroll-loading').classList.add('hidden');
           document.getElementById('enroll-result').classList.add('hidden');
+          
           document.getElementById('result-success').classList.add('hidden');
           document.getElementById('result-fail').classList.add('hidden');
+          document.getElementById('result-selection').classList.add('hidden'); // 新增
           
           // 按钮重置
-          const btnMatch = document.getElementById('btn-match');
-          btnMatch.classList.remove('hidden');
-          
-          const btnFinish = document.getElementById('btn-finish');
-          btnFinish.classList.add('hidden');
-          // 恢复完成按钮样式
-          btnFinish.classList.remove('bg-slate-600', 'hover:bg-slate-700');
-          btnFinish.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
-          btnFinish.innerText = "完成并录入下一个";
-          btnFinish.onclick = resetAndClose;
+          document.getElementById('btn-match-random').classList.remove('hidden');
+          document.getElementById('btn-match-free').classList.remove('hidden'); // 新增
+          document.getElementById('btn-finish').classList.add('hidden');
 
-          // 清空表单值 (可选)
+          // 清空表单
           document.getElementById('enroll-form').reset();
       }
 
