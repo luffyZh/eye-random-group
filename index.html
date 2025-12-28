@@ -346,7 +346,22 @@
         <!-- 中部：分组详情卡片 -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-            <h3 class="text-lg font-bold text-slate-800">分组与维度概览</h3>
+            <div class="flex items-center gap-3">
+              <h3 class="text-lg font-bold text-slate-800">分组与维度概览</h3>
+              <!-- Radio Button 样式筛选 -->
+              <div class="bg-slate-200/50 p-1 rounded-xl flex items-center">
+                <label class="cursor-pointer">
+                  <input type="radio" name="group" class="peer sr-only" checked />
+                  <span
+                    class="block px-4 py-1 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">2个分组</span>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="group" class="peer sr-only" />
+                  <span
+                    class="block px-4 py-1 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">3个分组</span>
+                </label>
+              </div>
+            </div>
             <!-- 👇 修改这里：添加 onclick 事件 👇 -->
             <button onclick="openConfigDrawer()"
               class="text-sm text-brand-600 hover:text-brand-700 font-medium flex items-center">
@@ -410,7 +425,7 @@
                     <i class="ri-shield-check-line text-xl"></i>
                   </div>
                   <div>
-                    <h4 class="font-bold text-slate-800">对照组 (低频)</h4>
+                    <h4 class="font-bold text-slate-800">对照组 (中频)</h4>
                     <p class="text-xs text-slate-500">Control Group</p>
                   </div>
                 </div>
