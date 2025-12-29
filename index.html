@@ -427,16 +427,15 @@
                   </div>
                 </div>
               </div>
-              <!-- 匹配因子匹配情况 -->
+              <!-- 因子匹配详情 (Collapsible) -->
               <div class="mt-6">
-                <!-- Title -->
-                <div class="relative flex items-center justify-center mb-3">
-                  <div class="absolute w-full border-t border-dashed border-slate-200 top-1/2 -translate-y-1/2"></div>
-                  <span class="relative bg-white px-2 text-slate-400 text-xs font-bold z-10">匹配因子匹配情况</span>
-                </div>
+                <button onclick="toggleFactorDetails('experimental')" class="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-500 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors group">
+                  <span>因子匹配详情</span>
+                  <i id="icon-experimental" class="ri-arrow-down-s-line text-base transition-transform duration-300"></i>
+                </button>
                 
                 <!-- List -->
-                <div class="space-y-2">
+                <div id="details-experimental" class="hidden mt-3 space-y-2">
                   <div class="flex justify-between items-center text-xs">
                     <div class="flex items-center gap-1 px-3 py-1 rounded-md bg-indigo-50 text-indigo-600 text-xs font-medium border border-slate-200" title="性别：男 | 年龄：4-7岁 | 屈光度：-1.00 ~ -0.50D">
                       性别:男 <span class="text-slate-300 mx-1">|</span>
@@ -540,16 +539,15 @@
                 </div>
               </div>
 
-              <!-- 匹配因子匹配情况 -->
+              <!-- 因子匹配详情 (Collapsible) -->
               <div class="mt-6">
-                <!-- Title -->
-                <div class="relative flex items-center justify-center mb-3">
-                  <div class="absolute w-full border-t border-dashed border-slate-200 top-1/2 -translate-y-1/2"></div>
-                  <span class="relative bg-white px-2 text-slate-400 text-xs font-bold z-10">匹配因子匹配情况</span>
-                </div>
+                <button onclick="toggleFactorDetails('control')" class="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-500 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors group">
+                  <span>因子匹配详情</span>
+                  <i id="icon-control" class="ri-arrow-down-s-line text-base transition-transform duration-300"></i>
+                </button>
                 
                 <!-- List -->
-                <div class="space-y-2">
+                <div id="details-control" class="hidden mt-3 space-y-2">
                   <div class="flex justify-between items-center text-xs">
                     <div class="flex items-center gap-1 px-3 py-1 rounded-md bg-emerald-50 text-emerald-600 text-xs font-medium border border-slate-200" title="性别：男 | 年龄：4-7岁 | 屈光度：-1.00 ~ -0.50D">
                       性别:男 <span class="text-slate-300 mx-1">|</span>
@@ -652,16 +650,15 @@
                   </div>
                 </div>
               </div>
-              <!-- 匹配因子匹配情况 -->
+              <!-- 因子匹配详情 (Collapsible) -->
               <div class="mt-6">
-                <!-- Title -->
-                <div class="relative flex items-center justify-center mb-3">
-                  <div class="absolute w-full border-t border-dashed border-slate-200 top-1/2 -translate-y-1/2"></div>
-                  <span class="relative bg-white px-2 text-slate-400 text-xs font-bold z-10">匹配因子匹配情况</span>
-                </div>
+                <button onclick="toggleFactorDetails('target')" class="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-500 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors group">
+                  <span>因子匹配详情</span>
+                  <i id="icon-target" class="ri-arrow-down-s-line text-base transition-transform duration-300"></i>
+                </button>
                 
                 <!-- List -->
-                <div class="space-y-2">
+                <div id="details-target" class="hidden mt-3 space-y-2">
                   <div class="flex justify-between items-center text-xs">
                     <div class="flex items-center gap-1 px-3 py-1 rounded-md bg-orange-50 text-orange-600 text-xs font-medium border border-slate-200" title="性别：男 | 年龄：4-7岁 | 屈光度：-1.00 ~ -0.50D">
                       性别:男 <span class="text-slate-300 mx-1">|</span>
@@ -2265,6 +2262,22 @@
 
         // Hide 3rd group
         targetGroup.classList.add('hidden');
+      }
+    }
+
+    /* ================= 因子详情展开逻辑 ================= */
+    function toggleFactorDetails(id) {
+      const details = document.getElementById('details-' + id);
+      const icon = document.getElementById('icon-' + id);
+      
+      if (details.classList.contains('hidden')) {
+        details.classList.remove('hidden');
+        details.classList.add('fade-in');
+        icon.classList.add('rotate-180');
+      } else {
+        details.classList.add('hidden');
+        details.classList.remove('fade-in');
+        icon.classList.remove('rotate-180');
       }
     }
   </script>
