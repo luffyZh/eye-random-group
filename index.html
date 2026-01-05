@@ -818,17 +818,22 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- 维度卡片 1 -->
-          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group relative">
+            <button id="badge-text-dim1"
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-indigo-600">
+              枚举
+            </button>
             <div class="flex justify-between items-start mb-4">
-              <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
-                <i class="ri-men-line text-xl"></i>
-              </div>
-              <button class="text-slate-300 hover:text-slate-500">
-                <i class="ri-more-fill text-xl"></i>
-              </button>
+              <section class="flex items-center gap-2 mb-4">
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                  <i class="ri-men-line text-xl"></i>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <h4 class="text-lg font-bold text-slate-800 mb-1">性别维度</h4>
+                  <p class="text-xs text-slate-400">通用基础人口学特征</p>
+                </div>
+              </section>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-1">性别维度</h4>
-            <p class="text-xs text-slate-400 mb-4">通用基础人口学特征</p>
 
             <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
               <div class="flex flex-wrap gap-2">
@@ -839,23 +844,39 @@
               </div>
             </div>
             <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
-              <span class="text-xs text-slate-400">被 12 个项目引用</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <section class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">被 5 个项目引用</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              </section>
+              <div class="flex gap-2">
+                <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  onclick="event.stopPropagation()">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors">
+                  <i class="ri-arrow-right-line"></i>
+                </button>
+              </div>
             </div>
           </div>
 
           <!-- 维度卡片 2 -->
-          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+          <div class="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+            <button id="badge-text-dim2"
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-emerald-600">
+              区间
+            </button>
             <div class="flex justify-between items-start mb-4">
-              <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
-                <i class="ri-calendar-2-line text-xl"></i>
-              </div>
-              <button class="text-slate-300 hover:text-slate-500">
-                <i class="ri-more-fill text-xl"></i>
-              </button>
+              <section class="flex items-center gap-2 mb-4">
+                <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
+                  <i class="ri-calendar-2-line text-xl"></i>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <h4 class="text-lg font-bold text-slate-800 mb-1">年龄分层</h4>
+                  <p class="text-xs text-slate-400">青少年年龄标准分层</p>
+                </div>
+              </section>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-1">年龄分层</h4>
-            <p class="text-xs text-slate-400 mb-4">儿童青少年标准分层</p>
 
             <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
               <div class="flex flex-wrap gap-2">
@@ -868,23 +889,39 @@
               </div>
             </div>
             <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
-              <span class="text-xs text-slate-400">被 5 个项目引用</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <section class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">被 5 个项目引用</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              </section>
+              <div class="flex gap-2">
+                <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  onclick="event.stopPropagation()">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors">
+                  <i class="ri-arrow-right-line"></i>
+                </button>
+              </div>
             </div>
           </div>
 
           <!-- 维度卡片 3 -->
-          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+          <div class="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+            <button id="badge-text-dim3"
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-emerald-600">
+              区间
+            </button>
             <div class="flex justify-between items-start mb-4">
-              <div class="p-3 bg-amber-50 text-amber-600 rounded-xl">
-                <i class="ri-eye-line text-xl"></i>
-              </div>
-              <button class="text-slate-300 hover:text-slate-500">
-                <i class="ri-more-fill text-xl"></i>
-              </button>
+              <section class="flex items-center gap-2 mb-4">
+                <div class="p-3 bg-orange-50 text-orange-600 rounded-xl">
+                  <i class="ri-eye-line text-xl"></i>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <h4 class="text-lg font-bold text-slate-800 mb-1">屈光度</h4>
+                  <p class="text-xs text-slate-400">近视程度分层</p>
+                </div>
+              </section>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-1">屈光度维度</h4>
-            <p class="text-xs text-slate-400 mb-4">近视程度分级</p>
 
             <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
               <div class="flex flex-wrap gap-2">
@@ -900,8 +937,19 @@
               </div>
             </div>
             <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
-              <span class="text-xs text-slate-400">被 3 个项目引用</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <section class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">被 5 个项目引用</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              </section>
+              <div class="flex gap-2">
+                <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  onclick="event.stopPropagation()">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors">
+                  <i class="ri-arrow-right-line"></i>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -2408,8 +2456,32 @@
       }
     }
 
+    // 右上角标签枚举与交互
+    const RIBBON_ENUM = {
+      general: { text: '通用', bg: 'bg-indigo-600' },
+      core: { text: '核心', bg: 'bg-emerald-600' },
+      draft: { text: '草稿', bg: 'bg-amber-500' },
+      disabled: { text: '禁用', bg: 'bg-red-600' }
+    };
+
+    function toggleBadgeDropdown(id) {
+      const dd = document.getElementById('badge-dropdown-' + id);
+      dd.classList.toggle('hidden');
+    }
+
+    function selectBadgeStatus(id, key) {
+      const conf = RIBBON_ENUM[key] || RIBBON_ENUM.general;
+      const textEl = document.getElementById('badge-text-' + id);
+
+      textEl.innerText = conf.text;
+      textEl.className = "absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl " + conf.bg;
+
+      const dd = document.getElementById('badge-dropdown-' + id);
+      dd.classList.add('hidden');
+    }
+
     /* ================= 受试者录入逻辑 ================= */
-    
+     
     // 计算年龄
     function calculateAge() {
         const dobInput = document.getElementById('input-dob').value;
