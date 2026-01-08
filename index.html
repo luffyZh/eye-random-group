@@ -382,11 +382,17 @@
       <!-- 页面 2：项目详情 (默认隐藏) -->
       <div id="view-project-detail" class="hidden fade-in space-y-6">
         <!-- 返回面包屑 -->
-        <button onclick="backToProjects()"
-          class="flex items-center text-sm text-slate-500 hover:text-brand-600 transition-colors mb-2">
-          <i class="ri-arrow-left-line mr-1"></i> 返回项目列表
-        </button>
-
+        <div class="flex items-center justify-between">
+          <button onclick="backToProjects()"
+            class="flex items-center text-sm text-slate-500 hover:text-brand-600 transition-colors mb-2">
+            <i class="ri-arrow-left-line mr-1"></i> 返回项目列表
+          </button>
+           <!-- 点击触发 openEnrollDrawer() 打开抽屉 -->
+          <button onclick="openEnrollDrawer()"
+            class="flex px-4 py-2 text-xs justify-center font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-lg shadow-brand-500/30 flex items-center transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+            <i class="ri-user-add-line mr-1.5 text-base"></i> 录入受试者
+          </button>
+        </div>
         <!-- 顶部：基本信息卡片 -->
         <div
           class="relative bg-white rounded-2xl px-10 py-12 border border-slate-100 shadow-sm relative overflow-hidden">
@@ -397,7 +403,7 @@
           <div class="flex flex-col md:flex-row justify-between items-start gap-6 relative z-10">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h2 class="text-3xl font-bold text-slate-800">
+                <h2 class="text-2xl font-bold text-slate-800">
                   光刻微结构近视管理镜片在儿童青少年近视防控中的有效性及佩戴安全舒适性的随机对照临床研究
                 </h2>
               </div>
@@ -448,12 +454,6 @@
               </ul>
             </div>
           </div>
-          <!-- ✅ 新增的录入按钮 (核心操作) ✅ -->
-          <!-- 点击触发 openEnrollDrawer() 打开抽屉 -->
-          <button onclick="openEnrollDrawer()"
-            class="absolute z-10 w-[240px] bottom-[72px] right-10 px-4 py-2 text-xs justify-center font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-lg shadow-brand-500/30 flex items-center transition-all transform hover:-translate-y-0.5 active:translate-y-0">
-            <i class="ri-user-add-line mr-1.5 text-base"></i> 录入受试者
-          </button>
         </div>
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
@@ -856,7 +856,8 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider">
-                  <th class="px-6 py-4 font-semibold">序号 ID</th>
+                  <th class="px-6 py-4 font-semibold">受试者编号</th>
+                  <th class="px-6 py-4 font-semibold">筛选号</th>
                   <th class="px-6 py-4 font-semibold">姓名</th>
                   <th class="px-6 py-4 font-semibold">年龄</th>
                   <th class="px-6 py-4 font-semibold">近视度数</th>
@@ -868,7 +869,10 @@
                 <!-- Row 1 -->
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    CHILD_ELESCREEN_001
+                    0001
+                  </td>
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
+                    CHILD_ELESCREEN_0001
                   </td>
                   <td class="px-6 py-4 font-semibold text-slate-800">
                     张小明
@@ -889,26 +893,31 @@
                 <!-- Row 2 -->
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    CHILD_ELESCREEN_002
+                    0002
+                  </td>
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
+                    --
                   </td>
                   <td class="px-6 py-4 font-semibold text-slate-800">李雅</td>
                   <td class="px-6 py-4 text-slate-600">6岁</td>
                   <td class="px-6 py-4 text-slate-600">-0.50D</td>
                   <td class="px-6 py-4">
                     <span
-                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700">对照组</span>
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-emerald-700">--</span>
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">女</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">4-7岁</span>
+                      --
                     </div>
                   </td>
                 </tr>
                 <!-- Row 3 -->
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    CHILD_ELESCREEN_003
+                    0003
+                  </td>
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
+                    CHILD_ELESCREEN_0002
                   </td>
                   <td class="px-6 py-4 font-semibold text-slate-800">王强</td>
                   <td class="px-6 py-4 text-slate-600">11岁</td>
@@ -916,6 +925,27 @@
                   <td class="px-6 py-4">
                     <span
                       class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">实验组</span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-1 flex-wrap">
+                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">男</span>
+                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">10-14岁</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
+                    0004
+                  </td>
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
+                    CHILD_ELESCREEN_0003
+                  </td>
+                  <td class="px-6 py-4 font-semibold text-slate-800">王芳</td>
+                  <td class="px-6 py-4 text-slate-600">9岁</td>
+                  <td class="px-6 py-4 text-slate-600">-1.25D</td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700">对照组</span>
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex gap-1 flex-wrap">
