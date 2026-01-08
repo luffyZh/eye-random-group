@@ -293,32 +293,30 @@
             <h3 class="text-lg font-bold text-slate-800">科室管理</h3>
             <p class="text-slate-500 text-sm">定义项目关联的临床科室</p>
           </div>
-          
-        </div>
-
-        <div id="dept-add-panel" class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3">
-          <div class="relative">
-            <button onclick="toggleDeptIconDropdown()"
-              class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 flex items-center gap-2">
-              <span id="dept-icon-preview" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
-                <i class="ri-hospital-line text-lg"></i>
-              </span>
-              <span class="text-xs">选择图标</span>
-            </button>
-            <div id="dept-icon-dropdown"
-              class="hidden absolute left-0 top-full mt-2 w-72 bg-white border border-slate-200 rounded-lg shadow-lg p-2 grid grid-cols-6 gap-2 max-h-48 overflow-auto">
-              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-hospital-line')"><i class="ri-hospital-line"></i></button>
-              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-heart-pulse-line')"><i class="ri-heart-pulse-line"></i></button>
-              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-eye-line')"><i class="ri-eye-line"></i></button>
-              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-microscope-line')"><i class="ri-microscope-line"></i></button>
-              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-capsule-line')"><i class="ri-capsule-line"></i></button>
-              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-shield-check-line')"><i class="ri-shield-check-line"></i></button>
+          <div id="dept-add-panel" class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3">
+            <div class="relative">
+              <button onclick="toggleDeptIconDropdown()"
+                class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 flex items-center gap-2">
+                <span id="dept-icon-preview" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
+                  <i class="ri-hospital-line text-lg"></i>
+                </span>
+                <span class="text-xs">选择图标</span>
+              </button>
+              <div id="dept-icon-dropdown"
+                class="hidden absolute left-0 top-full mt-2 w-72 bg-white border border-slate-200 rounded-lg shadow-lg p-2 grid grid-cols-6 gap-2 max-h-48 overflow-auto">
+                <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-hospital-line')"><i class="ri-hospital-line"></i></button>
+                <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-heart-pulse-line')"><i class="ri-heart-pulse-line"></i></button>
+                <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-eye-line')"><i class="ri-eye-line"></i></button>
+                <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-microscope-line')"><i class="ri-microscope-line"></i></button>
+                <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-capsule-line')"><i class="ri-capsule-line"></i></button>
+                <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-shield-check-line')"><i class="ri-shield-check-line"></i></button>
+              </div>
             </div>
+            <input id="dept-label-input" type="text" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm"
+              placeholder="科室名称">
+            <button onclick="addDepartment()"
+              class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">添加</button>
           </div>
-          <input id="dept-label-input" type="text" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm"
-            placeholder="科室名称">
-          <button onclick="addDepartment()"
-            class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">添加</button>
         </div>
 
         <div id="dept-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
