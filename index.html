@@ -1688,7 +1688,7 @@
                     <!-- 1. 项目名称 -->
                     <div>
                       <label class="block text-sm font-bold text-slate-700 mb-2">项目名称</label>
-                      <input type="text"
+                      <input id="np-name" type="text"
                         class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors"
                         placeholder="例如：儿童近视防控临床研究">
                     </div>
@@ -1697,7 +1697,7 @@
                     <div>
                       <label class="block text-sm font-bold text-slate-700 mb-2">项目码 (Project Code)</label>
                       <div class="relative">
-                        <input type="text"
+                        <input id="np-code" type="text"
                           class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm font-mono uppercase focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors"
                           placeholder="MYOPIA_CTRL_2024">
                         <i class="ri-barcode-line absolute right-3 top-2.5 text-slate-400"></i>
@@ -1741,37 +1741,93 @@
                         </label>
                       </div>
                     </div>
-
-                    <!-- 5. 人数与分组配置 (动态版) -->
-                    <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <label class="block text-sm font-bold text-slate-700 mb-2">项目负责人</label>
+                      <button type="button" id="leader-trigger" onclick="toggleLeaderDropdown()"
+                        class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50">
+                        <span id="leader-display" class="text-slate-500">请选择负责人...</span>
+                        <i class="ri-arrow-down-s-line text-slate-400"></i>
+                      </button>
+                      <div id="leader-dropdown"
+                        class="hidden relative z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto p-2 space-y-1"></div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-bold text-slate-700 mb-2">协作医生</label>
+                      <button type="button" id="collab-trigger" onclick="toggleCollabDropdown()"
+                        class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50">
+                        <span id="collab-display" class="text-slate-500">请选择协作医生...</span>
+                        <i class="ri-arrow-down-s-line text-slate-400"></i>
+                      </button>
+                      <div id="collab-dropdown"
+                        class="hidden relative z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto p-2 space-y-1"></div>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                      <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">临床研究协调员 CRC</label>
+                        <button type="button" id="crc-trigger" onclick="toggleCrcDropdown()"
+                          class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50">
+                          <span id="crc-display" class="text-slate-500">请选择 CRC...</span>
+                          <i class="ri-arrow-down-s-line text-slate-400"></i>
+                        </button>
+                        <div id="crc-dropdown"
+                          class="hidden relative z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto p-2 space-y-1"></div>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">是否共享数据</label>
+                        <div class="flex gap-6">
+                          <label class="flex items-center gap-2">
+                            <input type="radio" name="np-share" value="no" checked class="text-brand-600 border-slate-300 focus:ring-brand-500">
+                            <span class="text-sm text-slate-700">不共享</span>
+                          </label>
+                          <label class="flex items-center gap-2">
+                            <input type="radio" name="np-share" value="yes" class="text-brand-600 border-slate-300 focus:ring-brand-500">
+                            <span class="text-sm text-slate-700">共享</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-bold text-slate-700 mb-2">纳入标准</label>
+                      <div id="inclusion-list" class="space-y-2"></div>
+                      <button type="button" onclick="addCriteriaInput('inclusion')"
+                        class="mt-2 w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 text-sm font-bold hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all flex justify-center items-center gap-1">
+                        <i class="ri-add-line"></i> 添加纳入标准
+                      </button>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-bold text-slate-700 mb-2">排除标准</label>
+                      <div id="exclusion-list" class="space-y-2"></div>
+                      <button type="button" onclick="addCriteriaInput('exclusion')"
+                        class="mt-2 w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 text-sm font-bold hover:border-red-400 hover:text-red-600 hover:bg-red-50 transition-all flex justify-center items-center gap-1">
+                        <i class="ri-add-line"></i> 添加排除标准
+                      </button>
+                    </div>
+                    
+       
+                    <!-- <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-4">
                       <div class="flex justify-between items-center">
                         <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
                           <i class="ri-group-line mr-1"></i> 规模与分组设定
                         </h4>
-                        <!-- 校验提示信息 -->
                         <div id="np-validation-msg" class="text-xs text-right text-emerald-600 font-medium h-4">
                           <i class="ri-checkbox-circle-line align-bottom"></i> 合计匹配
                         </div>
                       </div>
 
-                      <!-- 总人数 -->
                       <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">项目总人数</label>
                         <input type="number" id="np-total-count" value="100" min="2" oninput="distributeCounts()"
                           class="w-full rounded-lg border-slate-300 bg-white border px-3 py-2.5 text-sm font-bold text-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors">
                       </div>
 
-                      <!-- 动态分组列表容器 -->
                       <div id="np-group-list" class="space-y-3">
-                        <!-- JS 将在这里动态插入分组 -->
                       </div>
 
-                      <!-- 新增分组按钮 -->
                       <button type="button" onclick="addNewGroup()"
                         class="w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 text-sm font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50 transition-all flex justify-center items-center gap-1 group">
                         <i class="ri-add-line group-hover:scale-110 transition-transform"></i> 增加新的分组
                       </button>
-                    </div>
+                    </div> -->
                   </form>
                 </div>
 
@@ -2247,9 +2303,7 @@
         panel.classList.remove('translate-x-full');
       }, 10);
 
-      // 初始化：重置为默认状态（2个组，100人）
-      document.getElementById('np-total-count').value = 100;
-      initDefaultGroups();
+      resetNewProjectForm();
     }
 
     // 关闭抽屉
@@ -2263,6 +2317,21 @@
       document.getElementById('center-dropdown').classList.add('hidden');
 
       setTimeout(() => drawer.classList.add('hidden'), 300);
+    }
+
+    function resetNewProjectForm() {
+      const form = document.getElementById('new-project-form');
+      const nameEl = document.getElementById('np-name');
+      const codeEl = document.getElementById('np-code');
+      const descEl = form.querySelector('textarea');
+      nameEl.value = '';
+      codeEl.value = '';
+      if (descEl) descEl.value = '';
+      Array.from(document.querySelectorAll('#center-dropdown input:checked')).forEach(el => el.checked = false);
+      updateCenterDisplay();
+      document.querySelectorAll('input[name="np-share"]').forEach(el => el.checked = el.value === 'no');
+      document.getElementById('inclusion-list').innerHTML = '';
+      document.getElementById('exclusion-list').innerHTML = '';
     }
 
     // --- 核心：动态分组逻辑 ---
@@ -2409,29 +2478,14 @@
       iconEl.classList.add(ICON_LIST[nextIdx]);
     }
 
-    // 创建项目提交逻辑
     function createNewProject() {
-      const total = parseInt(document.getElementById('np-total-count').value) || 0;
-      const inputs = document.querySelectorAll('.group-count-input');
-      let sum = 0;
-      inputs.forEach(input => sum += (parseInt(input.value) || 0));
-
-      if (sum !== total) {
-        alert("分组人数之和必须等于项目总人数，请检查！");
-        return;
-      }
-
-      // 收集数据示例
-      const groups = [];
-      document.querySelectorAll('.group-row').forEach(row => {
-        groups.push({
-          name: row.querySelector('input[type="text"]').value,
-          count: row.querySelector('input[type="number"]').value
-        });
-      });
-
-      console.log("Groups Created:", groups);
-
+      const name = (document.getElementById('np-name').value || '').trim();
+      const code = (document.getElementById('np-code').value || '').trim();
+      if (!name) { alert("请填写项目名称"); return; }
+      if (!code || !/^[A-Za-z0-9]+$/.test(code)) { alert("项目码必须是英文和数字"); return; }
+      if (!SELECTED_CENTERS.length) { alert("请至少选择一个关联中心"); return; }
+      if (!leaderSelected) { alert("请选择项目负责人"); return; }
+      if (!crcSelected.size) { alert("请至少选择一位 CRC"); return; }
       alert("新项目创建成功！");
       closeNewProjectDrawer();
     }
@@ -2443,6 +2497,110 @@
       dropdown.classList.toggle('hidden');
     }
 
+    let SELECTED_CENTERS = [];
+    const DOCTOR_DATA = {
+      "徐州眼视光中心": ["王强", "李敏", "赵林"],
+      "上海眼科中心": ["陈洁", "周宁", "黄俊"],
+      "北京同仁医院": ["吴海", "孙越", "刘磊"]
+    };
+    let leaderSelected = null;
+    let collabSelected = new Set();
+    let crcSelected = new Set();
+    const CRC_DATA = {
+      "徐州眼视光中心": ["张玲", "高越"],
+      "上海眼科中心": ["林慧", "周倩"],
+      "北京同仁医院": ["李娜", "王珂"]
+    };
+
+    function enableDoctorSelectors() {
+      const lt = document.getElementById('leader-trigger');
+      const ct = document.getElementById('collab-trigger');
+      const crt = document.getElementById('crc-trigger');
+      lt.classList.remove('pointer-events-none', 'opacity-50');
+      ct.classList.remove('pointer-events-none', 'opacity-50');
+      crt.classList.remove('pointer-events-none', 'opacity-50');
+    }
+
+    function disableDoctorSelectors() {
+      const lt = document.getElementById('leader-trigger');
+      const ct = document.getElementById('collab-trigger');
+      const crt = document.getElementById('crc-trigger');
+      lt.classList.add('pointer-events-none', 'opacity-50');
+      ct.classList.add('pointer-events-none', 'opacity-50');
+      crt.classList.add('pointer-events-none', 'opacity-50');
+      document.getElementById('leader-display').innerText = '请选择负责人...';
+      document.getElementById('collab-display').innerText = '请选择协作医生...';
+      document.getElementById('crc-display').innerText = '请选择 CRC...';
+      document.getElementById('leader-dropdown').innerHTML = '';
+      document.getElementById('collab-dropdown').innerHTML = '';
+      document.getElementById('crc-dropdown').innerHTML = '';
+      leaderSelected = null;
+      collabSelected = new Set();
+      crcSelected = new Set();
+    }
+
+    function renderDoctorOptions() {
+      const leaderDD = document.getElementById('leader-dropdown');
+      const collabDD = document.getElementById('collab-dropdown');
+      const crcDD = document.getElementById('crc-dropdown');
+      let leaderHtml = '';
+      let collabHtml = '';
+      let crcHtml = '';
+      SELECTED_CENTERS.forEach(center => {
+        (DOCTOR_DATA[center] || []).forEach(name => {
+          const id = `${center}-${name}`;
+          leaderHtml += `<button type="button" class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm" onclick="selectLeader('${name}','${center}')"><span class="text-slate-700">${name}</span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></button>`;
+          const checked = collabSelected.has(id) ? 'checked' : '';
+          collabHtml += `<label class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm cursor-pointer"><span class="flex items-center gap-2"><input type="checkbox" ${checked} onchange="toggleCollab('${name}','${center}')" class="rounded text-brand-600 border-slate-300 focus:ring-brand-500"><span class="text-slate-700">${name}</span></span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></label>`;
+        });
+        (CRC_DATA[center] || []).forEach(name => {
+          const id = `${center}-${name}`;
+          const checked = crcSelected.has(id) ? 'checked' : '';
+          crcHtml += `<label class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm cursor-pointer"><span class="flex items-center gap-2"><input type="checkbox" ${checked} onchange="toggleCrc('${name}','${center}')" class="rounded text-brand-600 border-slate-300 focus:ring-brand-500"><span class="text-slate-700">${name}</span></span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></label>`;
+        });
+      });
+      leaderDD.innerHTML = leaderHtml || `<div class="px-3 py-2 text-xs text-slate-500">请先选择关联中心</div>`;
+      collabDD.innerHTML = collabHtml || `<div class="px-3 py-2 text-xs text-slate-500">请先选择关联中心</div>`;
+      crcDD.innerHTML = crcHtml || `<div class="px-3 py-2 text-xs text-slate-500">请先选择关联中心</div>`;
+    }
+
+    function toggleLeaderDropdown() {
+      const dd = document.getElementById('leader-dropdown');
+      dd.classList.toggle('hidden');
+    }
+
+    function toggleCollabDropdown() {
+      const dd = document.getElementById('collab-dropdown');
+      dd.classList.toggle('hidden');
+    }
+
+    function toggleCrcDropdown() {
+      const dd = document.getElementById('crc-dropdown');
+      dd.classList.toggle('hidden');
+    }
+
+    function selectLeader(name, center) {
+      leaderSelected = { name, center };
+      document.getElementById('leader-display').innerText = `${name} (${center})`;
+      document.getElementById('leader-dropdown').classList.add('hidden');
+    }
+
+    function toggleCollab(name, center) {
+      const id = `${center}-${name}`;
+      if (collabSelected.has(id)) collabSelected.delete(id);
+      else collabSelected.add(id);
+      const count = collabSelected.size;
+      document.getElementById('collab-display').innerText = count ? `已选择 ${count} 人` : '请选择协作医生...';
+    }
+
+    function toggleCrc(name, center) {
+      const id = `${center}-${name}`;
+      if (crcSelected.has(id)) crcSelected.delete(id);
+      else crcSelected.add(id);
+      const count = crcSelected.size;
+      document.getElementById('crc-display').innerText = count ? `已选择 ${count} 人` : '请选择 CRC...';
+    }
+
     function updateCenterDisplay() {
       const checked = Array.from(document.querySelectorAll('#center-dropdown input:checked')).map(el => el.value);
       const displaySpan = document.getElementById('center-display-text');
@@ -2451,11 +2609,32 @@
         displaySpan.innerText = "请选择参与中心...";
         displaySpan.classList.add('text-slate-500');
         displaySpan.classList.remove('text-slate-800');
+        SELECTED_CENTERS = [];
+        disableDoctorSelectors();
       } else {
         displaySpan.innerText = `已选择 ${checked.length} 个中心`;
         displaySpan.classList.remove('text-slate-500');
         displaySpan.classList.add('text-slate-800');
+        SELECTED_CENTERS = checked;
+        enableDoctorSelectors();
+        renderDoctorOptions();
       }
+    }
+
+    function addCriteriaInput(type) {
+      const list = document.getElementById(type === 'inclusion' ? 'inclusion-list' : 'exclusion-list');
+      const row = document.createElement('div');
+      const color = type === 'inclusion' ? 'bg-emerald-50 border-emerald-300' : 'bg-red-50 border-red-300';
+      row.className = 'flex items-center gap-2';
+      row.innerHTML = `<input type="text" class="flex-1 rounded-lg border ${color} px-3 py-2.5 text-sm" placeholder="${type==='inclusion'?'请输入纳入标准':'请输入排除标准'}"><button type="button" class="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg" onclick="removeCriteriaItem(this)"><i class="ri-delete-bin-line"></i></button>`;
+      list.appendChild(row);
+      const input = row.querySelector('input');
+      input.focus();
+    }
+
+    function removeCriteriaItem(btn) {
+      const row = btn.closest('div');
+      if (row) row.remove();
     }
 
     // 3. 人数联动核心逻辑
@@ -2506,24 +2685,17 @@
       iconEl.classList.add(ICON_LIST[nextIdx]);
     }
 
-    // 5. 创建按钮逻辑 (Mock)
     function createNewProject() {
-      // 简单的校验
-      const total = parseInt(document.getElementById('np-total-count').value) || 0;
-      const g1 = parseInt(document.getElementById('np-group-1').value) || 0;
-      const g2 = parseInt(document.getElementById('np-group-2').value) || 0;
-
-      if (g1 + g2 !== total) {
-        alert("分组人数之和必须等于项目总人数，请检查！");
-        return;
-      }
-
-      alert("新项目创建成功！\n页面将自动跳转至项目详情...");
+      const name = (document.getElementById('np-name').value || '').trim();
+      const code = (document.getElementById('np-code').value || '').trim();
+      const crc = (document.getElementById('np-crc').value || '').trim();
+      if (!name) { alert("请填写项目名称"); return; }
+      if (!code || !/^[A-Za-z0-9]+$/.test(code)) { alert("项目码必须是英文和数字"); return; }
+      if (!SELECTED_CENTERS.length) { alert("请至少选择一个关联中心"); return; }
+      if (!leaderSelected) { alert("请选择项目负责人"); return; }
+      if (!crc) { alert("请填写 CRC"); return; }
+      alert("新项目创建成功！");
       closeNewProjectDrawer();
-      // 模拟跳转
-      setTimeout(() => {
-        openProjectDetail();
-      }, 500);
     }
 
     // 初始化
