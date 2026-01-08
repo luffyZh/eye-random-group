@@ -89,6 +89,11 @@
         <i class="ri-equalizer-line mr-3 text-xl group-hover:text-brand-500 transition-colors"></i>
         <span class="font-medium">维度管理</span>
       </a>
+      <a href="#" onclick="switchTab('departments')" id="nav-departments"
+        class="nav-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
+        <i class="ri-hospital-line mr-3 text-xl group-hover:text-brand-500 transition-colors"></i>
+        <span class="font-medium">科室管理</span>
+      </a>
     </nav>
 
     <div class="p-6 border-t border-slate-800">
@@ -275,6 +280,105 @@
         </div>
       </div>
 
+      <!-- 页面 4：科室管理 (新增) -->
+      <div id="view-departments" class="hidden fade-in space-y-6">
+        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">科室管理</h3>
+            <p class="text-slate-500 text-sm">定义项目关联的临床科室</p>
+          </div>
+          
+        </div>
+
+        <div id="dept-add-panel" class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3">
+          <div class="relative">
+            <button onclick="toggleDeptIconDropdown()"
+              class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 flex items-center gap-2">
+              <span id="dept-icon-preview" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
+                <i class="ri-hospital-line text-lg"></i>
+              </span>
+              <span class="text-xs">选择图标</span>
+            </button>
+            <div id="dept-icon-dropdown"
+              class="hidden absolute left-0 top-full mt-2 w-72 bg-white border border-slate-200 rounded-lg shadow-lg p-2 grid grid-cols-6 gap-2 max-h-48 overflow-auto">
+              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-hospital-line')"><i class="ri-hospital-line"></i></button>
+              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-heart-pulse-line')"><i class="ri-heart-pulse-line"></i></button>
+              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-eye-line')"><i class="ri-eye-line"></i></button>
+              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-microscope-line')"><i class="ri-microscope-line"></i></button>
+              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-capsule-line')"><i class="ri-capsule-line"></i></button>
+              <button class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0 hover:bg-brand-50 hover:text-brand-600 transition-colors" onclick="setDeptIcon('ri-shield-check-line')"><i class="ri-shield-check-line"></i></button>
+            </div>
+          </div>
+          <input id="dept-label-input" type="text" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm"
+            placeholder="科室名称">
+          <button onclick="addDepartment()"
+            class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">添加</button>
+        </div>
+
+        <div id="dept-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-red-50 text-red-600 rounded-xl"><i class="ri-heart-pulse-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">心内科</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i class="ri-eye-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">眼科</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl"><i class="ri-microscope-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">检验科</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i class="ri-capsule-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">药学部</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-slate-50 text-slate-600 rounded-xl"><i class="ri-hospital-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">内科</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-slate-50 text-slate-600 rounded-xl"><i class="ri-hospital-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">外科</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-purple-50 text-purple-600 rounded-xl"><i class="ri-hospital-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">神经内科</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-orange-50 text-orange-600 rounded-xl"><i class="ri-hospital-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">呼吸与危重症医学科</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-pink-50 text-pink-600 rounded-xl"><i class="ri-hospital-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">妇产科</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-teal-50 text-teal-600 rounded-xl"><i class="ri-hospital-line text-xl"></i></div>
+              <h4 class="text-lg font-bold text-slate-800">急诊医学科</h4>
+            </div>
+          </div>
+          
+        </div>
+      </div>
       <!-- 页面 2：项目详情 (默认隐藏) -->
       <div id="view-project-detail" class="hidden fade-in space-y-6">
         <!-- 返回面包屑 -->
@@ -1694,6 +1798,7 @@
       document.getElementById("view-projects").classList.add("hidden");
       document.getElementById("view-project-detail").classList.add("hidden");
       document.getElementById("view-dimensions").classList.add("hidden");
+      document.getElementById("view-departments").classList.add("hidden");
 
       document
         .querySelectorAll(".nav-item")
@@ -1722,6 +1827,12 @@
           .getElementById("nav-dimensions")
           .classList.add("active", "bg-slate-800");
         document.getElementById("page-title").innerText = "维度管理";
+      } else if (tabName === "departments") {
+        document.getElementById("view-departments").classList.remove("hidden");
+        document
+          .getElementById("nav-departments")
+          .classList.add("active", "bg-slate-800");
+        document.getElementById("page-title").innerText = "科室管理";
       }
     }
 
@@ -2478,6 +2589,44 @@
 
       const dd = document.getElementById('badge-dropdown-' + id);
       dd.classList.add('hidden');
+    }
+
+    function toggleDeptAddPanel() {
+      const p = document.getElementById('dept-add-panel');
+      p.classList.toggle('hidden');
+    }
+
+    function toggleDeptIconDropdown() {
+      const d = document.getElementById('dept-icon-dropdown');
+      d.classList.toggle('hidden');
+    }
+
+    function setDeptIcon(icon) {
+      const preview = document.getElementById('dept-icon-preview');
+      preview.innerHTML = `<i class="${icon} text-lg"></i>`;
+      document.getElementById('dept-icon-dropdown').classList.add('hidden');
+      preview.setAttribute('data-icon', icon);
+    }
+
+    function addDepartment() {
+      const grid = document.getElementById('dept-grid');
+      const label = document.getElementById('dept-label-input').value.trim();
+      const preview = document.getElementById('dept-icon-preview');
+      const icon = preview.getAttribute('data-icon') || 'ri-hospital-line';
+      if (!label) return;
+
+      const card = document.createElement('div');
+      card.className = "bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all";
+      card.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-slate-50 text-slate-600 rounded-xl"><i class="${icon} text-xl"></i></div>
+          <h4 class="text-lg font-bold text-slate-800">${label}</h4>
+        </div>
+      `;
+      grid.appendChild(card);
+
+      document.getElementById('dept-label-input').value = "";
+      document.getElementById('dept-add-panel').classList.add('hidden');
     }
 
     /* ================= 受试者录入逻辑 ================= */
