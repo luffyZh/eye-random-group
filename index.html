@@ -94,6 +94,11 @@
         <i class="ri-hospital-line mr-3 text-xl group-hover:text-brand-500 transition-colors"></i>
         <span class="font-medium">科室管理</span>
       </a>
+      <a href="#" onclick="switchTab('centers')" id="nav-centers"
+        class="nav-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors group">
+        <i class="ri-building-4-line mr-3 text-xl group-hover:text-brand-500 transition-colors"></i>
+        <span class="font-medium">中心管理</span>
+      </a>
     </nav>
 
     <div class="p-6 border-t border-slate-800">
@@ -962,6 +967,328 @@
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- 页面 5：中心管理列表 (新增) -->
+      <div id="view-centers" class="hidden fade-in space-y-6">
+        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">中心管理</h3>
+            <p class="text-slate-500 text-sm">管理多中心临床试验的各个分中心信息</p>
+          </div>
+          <button
+            class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all">
+            <i class="ri-add-line text-lg"></i> 新增中心
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
+                <th class="px-6 py-4 font-semibold">中心名称</th>
+                <th class="px-6 py-4 font-semibold">中心描述</th>
+                <th class="px-6 py-4 font-semibold">中心负责人</th>
+                <th class="px-6 py-4 font-semibold">创建时间</th>
+                <th class="px-6 py-4 font-semibold text-right">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm">
+              <tr class="hover:bg-slate-50/80 transition-colors group">
+                <td class="px-6 py-4 font-medium text-slate-800 flex items-center gap-3">
+                   <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                      <i class="ri-hospital-line text-xl"></i>
+                   </div>
+                   北京协和医院眼科中心
+                </td>
+                <td class="px-6 py-4 text-slate-500 max-w-xs truncate">国内顶尖的眼科临床研究中心，专注于疑难眼病诊治。</td>
+                <td class="px-6 py-4 text-slate-800 font-medium">
+                  <div class="flex items-center gap-2">
+                    <img src="https://ui-avatars.com/api/?name=Dr.Wang&background=random" class="w-6 h-6 rounded-full">
+                    王教授
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-slate-500">2023-01-15</td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                     <button onclick="openCenterDetail()" class="p-2 text-brand-600 bg-brand-50 rounded-lg transition-colors" title="查看详情">
+                        <i class="ri-eye-line text-lg"></i>
+                     </button>
+                     <button class="p-2 text-red-600 bg-red-50 rounded-lg transition-colors" title="删除">
+                        <i class="ri-delete-bin-line text-lg"></i>
+                     </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors group">
+                <td class="px-6 py-4 font-medium text-slate-800 flex items-center gap-3">
+                   <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                      <i class="ri-hospital-line text-xl"></i>
+                   </div>
+                   上海复旦大学附属五官科医院
+                </td>
+                <td class="px-6 py-4 text-slate-500 max-w-xs truncate">华东地区领先的眼耳鼻喉专科医院。</td>
+                <td class="px-6 py-4 text-slate-800 font-medium">
+                  <div class="flex items-center gap-2">
+                    <img src="https://ui-avatars.com/api/?name=Dr.Li&background=random" class="w-6 h-6 rounded-full">
+                    李主任
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-slate-500">2023-03-22</td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                     <button onclick="openCenterDetail()" class="p-2 text-brand-600 bg-brand-50 rounded-lg transition-colors" title="查看详情">
+                        <i class="ri-eye-line text-lg"></i>
+                     </button>
+                     <button class="p-2 text-red-600 bg-red-50 rounded-lg transition-colors" title="删除">
+                        <i class="ri-delete-bin-line text-lg"></i>
+                     </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 页面 6：中心详情 (新增) -->
+      <div id="view-center-detail" class="hidden fade-in space-y-6">
+         <!-- 返回面包屑 -->
+        <button onclick="backToCenters()"
+          class="flex items-center text-sm text-slate-500 hover:text-brand-600 transition-colors mb-2">
+          <i class="ri-arrow-left-line mr-1"></i> 返回中心列表
+        </button>
+
+        <!-- 上方卡片：基本信息 -->
+        <div class="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row gap-8 items-start">
+            <div class="w-full md:w-64 h-40 bg-slate-100 rounded-xl overflow-hidden flex-shrink-0 relative group">
+                <img src="https://www.shsyf.com/res/202503/11/503deae8f88a90a2.png" class="w-full h-full object-cover" alt="Hospital">
+                <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium cursor-pointer">
+                    更换图片
+                </div>
+            </div>
+            <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">北京协和医院眼科中心</h2>
+                        <p class="text-slate-500 text-sm leading-relaxed max-w-2xl">
+                            北京协和医院眼科是国内最早成立的眼科之一，集医疗、教学、科研为一体，拥有国际一流的诊疗设备和专家团队，在各类疑难眼病的诊治方面处于国内领先水平。
+                        </p>
+                    </div>
+                    <button class="text-slate-400 hover:text-brand-600 p-2 rounded-lg hover:bg-slate-50">
+                        <i class="ri-edit-line text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="flex flex-wrap gap-6 pt-2">
+                    <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+                        <div class="w-10 h-10 rounded-full bg-white border border-slate-200 p-0.5">
+                            <img src="https://ui-avatars.com/api/?name=Dr.Wang&background=random" class="w-full h-full rounded-full">
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">中心负责人</p>
+                            <p class="text-sm font-bold text-slate-800">王教授</p>
+                        </div>
+                    </div>
+                     <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+                        <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center">
+                            <i class="ri-nurse-line text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">医生数量</p>
+                            <p class="text-sm font-bold text-slate-800">24 人</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+                        <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                            <i class="ri-folder-shield-2-line text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">关联项目</p>
+                            <p class="text-sm font-bold text-slate-800">8 个</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 下方卡片：Tabs -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm min-h-[500px] flex flex-col">
+            <!-- Tabs Header -->
+            <div class="flex border-b border-slate-100">
+                <button onclick="switchCenterTab('overview')" id="tab-center-overview" class="px-8 py-4 text-sm font-bold text-brand-600 border-b-2 border-brand-600 bg-brand-50/50 transition-colors">
+                    项目概览
+                </button>
+                <button onclick="switchCenterTab('depts')" id="tab-center-depts" class="px-8 py-4 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">
+                    科室管理
+                </button>
+            </div>
+
+            <!-- Tab Content 1: 项目概览 -->
+            <div id="content-center-overview" class="p-6 fade-in">
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 复用项目卡片样式 -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="px-2 py-0.5 bg-brand-50 text-brand-600 text-xs font-bold rounded border border-brand-100">CHILD_ELESCREEN</span>
+                            <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-xs font-bold rounded border border-emerald-100">进行中</span>
+                        </div>
+                        <h4 class="font-bold text-slate-800 mb-2 line-clamp-1 group-hover:text-brand-600">光刻微结构近视管理镜片研究</h4>
+                         <div class="flex justify-between text-xs mb-2 font-medium">
+                            <span class="text-slate-500">本中心进度</span>
+                            <span class="text-brand-600">12 / 20</span>
+                          </div>
+                          <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden mb-4">
+                            <div class="bg-brand-500 h-1.5 rounded-full" style="width: 60%"></div>
+                          </div>
+                          <div class="flex items-center gap-2">
+                             <div class="flex -space-x-2 overflow-hidden">
+                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User1&background=random">
+                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User2&background=random">
+                             </div>
+                             <span class="text-xs text-slate-400">+3 位医生参与</span>
+                          </div>
+                    </div>
+                     <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs font-bold rounded border border-slate-200">ADULT_DRYEYE</span>
+                            <span class="px-2 py-0.5 bg-slate-100 text-slate-500 text-xs font-bold rounded border border-slate-200">已结束</span>
+                        </div>
+                        <h4 class="font-bold text-slate-800 mb-2 line-clamp-1 group-hover:text-brand-600">成人干眼症临床数据采集</h4>
+                         <div class="flex justify-between text-xs mb-2 font-medium">
+                            <span class="text-slate-500">本中心进度</span>
+                            <span class="text-slate-600">50 / 50</span>
+                          </div>
+                          <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden mb-4">
+                            <div class="bg-slate-400 h-1.5 rounded-full" style="width: 100%"></div>
+                          </div>
+                          <div class="flex items-center gap-2">
+                             <div class="flex -space-x-2 overflow-hidden">
+                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User3&background=random">
+                             </div>
+                             <span class="text-xs text-slate-400">+1 位医生参与</span>
+                          </div>
+                    </div>
+                 </div>
+            </div>
+
+            <!-- Tab Content 2: 科室管理 -->
+            <div id="content-center-depts" class="flex-1 flex hidden fade-in">
+                <!-- Left: Vertical Tabs -->
+                <div class="w-64 border-r border-slate-100 bg-slate-50/50 flex flex-col">
+                    <div class="p-4 space-y-2 flex-1 overflow-y-auto">
+                        <button onclick="switchDeptVerticalTab(this, 'eye-optometry')" class="dept-tab active w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all bg-white shadow-sm text-brand-600 border border-brand-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                                    <i class="ri-eye-2-line"></i>
+                                </div>
+                                <span class="font-bold text-sm">视光中心</span>
+                            </div>
+                        </button>
+                        <button onclick="switchDeptVerticalTab(this, 'eye-bottom')" class="dept-tab w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all hover:bg-white hover:shadow-sm text-slate-600 border border-transparent hover:border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                                    <i class="ri-eye-line"></i>
+                                </div>
+                                <span class="font-bold text-sm">眼底病科</span>
+                            </div>
+                        </button>
+                         <button onclick="switchDeptVerticalTab(this, 'glaucoma')" class="dept-tab w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all hover:bg-white hover:shadow-sm text-slate-600 border border-transparent hover:border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                                    <i class="ri-contrast-drop-line"></i>
+                                </div>
+                                <span class="font-bold text-sm">青光眼科</span>
+                            </div>
+                        </button>
+                         <button onclick="switchDeptVerticalTab(this, 'cornea')" class="dept-tab w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all hover:bg-white hover:shadow-sm text-slate-600 border border-transparent hover:border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+                                    <i class="ri-sun-line"></i>
+                                </div>
+                                <span class="font-bold text-sm">角膜病科</span>
+                            </div>
+                        </button>
+                        <button onclick="switchDeptVerticalTab(this, 'child-eye')" class="dept-tab w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all hover:bg-white hover:shadow-sm text-slate-600 border border-transparent hover:border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
+                                    <i class="ri-bear-smile-line"></i>
+                                </div>
+                                <span class="font-bold text-sm">小儿眼科</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="p-4 border-t border-slate-100">
+                         <button class="w-full py-2.5 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50 transition-all flex justify-center items-center gap-2">
+                            <i class="ri-add-line"></i> 新增科室
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Doctor Table -->
+                <div class="flex-1 p-6 bg-white rounded-br-2xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 text-lg">医生列表</h3>
+                        <button class="bg-white border border-slate-200 hover:border-brand-500 text-slate-600 hover:text-brand-600 px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
+                            <i class="ri-user-add-line"></i> 新增医生
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-hidden rounded-xl border border-slate-100">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-100 text-xs text-slate-500 uppercase">
+                                    <th class="px-5 py-3 font-semibold">姓名</th>
+                                    <th class="px-5 py-3 font-semibold">账号名称</th>
+                                    <th class="px-5 py-3 font-semibold">手机号</th>
+                                    <th class="px-5 py-3 font-semibold">创建时间</th>
+                                    <th class="px-5 py-3 font-semibold text-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-5 py-3 text-slate-800 font-bold flex items-center gap-2">
+                                        王教授
+                                        <span class="px-1.5 py-0.5 rounded bg-brand-50 text-brand-600 text-xs font-normal border border-brand-100">负责人</span>
+                                    </td>
+                                    <td class="px-5 py-3 text-slate-600">wang_prof</td>
+                                    <td class="px-5 py-3 text-slate-500">13800138000</td>
+                                    <td class="px-5 py-3 text-slate-400">2023-01-15</td>
+                                    <td class="px-5 py-3 text-right">
+                                        <button class="text-brand-600 hover:text-brand-700 mr-3 text-xs font-bold">编辑</button>
+                                        <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-5 py-3 text-slate-800 font-medium">
+                                        张医师
+                                    </td>
+                                    <td class="px-5 py-3 text-slate-600">zhang_doc</td>
+                                    <td class="px-5 py-3 text-slate-500">13900139000</td>
+                                    <td class="px-5 py-3 text-slate-400">2023-02-10</td>
+                                    <td class="px-5 py-3 text-right">
+                                        <button class="text-brand-600 hover:text-brand-700 mr-3 text-xs font-bold">编辑</button>
+                                        <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-5 py-3 text-slate-800 font-medium">
+                                        李助理
+                                    </td>
+                                    <td class="px-5 py-3 text-slate-600">li_assist</td>
+                                    <td class="px-5 py-3 text-slate-500">13700137000</td>
+                                    <td class="px-5 py-3 text-slate-400">2023-02-12</td>
+                                    <td class="px-5 py-3 text-right">
+                                        <button class="text-brand-600 hover:text-brand-700 mr-3 text-xs font-bold">编辑</button>
+                                        <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
       </div>
 
@@ -1987,6 +2314,8 @@
       document.getElementById("view-project-detail").classList.add("hidden");
       document.getElementById("view-dimensions").classList.add("hidden");
       document.getElementById("view-departments").classList.add("hidden");
+      document.getElementById("view-centers").classList.add("hidden");
+      document.getElementById("view-center-detail").classList.add("hidden");
 
       document
         .querySelectorAll(".nav-item")
@@ -2021,6 +2350,12 @@
           .getElementById("nav-departments")
           .classList.add("active", "bg-slate-800");
         document.getElementById("page-title").innerText = "科室管理";
+      } else if (tabName === "centers") {
+        document.getElementById("view-centers").classList.remove("hidden");
+        document
+          .getElementById("nav-centers")
+          .classList.add("active", "bg-slate-800");
+        document.getElementById("page-title").innerText = "中心管理";
       }
     }
 
@@ -2038,6 +2373,67 @@
 
     function backToProjects() {
       switchTab("projects");
+    }
+
+    /* ================= 中心管理逻辑 ================= */
+    function openCenterDetail() {
+      hideAllViews();
+      document.getElementById("view-center-detail").classList.remove("hidden");
+      document.getElementById("nav-centers").classList.add("active", "bg-slate-800");
+      document.getElementById("page-title").innerText = "中心详情";
+      window.scrollTo(0, 0);
+      
+      // Default to overview tab
+      switchCenterTab('overview');
+    }
+
+    function backToCenters() {
+      switchTab("centers");
+    }
+
+    function switchCenterTab(tabName) {
+        const overviewTab = document.getElementById('tab-center-overview');
+        const deptsTab = document.getElementById('tab-center-depts');
+        const overviewContent = document.getElementById('content-center-overview');
+        const deptsContent = document.getElementById('content-center-depts');
+
+        if (tabName === 'overview') {
+            // Activate Overview
+            overviewTab.classList.add('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            overviewTab.classList.remove('text-slate-500', 'hover:text-slate-700');
+            
+            deptsTab.classList.remove('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            deptsTab.classList.add('text-slate-500', 'hover:text-slate-700');
+
+            overviewContent.classList.remove('hidden');
+            deptsContent.classList.add('hidden');
+        } else {
+            // Activate Depts
+            deptsTab.classList.add('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            deptsTab.classList.remove('text-slate-500', 'hover:text-slate-700');
+
+            overviewTab.classList.remove('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            overviewTab.classList.add('text-slate-500', 'hover:text-slate-700');
+
+            overviewContent.classList.add('hidden');
+            deptsContent.classList.remove('hidden');
+        }
+    }
+
+    function switchDeptVerticalTab(el, deptId) {
+        // Reset all tabs
+        document.querySelectorAll('.dept-tab').forEach(tab => {
+            tab.classList.remove('active', 'bg-white', 'shadow-sm', 'text-brand-600', 'border-brand-100');
+            tab.classList.add('text-slate-600', 'border-transparent', 'hover:bg-white', 'hover:shadow-sm', 'hover:border-slate-100');
+        });
+
+        // Activate clicked tab
+        el.classList.add('active', 'bg-white', 'shadow-sm', 'text-brand-600', 'border-brand-100');
+        el.classList.remove('text-slate-600', 'border-transparent', 'hover:bg-white', 'hover:shadow-sm', 'hover:border-slate-100');
+
+        // Here you would typically load different content for the right side table based on deptId
+        // For this demo, we'll just keep the static table
+        console.log("Switched to department:", deptId);
     }
 
     /* ================= 抽屉交互逻辑 ================= */
