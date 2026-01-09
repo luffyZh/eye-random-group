@@ -988,7 +988,7 @@
               <tr class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
                 <th class="px-6 py-4 font-semibold">中心名称</th>
                 <th class="px-6 py-4 font-semibold">中心描述</th>
-                <th class="px-6 py-4 font-semibold">中心负责人</th>
+                <th class="px-6 py-4 font-semibold">中心管理员</th>
                 <th class="px-6 py-4 font-semibold">创建时间</th>
                 <th class="px-6 py-4 font-semibold text-right">操作</th>
               </tr>
@@ -999,13 +999,13 @@
                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
                       <i class="ri-hospital-line text-xl"></i>
                    </div>
-                   北京协和医院眼科中心
+                   上海眼病防治中心
                 </td>
                 <td class="px-6 py-4 text-slate-500 max-w-xs truncate">国内顶尖的眼科临床研究中心，专注于疑难眼病诊治。</td>
                 <td class="px-6 py-4 text-slate-800 font-medium">
                   <div class="flex items-center gap-2">
                     <img src="https://ui-avatars.com/api/?name=Dr.Wang&background=random" class="w-6 h-6 rounded-full">
-                    王教授
+                    徐教授
                   </div>
                 </td>
                 <td class="px-6 py-4 text-slate-500">2023-01-15</td>
@@ -1070,7 +1070,7 @@
             <div class="flex-1 space-y-4">
                 <div class="flex justify-between items-start">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-800 mb-2">北京协和医院眼科中心</h2>
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">上海眼病防治中心</h2>
                         <p class="text-slate-500 text-sm leading-relaxed max-w-2xl">
                             北京协和医院眼科是国内最早成立的眼科之一，集医疗、教学、科研为一体，拥有国际一流的诊疗设备和专家团队，在各类疑难眼病的诊治方面处于国内领先水平。
                         </p>
@@ -1082,15 +1082,15 @@
                 
                 <div class="flex flex-wrap gap-6 pt-2">
                     <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
-                        <div class="w-10 h-10 rounded-full bg-white border border-slate-200 p-0.5">
-                            <img src="https://ui-avatars.com/api/?name=Dr.Wang&background=random" class="w-full h-full rounded-full">
+                        <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center">
+                            <i class="ri-hospital-line text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-xs text-slate-400">中心负责人</p>
-                            <p class="text-sm font-bold text-slate-800">王教授</p>
+                            <p class="text-xs text-slate-400">科室数量</p>
+                            <p class="text-sm font-bold text-slate-800">6 个</p>
                         </div>
                     </div>
-                     <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+                    <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
                         <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center">
                             <i class="ri-nurse-line text-xl"></i>
                         </div>
@@ -1142,11 +1142,15 @@
                             <div class="bg-brand-500 h-1.5 rounded-full" style="width: 60%"></div>
                           </div>
                           <div class="flex items-center gap-2">
-                             <div class="flex -space-x-2 overflow-hidden">
-                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User1&background=random">
-                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User2&background=random">
-                             </div>
-                             <span class="text-xs text-slate-400">+3 位医生参与</span>
+                            <!-- 项目负责人 -->
+                            <span
+                            class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200 tracking-wider">负责人:
+                              徐医生</span>
+                            <div class="flex -space-x-2 overflow-hidden">
+                              <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User1&background=random">
+                              <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User2&background=random">
+                            </div>
+                            <span class="text-xs text-slate-400">+3 位医生参与</span>
                           </div>
                     </div>
                      <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer group">
@@ -1163,10 +1167,14 @@
                             <div class="bg-slate-400 h-1.5 rounded-full" style="width: 100%"></div>
                           </div>
                           <div class="flex items-center gap-2">
-                             <div class="flex -space-x-2 overflow-hidden">
-                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User3&background=random">
-                             </div>
-                             <span class="text-xs text-slate-400">+1 位医生参与</span>
+                            <!-- 项目负责人 -->
+                            <span
+                              class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200 tracking-wider">负责人:
+                                周医生</span>
+                            <div class="flex -space-x-2 overflow-hidden">
+                              <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=User3&background=random">
+                            </div>
+                            <span class="text-xs text-slate-400">+1 位医生参与</span>
                           </div>
                     </div>
                  </div>
@@ -1219,9 +1227,9 @@
                         </button>
                     </div>
                     <div class="p-4 border-t border-slate-100">
-                         <button class="w-full py-2.5 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50 transition-all flex justify-center items-center gap-2">
-                            <i class="ri-add-line"></i> 新增科室
-                        </button>
+                      <button onclick="openAddDeptDrawer()" class="w-full py-2.5 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50 transition-all flex justify-center items-center gap-2">
+                        <i class="ri-add-line"></i> 新增科室
+                      </button>
                     </div>
                 </div>
 
@@ -2305,6 +2313,115 @@
       </div>
     </div>
   </main>
+
+  <!-- 新增科室抽屉 -->
+  <div id="add-dept-drawer" class="fixed inset-0 z-[60] hidden">
+    <!-- Backdrop -->
+    <div id="add-dept-backdrop" class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="closeAddDeptDrawer()"></div>
+    
+    <!-- Drawer Panel -->
+    <div id="add-dept-panel" class="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transition-transform duration-300 translate-x-full flex flex-col">
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div>
+          <h3 class="text-lg font-bold text-slate-800">新增科室</h3>
+          <p class="text-xs text-slate-500 mt-0.5">选择需要添加的系统标准科室</p>
+        </div>
+        <button onclick="closeAddDeptDrawer()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        <div id="dept-selection-list" class="space-y-3">
+          <!-- JS generated content -->
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+        <button onclick="closeAddDeptDrawer()" class="px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 rounded-xl transition-all">取消</button>
+        <button onclick="confirmAddDept()" class="px-6 py-2.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/30 rounded-xl transition-all flex items-center gap-2">
+          <i class="ri-check-line"></i> 确定添加
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ================= 新增科室抽屉逻辑 ================= */
+    const ADD_DEPT_LIST = [
+        { name: "心内科", icon: "ri-heart-pulse-line", color: "red" },
+        { name: "眼科", icon: "ri-eye-line", color: "amber" },
+        { name: "检验科", icon: "ri-microscope-line", color: "indigo" },
+        { name: "药学部", icon: "ri-capsule-line", color: "emerald" },
+        { name: "内科", icon: "ri-hospital-line", color: "slate" },
+        { name: "外科", icon: "ri-hospital-line", color: "slate" },
+        { name: "神经内科", icon: "ri-hospital-line", color: "purple" },
+        { name: "呼吸与危重症医学科", icon: "ri-hospital-line", color: "orange" },
+        { name: "妇产科", icon: "ri-hospital-line", color: "pink" },
+        { name: "急诊医学科", icon: "ri-hospital-line", color: "teal" }
+    ];
+
+    function openAddDeptDrawer() {
+        console.log('openAddDeptDrawer called');
+        const drawer = document.getElementById('add-dept-drawer');
+        const backdrop = document.getElementById('add-dept-backdrop');
+        const panel = document.getElementById('add-dept-panel');
+        const listContainer = document.getElementById('dept-selection-list');
+
+        if (!drawer || !backdrop || !panel || !listContainer) {
+            console.error('Elements not found');
+            return;
+        }
+
+        // Render list
+        listContainer.innerHTML = ADD_DEPT_LIST.map((dept, index) => `
+            <label class="flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-all group">
+                <input type="checkbox" name="dept-select" value="${dept.name}" class="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 border-slate-300 mr-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-${dept.color}-50 text-${dept.color}-600 flex items-center justify-center">
+                        <i class="${dept.icon} text-xl"></i>
+                    </div>
+                    <span class="font-bold text-slate-700">${dept.name}</span>
+                </div>
+            </label>
+        `).join('');
+
+        drawer.classList.remove('hidden');
+        // Small delay to allow display:block to apply before transition
+        setTimeout(() => {
+            backdrop.classList.remove('opacity-0');
+            panel.classList.remove('translate-x-full');
+        }, 50);
+    }
+
+    function closeAddDeptDrawer() {
+        const drawer = document.getElementById('add-dept-drawer');
+        const backdrop = document.getElementById('add-dept-backdrop');
+        const panel = document.getElementById('add-dept-panel');
+
+        backdrop.classList.add('opacity-0');
+        panel.classList.add('translate-x-full');
+
+        setTimeout(() => {
+            drawer.classList.add('hidden');
+        }, 300);
+    }
+
+    function confirmAddDept() {
+        const selected = document.querySelectorAll('input[name="dept-select"]:checked');
+        if (selected.length === 0) {
+            alert("请至少选择一个科室");
+            return;
+        }
+        closeAddDeptDrawer();
+        setTimeout(() => {
+            alert("添加成功");
+        }, 300);
+    }
+  </script>
 
   <!-- 简单的 JS 逻辑处理页面切换 -->
   <script>
