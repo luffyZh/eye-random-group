@@ -106,6 +106,11 @@
         <i class="ri-building-4-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
         <span>中心管理</span>
       </a>
+      <a href="#" onclick="switchTab('users')" id="nav-users"
+        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
+        <i class="ri-user-3-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+        <span>用户管理</span>
+      </a>
     </nav>
 
     <div class="p-6 border-t border-slate-100 bg-slate-50/50">
@@ -146,7 +151,7 @@
         <!-- 筛选与操作区 -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <!-- Radio Button 样式筛选 -->
-          <div class="bg-slate-200/50 p-1 rounded-xl flex items-center">
+          <div class="inline-flex bg-slate-200/50 p-1 rounded-xl items-center">
             <label class="cursor-pointer">
               <input type="radio" name="filter" class="peer sr-only" checked />
               <span
@@ -1305,6 +1310,258 @@
         </div>
       </div>
 
+      <!-- 页面 7：用户管理 (默认隐藏) -->
+      <div id="view-users" class="hidden fade-in space-y-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">用户管理</h3>
+            <p class="text-slate-500 text-sm">维护系统用户、组织归属与角色权限</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="openPasswordRuleModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50 transition-all bg-white">
+              <i class="ri-shield-keyhole-line text-lg"></i>
+              密码规则配置
+            </button>
+            <button onclick="openUserDrawer()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-sm font-bold text-white shadow-lg shadow-brand-500/30 transition-all">
+              <i class="ri-user-add-line text-lg"></i>
+              新增用户
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-4">
+          <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-end">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">所属组织</label>
+                <select id="user-filter-org" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500">
+                  <option value="">全部组织</option>
+                  <option value="协和">北京协和医院</option>
+                  <option value="五官科">上海复旦大学附属五官科医院</option>
+                  <option value="眼病防治">上海眼病防治中心</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">姓名</label>
+                <input id="user-filter-name" type="text" placeholder="输入姓名关键字"
+                  class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">手机号</label>
+                <input id="user-filter-phone" type="text" placeholder="输入手机号"
+                  class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500">
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="resetUserFilters()" class="px-4 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">
+                重置
+              </button>
+              <button onclick="applyUserFilters()" class="px-5 py-2 rounded-xl bg-brand-600 text-sm font-bold text-white hover:bg-brand-700 shadow-sm">
+                筛选
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-100 text-xs text-slate-500 uppercase tracking-wider">
+                <th class="px-6 py-3 font-semibold">姓名</th>
+                <th class="px-6 py-3 font-semibold">账号</th>
+                <th class="px-6 py-3 font-semibold">手机号</th>
+                <th class="px-6 py-3 font-semibold">所属组织</th>
+                <th class="px-6 py-3 font-semibold">角色</th>
+                <th class="px-6 py-3 font-semibold">创建时间</th>
+                <th class="px-6 py-3 font-semibold text-right">操作</th>
+              </tr>
+            </thead>
+            <tbody id="user-table-body" class="divide-y divide-slate-100 text-sm">
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="王伟" data-phone="13800138000" data-org="协和">
+                <td class="px-6 py-3 font-medium text-slate-800">王伟</td>
+                <td class="px-6 py-3 text-slate-600">wangwei_admin</td>
+                <td class="px-6 py-3 text-slate-500">13800138000</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium border border-indigo-100">
+                    北京协和医院
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">
+                    系统管理员
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-01-10</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="李静" data-phone="13800138001" data-org="协和">
+                <td class="px-6 py-3 font-medium text-slate-800">李静</td>
+                <td class="px-6 py-3 text-slate-600">lijing_crc</td>
+                <td class="px-6 py-3 text-slate-500">13800138001</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium border border-indigo-100">
+                    北京协和医院
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-600 text-xs font-medium border border-amber-100">
+                    CRC协调员
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-01-12</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="张强" data-phone="13900139000" data-org="五官科">
+                <td class="px-6 py-3 font-medium text-slate-800">张强</td>
+                <td class="px-6 py-3 text-slate-600">zhangqiang_doc</td>
+                <td class="px-6 py-3 text-slate-500">13900139000</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-600 text-xs font-medium border border-sky-100">
+                    上海五官科医院
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">
+                    主研医生
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-02-01</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="周敏" data-phone="13900139001" data-org="五官科">
+                <td class="px-6 py-3 font-medium text-slate-800">周敏</td>
+                <td class="px-6 py-3 text-slate-600">zhoumin_nurse</td>
+                <td class="px-6 py-3 text-slate-500">13900139001</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-600 text-xs font-medium border border-sky-100">
+                    上海五官科医院
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">
+                    研究护士
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-02-03</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="刘洋" data-phone="13700137000" data-org="眼病防治">
+                <td class="px-6 py-3 font-medium text-slate-800">刘洋</td>
+                <td class="px-6 py-3 text-slate-600">liuyang_admin</td>
+                <td class="px-6 py-3 text-slate-500">13700137000</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">
+                    上海眼病防治中心
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">
+                    中心管理员
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-03-01</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="赵磊" data-phone="13700137001" data-org="眼病防治">
+                <td class="px-6 py-3 font-medium text-slate-800">赵磊</td>
+                <td class="px-6 py-3 text-slate-600">zhaolei_doc</td>
+                <td class="px-6 py-3 text-slate-500">13700137001</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">
+                    上海眼病防治中心
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">
+                    主要研究者
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-03-05</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="陈晨" data-phone="13600136000" data-org="协和">
+                <td class="px-6 py-3 font-medium text-slate-800">陈晨</td>
+                <td class="px-6 py-3 text-slate-600">chenchen_study</td>
+                <td class="px-6 py-3 text-slate-500">13600136000</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium border border-indigo-100">
+                    北京协和医院
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">
+                    研究护士
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-03-08</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="孙悦" data-phone="13600136001" data-org="协和">
+                <td class="px-6 py-3 font-medium text-slate-800">孙悦</td>
+                <td class="px-6 py-3 text-slate-600">sunny_sun</td>
+                <td class="px-6 py-3 text-slate-500">13600136001</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium border border-indigo-100">
+                    北京协和医院
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-600 text-xs font-medium border border-amber-100">
+                    CRC协调员
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-03-10</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/80 transition-colors" data-name="胡俊" data-phone="13500135000" data-org="五官科">
+                <td class="px-6 py-3 font-medium text-slate-800">胡俊</td>
+                <td class="px-6 py-3 text-slate-600">hujun_doc</td>
+                <td class="px-6 py-3 text-slate-500">13500135000</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-600 text-xs font-medium border border-sky-100">
+                    上海五官科医院
+                  </span>
+                </td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">
+                    主研医生
+                  </span>
+                </td>
+                <td class="px-6 py-3 text-slate-400">2023-03-12</td>
+                <td class="px-6 py-3 text-right">
+                  <button class="text-brand-600 hover:text-brand-700 text-xs font-bold mr-3">编辑</button>
+                  <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- 页面 3：维度管理 (默认隐藏) -->
       <div id="view-dimensions" class="hidden fade-in space-y-6">
         <!-- 头部操作 -->
@@ -2355,6 +2612,116 @@
     </div>
   </div>
 
+  <!-- 新增用户抽屉 -->
+  <div id="user-drawer" class="fixed inset-0 z-[70] hidden">
+    <div id="user-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeUserDrawer()"></div>
+    <div id="user-panel" class="absolute top-0 right-0 h-full w-full max-w-lg bg-white shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div>
+          <h3 class="text-lg font-bold text-slate-800">新增用户</h3>
+          <p class="text-xs text-slate-500 mt-0.5">填写用户基本信息并自动生成密码</p>
+        </div>
+        <button onclick="closeUserDrawer()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">姓名</label>
+            <input id="user-name-input" type="text" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500" placeholder="请输入姓名">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">账号</label>
+            <input id="user-account-input" type="text" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500" placeholder="用于登录的账号名">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">手机号</label>
+            <input id="user-phone-input" type="tel" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500" placeholder="11位手机号">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">所属组织</label>
+            <select id="user-org-input" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500">
+              <option value="">请选择组织</option>
+              <option value="北京协和医院">北京协和医院</option>
+              <option value="上海五官科医院">上海五官科医院</option>
+              <option value="上海眼病防治中心">上海眼病防治中心</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">角色</label>
+            <select id="user-role-input" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500">
+              <option value="系统管理员">系统管理员</option>
+              <option value="中心管理员">中心管理员</option>
+              <option value="主要研究者">主要研究者</option>
+              <option value="主研医生">主研医生</option>
+              <option value="研究护士">研究护士</option>
+              <option value="CRC协调员">CRC协调员</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">初始密码</label>
+            <input id="user-password-input" type="text" readonly class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-slate-50 font-mono tracking-widest text-slate-800">
+            <p class="mt-1 text-xs text-slate-400">系统根据当前密码规则自动为用户生成，不需要手动输入。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+        <button onclick="closeUserDrawer()" class="px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 rounded-xl transition-all">取消</button>
+        <button onclick="submitNewUser()" class="px-6 py-2.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/30 rounded-xl transition-all flex items-center gap-2">
+          <i class="ri-check-line"></i>
+          创建用户
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 密码规则配置 Modal -->
+  <div id="password-rule-modal" class="fixed inset-0 z-[80] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closePasswordRuleModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-lg font-bold text-slate-800">密码生成规则配置</h3>
+          <p class="text-xs text-slate-500 mt-0.5">仅影响此后新增用户的默认密码</p>
+        </div>
+        <button onclick="closePasswordRuleModal()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <section>
+          <div class="inline-flex bg-slate-200/50 p-1 rounded-xl items-center">
+            <label class="cursor-pointer">
+              <input type="radio" name="password-rule" value="random" id="password-rule-random" class="peer sr-only" checked />
+              <span
+                class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">随机密码</span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="password-rule" value="fixed" id="password-rule-fixed" class="peer sr-only" />
+              <span
+                class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">固定密码</span>
+            </label>
+          </div>
+          <p id="password-rule-hint" class="mt-2 text-xs text-slate-400">默认生成 12 位密码，包含大小写字母和特殊字符。</p>
+          <div id="fixed-password-row" class="mt-3 hidden">
+            <input id="fixed-password-input" type="text"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500"
+              value="Pass1234!">
+          </div>
+        </section>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <button onclick="closePasswordRuleModal()" class="px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-xl border border-slate-200 transition-all">取消</button>
+        <button onclick="savePasswordRuleConfig()" class="px-6 py-2.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-lg shadow-brand-500/30 transition-all">保存配置</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     /* ================= 新增科室抽屉逻辑 ================= */
     const ADD_DEPT_LIST = [
@@ -2438,6 +2805,7 @@
       document.getElementById("view-departments").classList.add("hidden");
       document.getElementById("view-centers").classList.add("hidden");
       document.getElementById("view-center-detail").classList.add("hidden");
+      document.getElementById("view-users").classList.add("hidden");
 
       document
         .querySelectorAll(".nav-item")
@@ -2477,6 +2845,12 @@
           .getElementById("nav-centers")
           .classList.add("active", "bg-brand-50", "text-brand-600");
         document.getElementById("page-title").innerText = "中心管理";
+      } else if (tabName === "users") {
+        document.getElementById("view-users").classList.remove("hidden");
+        document
+          .getElementById("nav-users")
+          .classList.add("active", "bg-brand-50", "text-brand-600");
+        document.getElementById("page-title").innerText = "用户管理";
       }
     }
 
@@ -2555,6 +2929,187 @@
         // Here you would typically load different content for the right side table based on deptId
         // For this demo, we'll just keep the static table
         console.log("Switched to department:", deptId);
+    }
+
+    let passwordRule = "random";
+    let fixedPassword = "Pass1234!";
+
+    function generateRandomPassword(length) {
+      const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const lower = "abcdefghijklmnopqrstuvwxyz";
+      const digits = "0123456789";
+      const special = "!@#$%^&*()_+[]{}";
+      const all = upper + lower + digits + special;
+
+      let result = "";
+      result += upper[Math.floor(Math.random() * upper.length)];
+      result += lower[Math.floor(Math.random() * lower.length)];
+      result += digits[Math.floor(Math.random() * digits.length)];
+      result += special[Math.floor(Math.random() * special.length)];
+
+      for (let i = result.length; i < length; i++) {
+        result += all[Math.floor(Math.random() * all.length)];
+      }
+
+      return result
+        .split("")
+        .sort(() => Math.random() - 0.5)
+        .join("");
+    }
+
+    function getDefaultPassword() {
+      if (passwordRule === "fixed") {
+        return fixedPassword;
+      }
+      return generateRandomPassword(12);
+    }
+
+    function openUserDrawer() {
+      const drawer = document.getElementById("user-drawer");
+      const backdrop = document.getElementById("user-backdrop");
+      const panel = document.getElementById("user-panel");
+
+      drawer.classList.remove("hidden");
+      setTimeout(() => {
+        backdrop.classList.remove("opacity-0");
+        panel.classList.remove("translate-x-full");
+      }, 10);
+
+      document.getElementById("user-name-input").value = "";
+      document.getElementById("user-account-input").value = "";
+      document.getElementById("user-phone-input").value = "";
+      document.getElementById("user-org-input").value = "";
+      document.getElementById("user-role-input").value = "系统管理员";
+      document.getElementById("user-password-input").value = getDefaultPassword();
+    }
+
+    function closeUserDrawer() {
+      const drawer = document.getElementById("user-drawer");
+      const backdrop = document.getElementById("user-backdrop");
+      const panel = document.getElementById("user-panel");
+
+      backdrop.classList.add("opacity-0");
+      panel.classList.add("translate-x-full");
+
+      setTimeout(() => {
+        drawer.classList.add("hidden");
+      }, 300);
+    }
+
+    function submitNewUser() {
+      closeUserDrawer();
+      alert("已创建新用户，并自动生成初始密码。");
+    }
+
+    function openPasswordRuleModal() {
+      const modal = document.getElementById("password-rule-modal");
+      const fixedRow = document.getElementById("fixed-password-row");
+      const randomRadio = document.getElementById("password-rule-random");
+      const fixedRadio = document.getElementById("password-rule-fixed");
+      const input = document.getElementById("fixed-password-input");
+      const hint = document.getElementById("password-rule-hint");
+
+      if (passwordRule === "fixed") {
+        fixedRadio.checked = true;
+        fixedRow.classList.remove("hidden");
+        input.value = fixedPassword;
+        if (hint) {
+          hint.textContent = "后续新增用户将统一使用此固定密码。";
+        }
+      } else {
+        randomRadio.checked = true;
+        fixedRow.classList.add("hidden");
+        if (hint) {
+          hint.textContent = "默认生成 12 位密码，包含大小写字母和特殊字符。";
+        }
+      }
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closePasswordRuleModal() {
+      const modal = document.getElementById("password-rule-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function savePasswordRuleConfig() {
+      const randomRadio = document.getElementById("password-rule-random");
+      const fixedRadio = document.getElementById("password-rule-fixed");
+      const input = document.getElementById("fixed-password-input");
+      const fixedRow = document.getElementById("fixed-password-row");
+
+      if (fixedRadio.checked) {
+        const value = input.value.trim();
+        if (!value) {
+          alert("请设置固定密码内容");
+          fixedRow.classList.remove("hidden");
+          return;
+        }
+        passwordRule = "fixed";
+        fixedPassword = value;
+      } else if (randomRadio.checked) {
+        passwordRule = "random";
+      }
+
+      closePasswordRuleModal();
+      alert("密码规则已更新，将应用于后续新增用户。");
+    }
+
+    document.addEventListener("change", function (e) {
+      if (e.target && e.target.name === "password-rule") {
+        const fixedRow = document.getElementById("fixed-password-row");
+        const hint = document.getElementById("password-rule-hint");
+        if (e.target.value === "fixed") {
+          if (fixedRow) {
+            fixedRow.classList.remove("hidden");
+          }
+          if (hint) {
+            hint.textContent = "后续新增用户将统一使用此固定密码。";
+          }
+        } else {
+          if (fixedRow) {
+            fixedRow.classList.add("hidden");
+          }
+          if (hint) {
+            hint.textContent = "默认生成 12 位密码，包含大小写字母和特殊字符。";
+          }
+        }
+      }
+    });
+
+    function resetUserFilters() {
+      document.getElementById("user-filter-org").value = "";
+      document.getElementById("user-filter-name").value = "";
+      document.getElementById("user-filter-phone").value = "";
+      applyUserFilters();
+    }
+
+    function applyUserFilters() {
+      const org = document.getElementById("user-filter-org").value.trim();
+      const name = document.getElementById("user-filter-name").value.trim();
+      const phone = document.getElementById("user-filter-phone").value.trim();
+
+      const rows = document.querySelectorAll("#user-table-body tr");
+      rows.forEach((row) => {
+        const rowOrg = row.getAttribute("data-org") || "";
+        const rowName = row.getAttribute("data-name") || "";
+        const rowPhone = row.getAttribute("data-phone") || "";
+
+        let visible = true;
+        if (org && rowOrg.indexOf(org) === -1) {
+          visible = false;
+        }
+        if (name && rowName.indexOf(name) === -1) {
+          visible = false;
+        }
+        if (phone && rowPhone.indexOf(phone) === -1) {
+          visible = false;
+        }
+
+        row.style.display = visible ? "" : "none";
+      });
     }
 
     /* ================= 抽屉交互逻辑 ================= */
