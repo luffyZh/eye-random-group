@@ -135,13 +135,24 @@
     <!-- 顶部通栏 -->
     <header
       class="z-50 bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-slate-200 px-8 h-20 flex items-center justify-between">
-      <h2 id="page-title" class="text-2xl font-bold text-slate-800">
-        项目管理
-      </h2>
+      <div class="flex flex-col justify-center h-full">
+        <div class="flex items-center gap-3">
+          <h2 id="page-title" class="text-xl font-bold text-slate-800">
+            项目管理
+          </h2>
+          <div id="page-permissions" class="flex items-center gap-2">
+            <!-- Permissions injected here -->
+          </div>
+        </div>
+        <p id="page-description" class="text-xs text-slate-500 mt-0.5 hidden">
+          <!-- Description injected here -->
+        </p>
+      </div>
       <div class="flex items-center gap-4">
-        <button
-          class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
+        <button onclick="toggleNotificationDrawer()"
+          class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition relative">
           <i class="ri-notification-3-line"></i>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
         </button>
         <button
           class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
@@ -153,17 +164,6 @@
     <div class="p-8 max-w-full min-h-[calc(100vh-80px)]">
       <!-- 页面 1：项目管理 -->
       <div id="view-projects" class="fade-in space-y-6">
-        <!-- 头部标题区 -->
-        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div>
-            <h3 class="text-lg font-bold text-slate-800 flex items-center">
-              项目管理
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-slate-100 text-slate-700">所有角色</span>
-            </h3>
-            <p class="text-slate-500 text-sm">管理所有临床研究项目</p>
-          </div>
-        </div>
-
         <!-- 筛选与操作区 -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <!-- Radio Button 样式筛选 -->
@@ -186,7 +186,7 @@
           </div>
           <!-- 找到这个按钮：在 id="view-projects" 内部 -->
           <button onclick="openNewProjectDrawer()"
-            class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
+            class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
             <i class="ri-add-line text-lg"></i> 新增项目
           </button>
         </div>
@@ -248,13 +248,17 @@
                   +46
                 </div>
               </div>
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
+                <!-- 共享开关 -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer" checked disabled>
+                  <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <span class="ml-2 text-xs font-medium text-slate-400">共享</span>
+                </label>
+                <div class="w-px h-4 bg-slate-200 mx-1"></div>
                 <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                   onclick="event.stopPropagation()">
                   <i class="ri-delete-bin-line"></i>
-                </button>
-                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors">
-                  <i class="ri-arrow-right-line"></i>
                 </button>
               </div>
             </div>
@@ -315,16 +319,8 @@
 
       <!-- 页面 4：科室管理 (新增) -->
       <div id="view-departments" class="hidden fade-in space-y-6">
-        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div>
-            <h3 class="text-lg font-bold text-slate-800 flex items-center">
-              科室管理
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
-            </h3>
-            <p class="text-slate-500 text-sm">定义项目关联的临床科室</p>
-          </div>
-          <div id="dept-add-panel" class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3">
+        <div class="flex justify-start mb-6">
+          <div id="dept-add-panel" class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3 shadow-sm">
             <div class="relative">
               <button onclick="toggleDeptIconDropdown()"
                 class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 flex items-center gap-2">
@@ -1002,29 +998,14 @@
 
       <!-- 页面：角色管理 -->
       <div id="view-roles" class="hidden fade-in space-y-6">
-        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div>
-            <h3 class="text-lg font-bold text-slate-800 flex items-center">
-              角色权限控制
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
-            </h3>
-            <p class="text-slate-500 text-sm">管理系统角色与功能权限</p>
-          </div>
-          <button onclick="openAddRoleDrawer()" id="btn-create-role"
-            class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all">
-            <i class="ri-add-line text-lg"></i> 创建角色
-          </button>
-        </div>
-
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex min-h-[600px] overflow-hidden">
            <!-- Left: Role List -->
            <div class="w-64 border-r border-slate-100 bg-slate-50/50 flex flex-col">
               <div class="p-4 border-b border-slate-100">
-                 <div class="relative">
-                    <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" placeholder="搜索角色" class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-500 focus:bg-white transition-all bg-white">
-                 </div>
+                <button onclick="openAddRoleDrawer()" id="btn-create-role"
+                  class="w-full flex justify-center bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all">
+                  <i class="ri-add-line text-lg"></i> 创建角色
+                </button>
               </div>
               <div class="flex-1 overflow-y-auto p-3 space-y-1" id="role-list-container">
                  <!-- JS Rendered -->
@@ -1059,18 +1040,9 @@
 
       <!-- 页面 5：中心管理列表 (新增) -->
       <div id="view-centers" class="hidden fade-in space-y-6">
-        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div>
-            <h3 class="text-lg font-bold text-slate-800 flex items-center">
-              中心管理
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-emerald-100 text-emerald-700">中心管理员</span>
-            </h3>
-            <p class="text-slate-500 text-sm">管理多中心临床试验的各个分中心信息</p>
-          </div>
+        <div class="flex justify-end mb-6">
           <button
-            class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all">
+            class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all">
             <i class="ri-add-line text-lg"></i> 新增中心
           </button>
         </div>
@@ -1394,27 +1366,6 @@
 
       <!-- 页面 7：用户管理 (默认隐藏) -->
       <div id="view-users" class="hidden fade-in space-y-6">
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 class="text-lg font-bold text-slate-800 flex items-center">
-              用户管理
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
-            </h3>
-            <p class="text-slate-500 text-sm">维护系统用户、组织归属与角色权限</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <button onclick="openPasswordRuleModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50 transition-all bg-white">
-              <i class="ri-shield-keyhole-line text-lg"></i>
-              密码规则配置
-            </button>
-            <button onclick="openUserDrawer()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-sm font-bold text-white shadow-lg shadow-brand-500/30 transition-all">
-              <i class="ri-user-add-line text-lg"></i>
-              新增用户
-            </button>
-          </div>
-        </div>
-
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-4">
           <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-end">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
@@ -1446,6 +1397,19 @@
                 筛选
               </button>
             </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end mb-6">
+          <div class="flex items-center gap-3">
+            <button onclick="openPasswordRuleModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50 transition-all bg-white">
+              <i class="ri-shield-keyhole-line text-lg"></i>
+              密码规则配置
+            </button>
+            <button onclick="openUserDrawer()" class="flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-sm font-bold text-white shadow-lg shadow-brand-500/30 transition-all">
+              <i class="ri-user-add-line text-lg"></i>
+              新增用户
+            </button>
           </div>
         </div>
 
@@ -1650,19 +1614,27 @@
 
       <!-- 页面 3：维度管理 (默认隐藏) -->
       <div id="view-dimensions" class="hidden fade-in space-y-6">
-        <!-- 头部操作 -->
-        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div>
-            <h3 class="text-lg font-bold text-slate-800 flex items-center">
-              预设维度库
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
-              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-emerald-100 text-emerald-700">中心管理员</span>
-            </h3>
-            <p class="text-slate-500 text-sm">
-              定义全局可用的随机化分层因素。
-            </p>
+        <!-- 操作区 -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <!-- 筛选 -->
+          <div class="inline-flex bg-slate-200/50 p-1 rounded-xl items-center">
+            <label class="cursor-pointer">
+              <input type="radio" name="dim-filter" class="peer sr-only" checked />
+              <span
+                class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">全部</span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="dim-filter" class="peer sr-only" />
+              <span
+                class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">系统维度</span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="dim-filter" class="peer sr-only" />
+              <span
+                class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">自定义维度</span>
+            </label>
           </div>
+
           <button
             class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all">
             <i class="ri-add-line text-lg"></i> 新增维度
@@ -1673,8 +1645,8 @@
           <!-- 维度卡片 1 -->
           <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group relative">
             <button id="badge-text-dim1"
-              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-indigo-600">
-              枚举
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-brand-600">
+              系统内置
             </button>
             <div class="flex justify-between items-start mb-4">
               <section class="flex items-center gap-2 mb-4">
@@ -1701,13 +1673,17 @@
                 <span class="text-xs text-slate-400">被 5 个项目引用</span>
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
               </section>
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
+                <!-- 共享开关 -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer" checked disabled>
+                  <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <span class="ml-2 text-xs font-medium text-slate-400">共享</span>
+                </label>
+                <div class="w-px h-4 bg-slate-200 mx-1"></div>
                 <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                   onclick="event.stopPropagation()">
                   <i class="ri-delete-bin-line"></i>
-                </button>
-                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors">
-                  <i class="ri-arrow-right-line"></i>
                 </button>
               </div>
             </div>
@@ -1716,8 +1692,8 @@
           <!-- 维度卡片 2 -->
           <div class="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
             <button id="badge-text-dim2"
-              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-emerald-600">
-              区间
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-brand-600">
+              系统内置
             </button>
             <div class="flex justify-between items-start mb-4">
               <section class="flex items-center gap-2 mb-4">
@@ -1746,13 +1722,17 @@
                 <span class="text-xs text-slate-400">被 5 个项目引用</span>
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
               </section>
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
+                <!-- 共享开关 -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer" checked disabled>
+                  <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <span class="ml-2 text-xs font-medium text-slate-400">共享</span>
+                </label>
+                <div class="w-px h-4 bg-slate-200 mx-1"></div>
                 <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                   onclick="event.stopPropagation()">
                   <i class="ri-delete-bin-line"></i>
-                </button>
-                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors">
-                  <i class="ri-arrow-right-line"></i>
                 </button>
               </div>
             </div>
@@ -1761,8 +1741,8 @@
           <!-- 维度卡片 3 -->
           <div class="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
             <button id="badge-text-dim3"
-              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-emerald-600">
-              区间
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-brand-600">
+              系统内置
             </button>
             <div class="flex justify-between items-start mb-4">
               <section class="flex items-center gap-2 mb-4">
@@ -1779,14 +1759,14 @@
             <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
               <div class="flex flex-wrap gap-2">
                 <span
-                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm font-mono">-1.25
-                  ~ -1.00</span>
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm font-mono">
+                  -1.25 ~ -1.00D</span>
                 <span
-                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm font-mono">-1.00
-                  ~ 0.00</span>
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm font-mono">
+                  -1.00 ~ 0.00D</span>
                 <span
-                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm font-mono">0.00
-                  ~ +1.00</span>
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm font-mono">
+                  0.00 ~ +1.00D</span>
               </div>
             </div>
             <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
@@ -1794,24 +1774,175 @@
                 <span class="text-xs text-slate-400">被 5 个项目引用</span>
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
               </section>
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
+                <!-- 共享开关 -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer" checked disabled>
+                  <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <span class="ml-2 text-xs font-medium text-slate-400">共享</span>
+                </label>
+                <div class="w-px h-4 bg-slate-200 mx-1"></div>
                 <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                   onclick="event.stopPropagation()">
                   <i class="ri-delete-bin-line"></i>
-                </button>
-                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors">
-                  <i class="ri-arrow-right-line"></i>
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- 新增占位卡片 -->
-          <button
-            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center text-slate-400 hover:border-brand-300 hover:text-brand-500 hover:bg-brand-50/30 transition-all min-h-[240px]">
-            <i class="ri-add-circle-line text-4xl mb-2"></i>
-            <span class="font-medium">自定义新维度</span>
-          </button>
+          <!-- 自定义维度卡片 4 -->
+          <div class="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+            <button
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-cyan-500">
+              中心自定义
+            </button>
+            <div class="flex justify-between items-start mb-4">
+              <section class="flex items-center gap-2 mb-4">
+                <div class="p-3 bg-cyan-50 text-cyan-600 rounded-xl">
+                  <i class="ri-flask-line text-xl"></i>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <h4 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2">
+                    眼压范围
+                    <span class="px-1.5 h-6 flex justify-center items-center rounded text-[10px] bg-blue-50 text-blue-600 border border-blue-100">审核中</span>
+                  </h4>
+                  <p class="text-xs text-slate-400">自定义眼压分层</p>
+                </div>
+              </section>
+            </div>
+
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="flex flex-wrap gap-2">
+                <span
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm">10-15</span>
+                <span
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm">15-21</span>
+                <span
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm">>21</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
+              <section class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">被 0 个项目引用</span>
+                <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              </section>
+              <div class="flex items-center gap-2">
+                <!-- 共享开关 (默认关闭) -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer">
+                  <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <span class="ml-2 text-xs font-medium text-slate-400">共享</span>
+                </label>
+                <div class="w-px h-4 bg-slate-200 mx-1"></div>
+                <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  onclick="event.stopPropagation()">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 自定义维度卡片 5 -->
+          <div class="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+            <button
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-cyan-500">
+              中心自定义
+            </button>
+            <div class="flex justify-between items-start mb-4">
+              <section class="flex items-center gap-2 mb-4">
+                <div class="p-3 bg-cyan-50 text-cyan-600 rounded-xl">
+                  <i class="ri-capsule-line text-xl"></i>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <h4 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2">
+                    用药史
+                    <span class="px-1.5 h-6 flex justify-center items-center rounded text-[10px] bg-red-50 text-red-600 border border-red-100">审核失败</span>
+                  </h4>
+                  <p class="text-xs text-slate-400">既往用药情况</p>
+                </div>
+              </section>
+            </div>
+
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="flex flex-wrap gap-2">
+                <span
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm">无</span>
+                <span
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm">阿托品</span>
+                <span
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm">其他</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
+              <section class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">被 0 个项目引用</span>
+                <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              </section>
+              <div class="flex items-center gap-2">
+                <!-- 共享开关 (默认关闭) -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer">
+                  <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <span class="ml-2 text-xs font-medium text-slate-400">共享</span>
+                </label>
+                <div class="w-px h-4 bg-slate-200 mx-1"></div>
+                <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  onclick="event.stopPropagation()">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 自定义维度卡片 6 -->
+          <div class="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+            <button
+              class="absolute top-0 right-0 px-3 py-1 text-white text-xs font-bold shadow rounded-tr-xl bg-cyan-500">
+              中心自定义
+            </button>
+            <div class="flex justify-between items-start mb-4">
+              <section class="flex items-center gap-2 mb-4">
+                <div class="p-3 bg-cyan-50 text-cyan-600 rounded-xl">
+                  <i class="ri-book-line text-xl"></i>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <h4 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2">
+                    配镜类型
+                    <span class="px-1.5 h-6 flex justify-center items-center rounded text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100">审核通过</span>
+                  </h4>
+                  <p class="text-xs text-slate-400">当前配戴眼镜类型</p>
+                </div>
+              </section>
+            </div>
+
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="flex flex-wrap gap-2">
+                <span
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm">框架眼镜</span>
+                <span
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg shadow-sm">角膜塑形镜</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
+              <section class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">被 2 个项目引用</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              </section>
+              <div class="flex items-center gap-2">
+                <!-- 共享开关 (默认关闭) -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer">
+                  <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <span class="ml-2 text-xs font-medium text-slate-400">共享</span>
+                </label>
+                <div class="w-px h-4 bg-slate-200 mx-1"></div>
+                <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  onclick="event.stopPropagation()">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2771,44 +2902,127 @@
 
   <!-- 密码规则配置 Modal -->
   <div id="password-rule-modal" class="fixed inset-0 z-[80] hidden items-center justify-center">
-    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closePasswordRuleModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6">
-      <div class="flex items-center justify-between mb-4">
+    <div id="password-rule-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closePasswordRuleModal()"></div>
+    <div id="password-rule-content" class="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 transform scale-90 opacity-0 transition-all duration-300">
+      <div class="flex items-center justify-between mb-6">
         <div>
-          <h3 class="text-lg font-bold text-slate-800">密码生成规则配置</h3>
-          <p class="text-xs text-slate-500 mt-0.5">仅影响此后新增用户的默认密码</p>
+          <h3 class="text-lg font-bold text-slate-800">密码规则配置</h3>
+          <p class="text-xs text-slate-500 mt-0.5">设置用户初始密码的生成策略</p>
         </div>
-        <button onclick="closePasswordRuleModal()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+        <button onclick="closePasswordRuleModal()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="space-y-4 mb-6">
+        <div class="flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-brand-200 hover:bg-brand-50/30 transition-all cursor-pointer" onclick="selectPasswordRule('random')">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+              <i class="ri-shuffle-line text-xl"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-700">随机生成</h4>
+              <p class="text-xs text-slate-500">8位包含大小写字母和数字的随机字符串</p>
+            </div>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center" id="rule-radio-random">
+            <div class="w-2.5 h-2.5 rounded-full bg-brand-600 hidden"></div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-brand-200 hover:bg-brand-50/30 transition-all cursor-pointer" onclick="selectPasswordRule('fixed')">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+              <i class="ri-lock-2-line text-xl"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-700">固定规则</h4>
+              <p class="text-xs text-slate-500">账号 + 手机号后4位</p>
+            </div>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center" id="rule-radio-fixed">
+            <div class="w-2.5 h-2.5 rounded-full bg-brand-600 hidden"></div>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="savePasswordRule()" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold shadow-lg shadow-brand-500/30 transition-all">
+        保存配置
+      </button>
+    </div>
+  </div>
+
+  <!-- Notification Drawer -->
+  <div id="notification-drawer" class="fixed inset-0 z-[90] hidden">
+    <div id="notification-backdrop" class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="closeNotificationDrawer()"></div>
+    <div id="notification-panel" class="absolute top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl transition-transform duration-300 translate-x-full flex flex-col">
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div>
+          <h3 class="text-lg font-bold text-slate-800">消息通知</h3>
+          <p class="text-xs text-slate-500 mt-0.5">查看所有系统消息与审核通知</p>
+        </div>
+        <button onclick="closeNotificationDrawer()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
           <i class="ri-close-line text-xl"></i>
         </button>
       </div>
 
-      <div class="space-y-4">
-        <section>
-          <div class="inline-flex bg-slate-200/50 p-1 rounded-xl items-center">
-            <label class="cursor-pointer">
-              <input type="radio" name="password-rule" value="random" id="password-rule-random" class="peer sr-only" checked />
-              <span
-                class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">随机密码</span>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="password-rule" value="fixed" id="password-rule-fixed" class="peer sr-only" />
-              <span
-                class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">固定密码</span>
-            </label>
+      <!-- Content -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+        <!-- Message 1 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              <h4 class="text-sm font-bold text-slate-800 group-hover:text-brand-600 transition-colors">新维度审核请求</h4>
+            </div>
+            <span class="text-xs text-slate-400">10分钟前</span>
           </div>
-          <p id="password-rule-hint" class="mt-2 text-xs text-slate-400">默认生成 12 位密码，包含大小写字母和特殊字符。</p>
-          <div id="fixed-password-row" class="mt-3 hidden">
-            <input id="fixed-password-input" type="text"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500"
-              value="Pass1234!">
+          <p class="text-xs text-slate-600 leading-relaxed mb-2">
+            上海眼科中心提交了新的自定义维度「眼压范围」，请求管理员审核。
+          </p>
+          <div class="flex items-center justify-end">
+            <button class="text-xs font-bold text-brand-600 hover:text-brand-700">去处理 <i class="ri-arrow-right-line"></i></button>
           </div>
-        </section>
+        </div>
+
+        <!-- Message 2 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              <h4 class="text-sm font-bold text-slate-800 group-hover:text-brand-600 transition-colors">维度审核未通过</h4>
+            </div>
+            <span class="text-xs text-slate-400">2小时前</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed mb-2">
+            您提交的自定义维度「用药史」因描述不清晰被驳回，请修改后重新提交。
+          </p>
+          <div class="flex items-center justify-end">
+            <button class="text-xs font-bold text-brand-600 hover:text-brand-700">查看详情 <i class="ri-arrow-right-line"></i></button>
+          </div>
+        </div>
+
+        <!-- Message 3 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              <h4 class="text-sm font-bold text-slate-800 group-hover:text-brand-600 transition-colors">维度审核通过</h4>
+            </div>
+            <span class="text-xs text-slate-400">2026-01-10 23:50</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed mb-2">
+            自定义维度「配镜类型」已通过审核，现在可以在项目中使用了。
+          </p>
+        </div>
       </div>
 
-      <div class="mt-6 flex justify-end gap-3">
-        <button onclick="closePasswordRuleModal()" class="px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-xl border border-slate-200 transition-all">取消</button>
-        <button onclick="savePasswordRuleConfig()" class="px-6 py-2.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-lg shadow-brand-500/30 transition-all">保存配置</button>
+      <!-- Footer -->
+      <div class="px-6 py-3 border-t border-slate-100 bg-white flex justify-center">
+        <button class="text-xs text-slate-500 hover:text-brand-600 font-medium transition-colors">
+          查看全部消息
+        </button>
       </div>
     </div>
   </div>
@@ -3195,46 +3409,106 @@
         );
     }
 
+    const routeConfig = {
+      projects: {
+        title: "项目管理",
+        description: "管理所有临床研究项目",
+        permissions: [
+          { text: "所有角色", color: "slate" }
+        ]
+      },
+      dimensions: {
+        title: "维度管理",
+        description: "定义全局可用的随机化分层因素",
+        permissions: [
+          { text: "开发者账户", color: "indigo" },
+          { text: "超级管理员", color: "purple" },
+          { text: "中心管理员", color: "emerald" }
+        ]
+      },
+      departments: {
+        title: "科室管理",
+        description: "定义项目关联的临床科室",
+        permissions: [
+          { text: "开发者账户", color: "indigo" },
+          { text: "超级管理员", color: "purple" }
+        ]
+      },
+      roles: {
+        title: "角色权限控制",
+        description: "管理系统角色与功能权限",
+        permissions: [
+          { text: "开发者账户", color: "indigo" },
+          { text: "超级管理员", color: "purple" }
+        ]
+      },
+      centers: {
+        title: "中心管理",
+        description: "管理多中心临床试验的各个分中心信息",
+        permissions: [
+          { text: "开发者账户", color: "indigo" },
+          { text: "超级管理员", color: "purple" },
+          { text: "中心管理员", color: "emerald" }
+        ]
+      },
+      users: {
+        title: "用户管理",
+        description: "维护系统用户、组织归属与角色权限",
+        permissions: [
+          { text: "开发者账户", color: "indigo" },
+          { text: "超级管理员", color: "purple" }
+        ]
+      }
+    };
+
+    function updateHeader(config) {
+      // Update Title
+      document.getElementById("page-title").innerText = config.title || "";
+      
+      // Update Description
+      const descEl = document.getElementById("page-description");
+      if (config.description) {
+        descEl.innerText = config.description;
+        descEl.classList.remove("hidden");
+      } else {
+        descEl.classList.add("hidden");
+      }
+      
+      // Update Permissions
+      const permContainer = document.getElementById("page-permissions");
+      permContainer.innerHTML = ""; // Clear existing
+      if (config.permissions && config.permissions.length > 0) {
+        config.permissions.forEach(perm => {
+          const span = document.createElement("span");
+          span.className = `px-2 py-0.5 text-xs font-normal rounded bg-${perm.color}-100 text-${perm.color}-700`;
+          span.innerText = perm.text;
+          permContainer.appendChild(span);
+        });
+      }
+    }
+
     function switchTab(tabName) {
       hideAllViews();
+      
+      const config = routeConfig[tabName];
+      if (config) {
+        updateHeader(config);
+      } else {
+         // Fallback or specific pages not in config
+      }
 
-      if (tabName === "projects") {
-        document.getElementById("view-projects").classList.remove("hidden");
-        document
-          .getElementById("nav-projects")
-          .classList.add("active", "bg-brand-50", "text-brand-600");
-        document.getElementById("page-title").innerText = "项目管理";
-      } else if (tabName === "dimensions") {
-        document.getElementById("view-dimensions").classList.remove("hidden");
-        document
-          .getElementById("nav-dimensions")
-          .classList.add("active", "bg-brand-50", "text-brand-600");
-        document.getElementById("page-title").innerText = "维度管理";
-      } else if (tabName === "departments") {
-        document.getElementById("view-departments").classList.remove("hidden");
-        document
-          .getElementById("nav-departments")
-          .classList.add("active", "bg-brand-50", "text-brand-600");
-        document.getElementById("page-title").innerText = "科室管理";
-      } else if (tabName === "roles") {
-        document.getElementById("view-roles").classList.remove("hidden");
-        document
-          .getElementById("nav-roles")
-          .classList.add("active", "bg-brand-50", "text-brand-600");
-        document.getElementById("page-title").innerText = "角色管理";
+      const navItem = document.getElementById("nav-" + tabName);
+      if (navItem) {
+          navItem.classList.add("active", "bg-brand-50", "text-brand-600");
+      }
+      
+      const viewItem = document.getElementById("view-" + tabName);
+      if (viewItem) {
+          viewItem.classList.remove("hidden");
+      }
+
+      if (tabName === "roles") {
         renderRoleList(); // Initialize
-      } else if (tabName === "centers") {
-        document.getElementById("view-centers").classList.remove("hidden");
-        document
-          .getElementById("nav-centers")
-          .classList.add("active", "bg-brand-50", "text-brand-600");
-        document.getElementById("page-title").innerText = "中心管理";
-      } else if (tabName === "users") {
-        document.getElementById("view-users").classList.remove("hidden");
-        document
-          .getElementById("nav-users")
-          .classList.add("active", "bg-brand-50", "text-brand-600");
-        document.getElementById("page-title").innerText = "用户管理";
       }
     }
 
@@ -3246,7 +3520,8 @@
       document
         .getElementById("nav-projects")
         .classList.add("active", "bg-brand-50", "text-brand-600"); // 保持项目管理高亮
-      document.getElementById("page-title").innerText = "项目详情";
+      
+      updateHeader({ title: "项目详情" });
       window.scrollTo(0, 0);
     }
 
@@ -3259,7 +3534,8 @@
       hideAllViews();
       document.getElementById("view-center-detail").classList.remove("hidden");
       document.getElementById("nav-centers").classList.add("active", "bg-brand-50", "text-brand-600");
-      document.getElementById("page-title").innerText = "中心详情";
+      
+      updateHeader({ title: "中心详情" });
       window.scrollTo(0, 0);
       
       // Default to overview tab
@@ -4316,6 +4592,37 @@
     function removeCriteriaItem(btn) {
       const row = btn.closest('div');
       if (row) row.remove();
+    }
+
+    // ================= Notification Drawer Logic =================
+    function toggleNotificationDrawer() {
+      const drawer = document.getElementById('notification-drawer');
+      const backdrop = document.getElementById('notification-backdrop');
+      const panel = document.getElementById('notification-panel');
+      
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        // Trigger reflow
+        void drawer.offsetWidth;
+        
+        backdrop.classList.remove('opacity-0');
+        panel.classList.remove('translate-x-full');
+      } else {
+        closeNotificationDrawer();
+      }
+    }
+
+    function closeNotificationDrawer() {
+      const drawer = document.getElementById('notification-drawer');
+      const backdrop = document.getElementById('notification-backdrop');
+      const panel = document.getElementById('notification-panel');
+      
+      backdrop.classList.add('opacity-0');
+      panel.classList.add('translate-x-full');
+      
+      setTimeout(() => {
+        drawer.classList.add('hidden');
+      }, 300);
     }
 
     // 3. 人数联动核心逻辑
