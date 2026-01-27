@@ -161,9 +161,9 @@
       </div>
     </header>
 
-    <div class="p-8 max-w-full min-h-[calc(100vh-80px)]">
+    <div class="max-w-full">
       <!-- 页面 1：项目管理 -->
-      <div id="view-projects" class="fade-in space-y-6">
+      <div id="view-projects" class="fade-in space-y-6 p-8">
         <!-- 筛选与操作区 -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <!-- Radio Button 样式筛选 -->
@@ -185,7 +185,7 @@
             </label>
           </div>
           <!-- 找到这个按钮：在 id="view-projects" 内部 -->
-          <button onclick="openNewProjectDrawer()"
+          <button onclick="openNewProjectWizard()"
             class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
             <i class="ri-add-line text-lg"></i> 新增项目
           </button>
@@ -2611,6 +2611,299 @@
       </div>
     </div>
     <!-- ================== 新增项目抽屉 (New Project Drawer) ================== -->
+    <!-- ================== Create Project Wizard ================== -->
+    <div id="create-project-wizard" class="hidden fade-in flex flex-col h-full bg-slate-50 relative z-0 p-8">
+      <!-- Wizard Header -->
+      <div class="mb-8">
+         <div class="flex items-center gap-2 text-sm text-slate-500 mb-4">
+            <span class="cursor-pointer hover:text-brand-600" onclick="cancelWizard()">项目总览</span>
+            <i class="ri-arrow-right-s-line"></i>
+            <span class="text-slate-800 font-bold">创建新项目</span>
+         </div>
+
+         <div class="flex items-center justify-between max-w-4xl mx-auto px-4">
+            <!-- Step 1 -->
+            <div class="flex flex-col items-center relative z-10 w-1/3 group cursor-pointer" onclick="wizGoToStep(1)">
+               <div id="wiz-step-indicator-1" class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-brand-500/30 transition-all ring-4 ring-white">1</div>
+               <div class="mt-3 text-center transition-all">
+                  <p id="wiz-step-title-1" class="text-sm font-bold text-slate-800">基础设置</p>
+                  <p class="text-xs text-slate-500 hidden sm:block">项目基本信息</p>
+               </div>
+            </div>
+            <!-- Connector -->
+            <div class="flex-1 h-1 bg-slate-200 -mx-10 relative top-[-18px] z-0">
+                <div id="wiz-step-bar-1" class="h-full bg-brand-600 w-0 transition-all duration-500 rounded-full"></div>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="flex flex-col items-center relative z-10 w-1/3 group cursor-pointer" onclick="wizGoToStep(2)">
+               <div id="wiz-step-indicator-2" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-lg transition-all ring-4 ring-white">2</div>
+               <div class="mt-3 text-center transition-all">
+                  <p id="wiz-step-title-2" class="text-sm font-bold text-slate-500">维度选择</p>
+                  <p class="text-xs text-slate-500 hidden sm:block">配置实验维度</p>
+               </div>
+            </div>
+            <!-- Connector -->
+            <div class="flex-1 h-1 bg-slate-200 -mx-10 relative top-[-18px] z-0">
+                 <div id="wiz-step-bar-2" class="h-full bg-brand-600 w-0 transition-all duration-500 rounded-full"></div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex flex-col items-center relative z-10 w-1/3 group cursor-pointer" onclick="wizGoToStep(3)">
+               <div id="wiz-step-indicator-3" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-lg transition-all ring-4 ring-white">3</div>
+               <div class="mt-3 text-center transition-all">
+                  <p id="wiz-step-title-3" class="text-sm font-bold text-slate-500">分组配置</p>
+                  <p class="text-xs text-slate-500 hidden sm:block">设定分组与人数</p>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Wizard Content -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 overflow-y-auto max-w-5xl mx-auto w-full mb-20 custom-scrollbar">
+          
+          <!-- Step 1 Content: Basic Info -->
+          <div id="wiz-step-content-1" class="space-y-6 animate-fade-in">
+              <!-- Row 1: Name, Code, Share -->
+              <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                  <div class="md:col-span-3">
+                      <label class="block text-sm font-bold text-slate-700 mb-2">项目名称 <span class="text-red-500">*</span></label>
+                      <input id="wiz-np-name" type="text" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="例如：儿童近视防控临床研究">
+                  </div>
+                  <div class="md:col-span-1">
+                      <label class="block text-sm font-bold text-slate-700 mb-2">项目码 (Code) <span class="text-red-500">*</span></label>
+                      <div class="relative">
+                          <input id="wiz-np-code" type="text" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm font-mono uppercase focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="CODE_2024">
+                      </div>
+                  </div>
+                  <div class="md:col-span-1">
+                      <label class="block text-sm font-bold text-slate-700 mb-2">是否共享数据</label>
+                      <label class="relative inline-flex items-center cursor-pointer mt-1.5">
+                          <input type="checkbox" id="wiz-np-share-switch" class="sr-only peer" onchange="wizToggleShareSwitch()">
+                          <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                          <span id="wiz-np-share-label" class="ml-3 text-sm font-medium text-slate-500">不共享</span>
+                      </label>
+                      <!-- Hidden inputs for compatibility -->
+                      <input type="radio" name="wiz-np-share" value="no" class="hidden" checked>
+                      <input type="radio" name="wiz-np-share" value="yes" class="hidden">
+                  </div>
+              </div>
+
+              <!-- Row 2: Description -->
+              <div>
+                  <label class="block text-sm font-bold text-slate-700 mb-2">项目描述</label>
+                  <textarea id="wiz-np-desc" rows="3" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="简述项目的研究目的、背景及主要入排标准..."></textarea>
+              </div>
+
+              <!-- Row 3: Centers, Leader, Collab, CRC -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="md:col-span-1 relative">
+                      <label class="block text-sm font-bold text-slate-700 mb-2">关联研究中心 <span class="text-red-500">*</span></label>
+                      <button type="button" onclick="wizToggleCenterSelect()" class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 hover:bg-white transition-colors">
+                          <span id="wiz-center-display-text" class="text-slate-500 truncate">请选择参与中心...</span>
+                          <i class="ri-arrow-down-s-line text-slate-400"></i>
+                      </button>
+                      <div id="wiz-center-dropdown" class="hidden absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-48 overflow-y-auto p-2 space-y-1 animate-fade-in">
+                           <label class="flex items-center p-2 hover:bg-slate-50 rounded cursor-pointer">
+                             <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500 border-slate-300" value="徐州眼视光中心" onchange="wizUpdateCenterDisplay()">
+                             <span class="ml-2 text-sm text-slate-700">徐州眼视光中心</span>
+                           </label>
+                           <label class="flex items-center p-2 hover:bg-slate-50 rounded cursor-pointer">
+                             <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500 border-slate-300" value="上海眼科中心" onchange="wizUpdateCenterDisplay()">
+                             <span class="ml-2 text-sm text-slate-700">上海眼科中心</span>
+                           </label>
+                           <label class="flex items-center p-2 hover:bg-slate-50 rounded cursor-pointer">
+                             <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500 border-slate-300" value="北京同仁医院" onchange="wizUpdateCenterDisplay()">
+                             <span class="ml-2 text-sm text-slate-700">北京同仁医院</span>
+                           </label>
+                      </div>
+                  </div>
+                  
+                  <div class="md:col-span-1">
+                      <label class="block text-sm font-bold text-slate-700 mb-2">项目负责人 <span class="text-red-500">*</span></label>
+                      <button type="button" id="wiz-leader-trigger" onclick="wizToggleLeaderDropdown()" class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50 hover:bg-white transition-colors">
+                          <span id="wiz-leader-display" class="text-slate-500 truncate">需先选中心</span>
+                          <i class="ri-arrow-down-s-line text-slate-400"></i>
+                      </button>
+                      <div id="wiz-leader-dropdown" class="hidden absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto p-2 space-y-1"></div>
+                  </div>
+
+                  <div class="md:col-span-1">
+                      <label class="block text-sm font-bold text-slate-700 mb-2">协作医生</label>
+                      <button type="button" id="wiz-collab-trigger" onclick="wizToggleCollabDropdown()" class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50 hover:bg-white transition-colors">
+                          <span id="wiz-collab-display" class="text-slate-500 truncate">需先选中心</span>
+                          <i class="ri-arrow-down-s-line text-slate-400"></i>
+                      </button>
+                      <div id="wiz-collab-dropdown" class="hidden absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto p-2 space-y-1"></div>
+                  </div>
+
+                  <div class="md:col-span-1">
+                      <label class="block text-sm font-bold text-slate-700 mb-2">床研究协调员 CRC <span class="text-red-500">*</span></label>
+                      <button type="button" id="wiz-crc-trigger" onclick="wizToggleCrcDropdown()" class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50 hover:bg-white transition-colors">
+                          <span id="wiz-crc-display" class="text-slate-500 truncate">需先选中心</span>
+                          <i class="ri-arrow-down-s-line text-slate-400"></i>
+                      </button>
+                      <div id="wiz-crc-dropdown" class="hidden absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto p-2 space-y-1"></div>
+                  </div>
+              </div>
+              
+              <!-- Criteria -->
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6 border-t border-slate-100">
+                  <div>
+                      <label class="block text-sm font-bold text-slate-700 mb-2">纳入标准</label>
+                      <div id="wiz-inclusion-list" class="space-y-2 mb-3"></div>
+                      <button type="button" onclick="wizAddCriteria('inclusion')" class="w-full py-2.5 border-2 border-dashed border-emerald-200 rounded-xl text-emerald-600 text-sm font-bold hover:bg-emerald-50 hover:border-emerald-300 transition-all flex justify-center items-center gap-1">
+                          <i class="ri-add-line"></i> 添加纳入标准
+                      </button>
+                  </div>
+                  <div>
+                      <label class="block text-sm font-bold text-slate-700 mb-2">排除标准</label>
+                      <div id="wiz-exclusion-list" class="space-y-2 mb-3"></div>
+                      <button type="button" onclick="wizAddCriteria('exclusion')" class="w-full py-2.5 border-2 border-dashed border-red-200 rounded-xl text-red-600 text-sm font-bold hover:bg-red-50 hover:border-red-300 transition-all flex justify-center items-center gap-1">
+                          <i class="ri-add-line"></i> 添加排除标准
+                      </button>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Step 2 Content: Dimensions -->
+          <div id="wiz-step-content-2" class="hidden space-y-8 animate-fade-in">
+              <!-- Grouping Mode -->
+              <div>
+                  <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-l-4 border-brand-500 pl-3">第一步：选择分组模式</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <label class="relative cursor-pointer group">
+                            <input type="radio" name="wizMatchMode" value="random" class="peer sr-only" checked onchange="wizToggleMatchMode()">
+                            <div class="p-6 rounded-2xl border-2 border-slate-200 hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all h-full shadow-sm hover:shadow-md">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 peer-checked:bg-brand-100 peer-checked:text-brand-600 flex items-center justify-center transition-colors">
+                                        <i class="ri-shuffle-line text-2xl"></i>
+                                    </div>
+                                    <span class="font-bold text-lg text-slate-700 peer-checked:text-brand-800">均匀分组 (Uniform)</span>
+                                </div>
+                                <p class="text-sm text-slate-500 leading-relaxed">系统自定义均匀随机对组和人数进行划分，无法变更。适合完全随机分配场景，消除人为干预偏差。</p>
+                            </div>
+                       </label>
+                       <label class="relative cursor-pointer group">
+                            <input type="radio" name="wizMatchMode" value="free" class="peer sr-only" onchange="wizToggleMatchMode()">
+                            <div class="p-6 rounded-2xl border-2 border-slate-200 hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all h-full shadow-sm hover:shadow-md">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 peer-checked:bg-brand-100 peer-checked:text-brand-600 flex items-center justify-center transition-colors">
+                                        <i class="ri-equalizer-line text-2xl"></i>
+                                    </div>
+                                    <span class="font-bold text-lg text-slate-700 peer-checked:text-brand-800">自由分组 (Free)</span>
+                                </div>
+                                <p class="text-sm text-slate-500 leading-relaxed">在符合总数不变的前提下，自由对组的人数进行划分。适合需要主动干预分组配额的复杂场景。</p>
+                            </div>
+                       </label>
+                  </div>
+              </div>
+
+              <!-- Dimensions -->
+              <div>
+                  <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-l-4 border-indigo-500 pl-3">第二步：选择分层维度</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="wiz-dimension-list">
+                       <!-- Static options -->
+                       <label class="flex items-start p-4 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors shadow-sm relative overflow-hidden group">
+                           <input type="checkbox" name="wizDims" value="gender" class="mt-1 h-5 w-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500" checked>
+                           <div class="ml-4">
+                               <span class="block text-base font-bold text-slate-700 group-hover:text-brand-600 transition-colors">性别维度</span>
+                               <div class="mt-2 flex flex-wrap gap-1">
+                                  <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">男</span>
+                                  <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">女</span>
+                               </div>
+                           </div>
+                           <div class="absolute -right-4 -bottom-4 text-slate-100 group-hover:text-slate-200 transition-colors pointer-events-none">
+                               <i class="ri-men-line text-6xl"></i>
+                           </div>
+                       </label>
+                       <label class="flex items-start p-4 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors shadow-sm relative overflow-hidden group">
+                           <input type="checkbox" name="wizDims" value="age" class="mt-1 h-5 w-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500" checked>
+                           <div class="ml-4">
+                               <span class="block text-base font-bold text-slate-700 group-hover:text-brand-600 transition-colors">年龄分层</span>
+                               <div class="mt-2 flex flex-wrap gap-1">
+                                  <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">4-7岁</span>
+                                  <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">8-10岁</span>
+                               </div>
+                           </div>
+                           <div class="absolute -right-4 -bottom-4 text-slate-100 group-hover:text-slate-200 transition-colors pointer-events-none">
+                               <i class="ri-user-smile-line text-6xl"></i>
+                           </div>
+                       </label>
+                       <label class="flex items-start p-4 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors shadow-sm relative overflow-hidden group">
+                           <input type="checkbox" name="wizDims" value="diopter" class="mt-1 h-5 w-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500" checked>
+                           <div class="ml-4">
+                               <span class="block text-base font-bold text-slate-700 group-hover:text-brand-600 transition-colors">屈光度范围</span>
+                               <div class="mt-2 flex flex-wrap gap-1">
+                                  <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">-1.0~-0.5</span>
+                                  <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200">-0.4~0</span>
+                               </div>
+                           </div>
+                           <div class="absolute -right-4 -bottom-4 text-slate-100 group-hover:text-slate-200 transition-colors pointer-events-none">
+                               <i class="ri-eye-2-line text-6xl"></i>
+                           </div>
+                       </label>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Step 3 Content: Grouping -->
+          <div id="wiz-step-content-3" class="hidden space-y-6 animate-fade-in">
+              <div class="bg-slate-50 rounded-2xl border border-slate-200 p-8 space-y-8 relative overflow-hidden">
+                  <!-- Decorative BG -->
+                  <div class="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                      <i class="ri-group-2-fill text-9xl text-slate-400"></i>
+                  </div>
+
+                  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10">
+                      <div>
+                          <h4 class="text-lg font-bold text-slate-800 flex items-center">
+                              <i class="ri-equalizer-line mr-2 text-brand-500"></i> 规模与分组设定
+                          </h4>
+                          <p class="text-sm text-slate-500 mt-1">设定项目的总样本量及各分组的配额</p>
+                      </div>
+                      <div id="wiz-validation-msg" class="text-sm text-right text-emerald-600 font-bold bg-white px-3 py-1.5 rounded-lg border border-emerald-100 shadow-sm">
+                          <i class="ri-checkbox-circle-line align-bottom"></i> 合计匹配
+                      </div>
+                  </div>
+
+                  <div class="relative z-10">
+                      <label class="block text-sm font-bold text-slate-700 mb-2">项目总人数</label>
+                      <div class="relative max-w-xs">
+                          <input type="number" id="wiz-total-count" value="100" min="2" oninput="wizDistributeCounts()" class="w-full rounded-xl border-slate-300 bg-white border px-4 py-3 text-xl font-bold text-slate-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-colors shadow-sm">
+                          <span class="absolute right-4 top-3.5 text-slate-400 font-medium">人</span>
+                      </div>
+                  </div>
+
+                  <div id="wiz-group-list" class="space-y-3 relative z-10">
+                       <!-- Injected by JS -->
+                  </div>
+
+                  <button type="button" onclick="wizAddNewGroup()" class="relative z-10 w-full py-4 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-white transition-all flex justify-center items-center gap-2 group shadow-sm hover:shadow-md">
+                      <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center group-hover:bg-brand-100 group-hover:text-brand-600 transition-colors">
+                          <i class="ri-add-line text-lg"></i>
+                      </div>
+                      增加新的分组
+                  </button>
+              </div>
+          </div>
+
+      </div>
+
+      <!-- Wizard Footer -->
+      <div class="fixed bottom-0 left-64 right-0 bg-white border-t border-slate-200 p-4 px-8 z-50 flex justify-between items-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+          <button id="wiz-btn-prev" onclick="wizPrev()" class="hidden px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-colors flex items-center gap-2">
+              <i class="ri-arrow-left-line"></i> 上一步
+          </button>
+          <div class="flex-1"></div>
+          <button id="wiz-btn-cancel" onclick="cancelWizard()" class="px-6 py-2.5 rounded-xl text-slate-500 font-bold hover:text-slate-700 hover:bg-slate-100 transition-colors mr-4">取消</button>
+          <button id="wiz-btn-next" onclick="wizNext()" class="px-8 py-2.5 rounded-xl bg-brand-600 text-white font-bold shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:shadow-brand-500/40 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+              下一步 <i class="ri-arrow-right-line"></i>
+          </button>
+      </div>
+    </div>
+    
+    <!-- ================== End Wizard ================== -->
     <div id="new-project-drawer" class="relative z-50 hidden" role="dialog" aria-modal="true">
       <div id="np-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0"
         onclick="closeNewProjectDrawer()"></div>
@@ -4871,10 +5164,407 @@
             motherContainer.classList.remove('hidden');
         }
     }
+
+    /* ================= Wizard Logic (Added for Step-by-Step Creation) ================= */
+    let currentWizStep = 1;
+
+    function openNewProjectWizard() {
+      // Hide View Projects
+      document.getElementById('view-projects').classList.add('hidden');
+      // Show Wizard
+      document.getElementById('create-project-wizard').classList.remove('hidden');
+      
+      wizReset();
+      wizGoToStep(1);
+    }
+
+    function cancelWizard() {
+      // Hide Wizard
+      document.getElementById('create-project-wizard').classList.add('hidden');
+      // Show View Projects
+      document.getElementById('view-projects').classList.remove('hidden');
+    }
+
+    function wizReset() {
+      // Step 1 Reset
+      document.getElementById('wiz-np-name').value = '';
+      document.getElementById('wiz-np-code').value = '';
+      document.getElementById('wiz-np-desc').value = '';
+      document.getElementById('wiz-center-display-text').innerText = "请选择参与中心...";
+      document.getElementById('wiz-center-display-text').classList.add('text-slate-500');
+      document.querySelectorAll('#wiz-center-dropdown input').forEach(el => el.checked = false);
+      SELECTED_CENTERS = [];
+      wizDisableDoctorSelectors();
+      document.getElementById('wiz-np-share-switch').checked = false;
+       wizToggleShareSwitch();
+       document.getElementById('wiz-inclusion-list').innerHTML = '';
+      document.getElementById('wiz-exclusion-list').innerHTML = '';
+      
+      // Step 2 Reset
+      document.querySelector('input[name="wizMatchMode"][value="random"]').checked = true;
+      document.querySelectorAll('input[name="wizDims"]').forEach(el => el.checked = true);
+      wizToggleMatchMode();
+
+      // Step 3 Reset
+      wizInitDefaultGroups();
+    }
+
+    function wizGoToStep(step) {
+      if (step < 1 || step > 3) return;
+      
+      // Validation when moving forward
+      if (step > currentWizStep) {
+         if (currentWizStep === 1) {
+             const name = document.getElementById('wiz-np-name').value.trim();
+             const code = document.getElementById('wiz-np-code').value.trim();
+             if (!name) { alert("请填写项目名称"); return; }
+             if (!code) { alert("请填写项目编码"); return; }
+             if (SELECTED_CENTERS.length === 0) { alert("请至少选择一个研究中心"); return; }
+             if (!leaderSelected) { alert("请选择项目负责人"); return; }
+             if (crcSelected.size === 0) { alert("请至少选择一位 CRC"); return; }
+         }
+         // Step 2 validation (dimensions)
+         if (currentWizStep === 2) {
+             const checkedDims = document.querySelectorAll('input[name="wizDims"]:checked');
+             if (checkedDims.length === 0) { alert("请至少选择一个分层维度"); return; }
+         }
+      }
+
+      currentWizStep = step;
+
+      // Update Header Indicators
+      for (let i = 1; i <= 3; i++) {
+          const ind = document.getElementById(`wiz-step-indicator-${i}`);
+          const bar = document.getElementById(`wiz-step-bar-${i}`); // i is bar index? No, bars are 1 and 2.
+          const title = document.getElementById(`wiz-step-title-${i}`);
+          
+          if (i === step) {
+             // Active
+             ind.className = "w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-brand-500/30 transition-all ring-4 ring-brand-50 transform scale-110";
+             title.className = "text-sm font-bold text-slate-800";
+          } else if (i < step) {
+             // Completed
+             ind.className = "w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-lg shadow-md transition-all ring-4 ring-white";
+             ind.innerHTML = '<i class="ri-check-line"></i>';
+             title.className = "text-sm font-bold text-slate-800";
+          } else {
+             // Inactive
+             ind.className = "w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-lg transition-all ring-4 ring-white";
+             ind.innerHTML = i;
+             title.className = "text-sm font-bold text-slate-500";
+          }
+      }
+
+      // Update Bars
+      if (step >= 2) document.getElementById('wiz-step-bar-1').classList.remove('w-0');
+      else document.getElementById('wiz-step-bar-1').classList.add('w-0');
+      
+      if (step >= 3) document.getElementById('wiz-step-bar-1').classList.remove('w-0'); // Bar 1 also filled
+      if (step >= 3) document.getElementById('wiz-step-bar-2').classList.remove('w-0');
+      else document.getElementById('wiz-step-bar-2').classList.add('w-0');
+
+
+      // Update Content Visibility
+      for (let i = 1; i <= 3; i++) {
+          const content = document.getElementById(`wiz-step-content-${i}`);
+          if (i === step) {
+              content.classList.remove('hidden');
+          } else {
+              content.classList.add('hidden');
+          }
+      }
+
+      // Update Footer Buttons
+      const btnPrev = document.getElementById('wiz-btn-prev');
+      const btnNext = document.getElementById('wiz-btn-next');
+
+      if (step === 1) {
+          btnPrev.classList.add('hidden');
+          btnNext.innerHTML = '下一步 <i class="ri-arrow-right-line"></i>';
+          btnNext.onclick = wizNext;
+      } else if (step === 2) {
+          btnPrev.classList.remove('hidden');
+          btnNext.innerHTML = '下一步 <i class="ri-arrow-right-line"></i>';
+          btnNext.onclick = wizNext;
+      } else if (step === 3) {
+          btnPrev.classList.remove('hidden');
+          btnNext.innerHTML = '<i class="ri-check-double-line mr-1"></i> 完成创建';
+          btnNext.onclick = wizCreateProject;
+      }
+    }
+
+    function wizNext() {
+       wizGoToStep(currentWizStep + 1);
+    }
+
+    function wizPrev() {
+       wizGoToStep(currentWizStep - 1);
+    }
+
+    function wizCreateProject() {
+        // Validation for Step 3
+        const total = parseInt(document.getElementById('wiz-total-count').value) || 0;
+        const inputs = document.querySelectorAll('.wiz-group-count-input');
+        let sum = 0;
+        inputs.forEach(input => sum += (parseInt(input.value) || 0));
+        
+        if (sum !== total) {
+            alert(`分组人数之和 (${sum}) 不等于项目总人数 (${total})，请调整。`);
+            return;
+        }
+
+        // Success
+        alert("项目创建成功！");
+        cancelWizard();
+    }
+
+    /* ================= Wizard Step 1 Logic ================= */
+    function wizToggleShareSwitch() {
+        const isChecked = document.getElementById('wiz-np-share-switch').checked;
+        const label = document.getElementById('wiz-np-share-label');
+        
+        if (isChecked) {
+            label.innerText = '共享';
+            label.classList.remove('text-slate-500');
+            label.classList.add('text-brand-600');
+        } else {
+            label.innerText = '不共享';
+            label.classList.remove('text-brand-600');
+            label.classList.add('text-slate-500');
+        }
+        
+        document.querySelector('input[name="wiz-np-share"][value="yes"]').checked = isChecked;
+        document.querySelector('input[name="wiz-np-share"][value="no"]').checked = !isChecked;
+    }
+
+    function wizToggleCenterSelect() {
+        document.getElementById('wiz-center-dropdown').classList.toggle('hidden');
+    }
+
+    function wizUpdateCenterDisplay() {
+      const checked = Array.from(document.querySelectorAll('#wiz-center-dropdown input:checked')).map(el => el.value);
+      const displaySpan = document.getElementById('wiz-center-display-text');
+
+      if (checked.length === 0) {
+        displaySpan.innerText = "请选择参与中心...";
+        displaySpan.classList.add('text-slate-500');
+        displaySpan.classList.remove('text-slate-800');
+        SELECTED_CENTERS = [];
+        wizDisableDoctorSelectors();
+      } else {
+        displaySpan.innerText = `已选择 ${checked.length} 个中心`;
+        displaySpan.classList.remove('text-slate-500');
+        displaySpan.classList.add('text-slate-800');
+        SELECTED_CENTERS = checked;
+        wizEnableDoctorSelectors();
+        wizRenderDoctorOptions();
+      }
+    }
+
+    function wizDisableDoctorSelectors() {
+        const triggers = ['wiz-leader-trigger', 'wiz-collab-trigger', 'wiz-crc-trigger'];
+        triggers.forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.add('pointer-events-none', 'opacity-50');
+        });
+        document.getElementById('wiz-leader-display').innerText = '需先选中心';
+        document.getElementById('wiz-collab-display').innerText = '需先选中心';
+        document.getElementById('wiz-crc-display').innerText = '需先选中心';
+        leaderSelected = null;
+        collabSelected = new Set();
+        crcSelected = new Set();
+    }
+
+    function wizEnableDoctorSelectors() {
+        const triggers = ['wiz-leader-trigger', 'wiz-collab-trigger', 'wiz-crc-trigger'];
+        triggers.forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.remove('pointer-events-none', 'opacity-50');
+        });
+        // Reset text if it was "Need to select..."
+        if (document.getElementById('wiz-leader-display').innerText === '需先选中心') {
+             document.getElementById('wiz-leader-display').innerText = '请选择负责人...';
+        }
+        if (document.getElementById('wiz-collab-display').innerText === '需先选中心') {
+             document.getElementById('wiz-collab-display').innerText = '请选择协作医生...';
+        }
+        if (document.getElementById('wiz-crc-display').innerText === '需先选中心') {
+             document.getElementById('wiz-crc-display').innerText = '请选择 CRC...';
+        }
+    }
+
+    function wizRenderDoctorOptions() {
+      // Reusing GLOBAL DATA: DOCTOR_DATA, CRC_DATA
+      const leaderDD = document.getElementById('wiz-leader-dropdown');
+      const collabDD = document.getElementById('wiz-collab-dropdown');
+      const crcDD = document.getElementById('wiz-crc-dropdown');
+      
+      let leaderHtml = '';
+      let collabHtml = '';
+      let crcHtml = '';
+
+      SELECTED_CENTERS.forEach(center => {
+        (DOCTOR_DATA[center] || []).forEach(name => {
+          const id = `${center}-${name}`;
+          leaderHtml += `<button type="button" class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm" onclick="wizSelectLeader('${name}','${center}')"><span class="text-slate-700">${name}</span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></button>`;
+          
+          const checked = collabSelected.has(id) ? 'checked' : '';
+          collabHtml += `<label class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm cursor-pointer"><span class="flex items-center gap-2"><input type="checkbox" ${checked} onchange="wizToggleCollab('${name}','${center}')" class="rounded text-brand-600 border-slate-300 focus:ring-brand-500"><span class="text-slate-700">${name}</span></span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></label>`;
+        });
+        
+        (CRC_DATA[center] || []).forEach(name => {
+          const id = `${center}-${name}`;
+          const checked = crcSelected.has(id) ? 'checked' : '';
+          crcHtml += `<label class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm cursor-pointer"><span class="flex items-center gap-2"><input type="checkbox" ${checked} onchange="wizToggleCrc('${name}','${center}')" class="rounded text-brand-600 border-slate-300 focus:ring-brand-500"><span class="text-slate-700">${name}</span></span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></label>`;
+        });
+      });
+
+      leaderDD.innerHTML = leaderHtml || `<div class="px-3 py-2 text-xs text-slate-500">无数据</div>`;
+      collabDD.innerHTML = collabHtml || `<div class="px-3 py-2 text-xs text-slate-500">无数据</div>`;
+      crcDD.innerHTML = crcHtml || `<div class="px-3 py-2 text-xs text-slate-500">无数据</div>`;
+    }
+
+    function wizToggleLeaderDropdown() { document.getElementById('wiz-leader-dropdown').classList.toggle('hidden'); }
+    function wizToggleCollabDropdown() { document.getElementById('wiz-collab-dropdown').classList.toggle('hidden'); }
+    function wizToggleCrcDropdown() { document.getElementById('wiz-crc-dropdown').classList.toggle('hidden'); }
+
+    function wizSelectLeader(name, center) {
+        leaderSelected = { name, center };
+        document.getElementById('wiz-leader-display').innerText = `${name} (${center})`;
+        document.getElementById('wiz-leader-dropdown').classList.add('hidden');
+    }
+
+    function wizToggleCollab(name, center) {
+        const id = `${center}-${name}`;
+        if (collabSelected.has(id)) collabSelected.delete(id);
+        else collabSelected.add(id);
+        const count = collabSelected.size;
+        document.getElementById('wiz-collab-display').innerText = count ? `已选择 ${count} 人` : '请选择协作医生...';
+    }
+
+    function wizToggleCrc(name, center) {
+        const id = `${center}-${name}`;
+        if (crcSelected.has(id)) crcSelected.delete(id);
+        else crcSelected.add(id);
+        const count = crcSelected.size;
+        document.getElementById('wiz-crc-display').innerText = count ? `已选择 ${count} 人` : '请选择 CRC...';
+    }
+
+    function wizAddCriteria(type) {
+        const list = document.getElementById(type === 'inclusion' ? 'wiz-inclusion-list' : 'wiz-exclusion-list');
+        const row = document.createElement('div');
+        const color = type === 'inclusion' ? 'bg-emerald-50 border-emerald-300 focus:border-emerald-500' : 'bg-red-50 border-red-300 focus:border-red-500';
+        row.className = 'flex items-center gap-2 animate-fade-in';
+        row.innerHTML = `<input type="text" class="flex-1 rounded-lg border ${color} px-3 py-2.5 text-sm transition-colors" placeholder="${type==='inclusion'?'请输入纳入标准':'请输入排除标准'}"><button type="button" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>`;
+        list.appendChild(row);
+        row.querySelector('input').focus();
+    }
+
+    /* ================= Wizard Step 2 Logic ================= */
+    function wizToggleMatchMode() {
+        // Just visual updates or logic if needed
+        // Currently mode is just a selection
+    }
+
+    /* ================= Wizard Step 3 Logic ================= */
+    function wizInitDefaultGroups() {
+        const container = document.getElementById('wiz-group-list');
+        container.innerHTML = ''; 
+        wizCreateGroupElement('实验组', 'ri-flask-line');
+        wizCreateGroupElement('对照组', 'ri-shield-check-line');
+        wizDistributeCounts();
+    }
+
+    function wizCreateGroupElement(defaultName = '新分组', defaultIcon = 'ri-capsule-line') {
+        const container = document.getElementById('wiz-group-list');
+        const div = document.createElement('div');
+        div.className = "wiz-group-row flex items-center gap-3 animate-fade-in bg-white p-3 rounded-xl border border-slate-100 shadow-sm"; 
+        
+        div.innerHTML = `
+            <div onclick="wizRotateIcon(this)" class="w-10 h-10 flex-shrink-0 bg-slate-50 text-slate-500 rounded-lg flex items-center justify-center cursor-pointer hover:bg-indigo-50 hover:text-indigo-600 transition-colors" title="点击切换图标">
+                <i class="${defaultIcon} text-lg"></i>
+            </div>
+            <div class="flex-1">
+                <input type="text" value="${defaultName}" class="w-full text-sm border-0 bg-transparent border-b border-slate-200 focus:border-brand-500 focus:ring-0 px-1 py-1 text-slate-700 font-bold placeholder-slate-400" placeholder="分组名称">
+            </div>
+            <div class="w-24 relative">
+                <input type="number" oninput="wizValidateSum()" class="wiz-group-count-input w-full text-sm text-center border border-slate-200 rounded-lg py-2 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 bg-slate-50 font-bold text-slate-700">
+                <span class="absolute right-2 top-2 text-[10px] text-slate-400 pointer-events-none">人</span>
+            </div>
+            <button onclick="wizRemoveGroup(this)" class="wiz-delete-btn w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="删除分组">
+                <i class="ri-delete-bin-line"></i>
+            </button>
+        `;
+        container.appendChild(div);
+        wizUpdateDeleteButtons();
+    }
+
+    function wizAddNewGroup() {
+        if (document.querySelectorAll('.wiz-group-row').length >= 10) { alert("分组数量已达上限"); return; }
+        wizCreateGroupElement(`分组 ${document.querySelectorAll('.wiz-group-row').length + 1}`);
+        wizDistributeCounts();
+    }
+
+    function wizRemoveGroup(btn) {
+        if (document.querySelectorAll('.wiz-group-row').length <= 2) return;
+        btn.closest('.wiz-group-row').remove();
+        wizUpdateDeleteButtons();
+        wizDistributeCounts();
+    }
+
+    function wizUpdateDeleteButtons() {
+        const rows = document.querySelectorAll('.wiz-group-row');
+        const btns = document.querySelectorAll('.wiz-delete-btn');
+        if (rows.length <= 2) btns.forEach(b => b.classList.add('invisible', 'pointer-events-none'));
+        else btns.forEach(b => b.classList.remove('invisible', 'pointer-events-none'));
+    }
+
+    function wizDistributeCounts() {
+        const total = parseInt(document.getElementById('wiz-total-count').value) || 0;
+        const inputs = document.querySelectorAll('.wiz-group-count-input');
+        const count = inputs.length;
+        if (count === 0) return;
+        const baseVal = Math.floor(total / count);
+        let remainder = total % count;
+        
+        inputs.forEach((input, index) => {
+            let val = baseVal;
+            if (index < remainder) val += 1;
+            input.value = val;
+        });
+        wizValidateSum();
+    }
+
+    function wizValidateSum() {
+        const total = parseInt(document.getElementById('wiz-total-count').value) || 0;
+        const inputs = document.querySelectorAll('.wiz-group-count-input');
+        let sum = 0;
+        inputs.forEach(input => sum += (parseInt(input.value) || 0));
+        
+        const msgDiv = document.getElementById('wiz-validation-msg');
+        if (sum === total) {
+            msgDiv.className = "text-sm text-right text-emerald-600 font-bold bg-white px-3 py-1.5 rounded-lg border border-emerald-100 shadow-sm transition-colors";
+            msgDiv.innerHTML = `<i class="ri-checkbox-circle-line align-bottom"></i> 合计匹配 (${sum}人)`;
+        } else {
+            const diff = sum - total;
+            msgDiv.className = "text-sm text-right text-red-500 font-bold bg-white px-3 py-1.5 rounded-lg border border-red-100 shadow-sm transition-colors";
+            msgDiv.innerHTML = `<i class="ri-error-warning-line align-bottom"></i> 偏差 ${diff > 0 ? '+' + diff : diff} 人`;
+        }
+    }
+
+    function wizRotateIcon(el) {
+        const iconEl = el.querySelector('i');
+        const currentClass = Array.from(iconEl.classList).find(c => c.startsWith('ri-'));
+        let idx = ICON_LIST.indexOf(currentClass);
+        if (idx === -1) idx = 0;
+        let nextIdx = (idx + 1) % ICON_LIST.length;
+        iconEl.classList.remove(currentClass);
+        iconEl.classList.add(ICON_LIST[nextIdx]);
+    }
   </script>
   <!-- 浮动按钮：打开小程序模拟页面 -->
   <a href="miniprogram.html" target="_blank"
-    class="fixed bottom-8 right-8 z-[100] w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-lg shadow-brand-500/40 flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 group"
+    class="fixed bottom-20 right-8 z-[100] w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-lg shadow-brand-500/40 flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 group"
     title="打开小程序模拟">
     <i class="ri-smartphone-line text-2xl"></i>
     <span class="absolute right-full mr-3 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
