@@ -106,6 +106,11 @@
         <i class="ri-building-4-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
         <span>中心管理</span>
       </a>
+      <a href="#" onclick="switchTab('roles')" id="nav-roles"
+        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
+        <i class="ri-shield-user-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+        <span>角色管理</span>
+      </a>
       <a href="#" onclick="switchTab('users')" id="nav-users"
         class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
         <i class="ri-user-3-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
@@ -148,6 +153,17 @@
     <div class="p-8 max-w-full min-h-[calc(100vh-80px)]">
       <!-- 页面 1：项目管理 -->
       <div id="view-projects" class="fade-in space-y-6">
+        <!-- 头部标题区 -->
+        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+              项目管理
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-slate-100 text-slate-700">所有角色</span>
+            </h3>
+            <p class="text-slate-500 text-sm">管理所有临床研究项目</p>
+          </div>
+        </div>
+
         <!-- 筛选与操作区 -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <!-- Radio Button 样式筛选 -->
@@ -301,7 +317,11 @@
       <div id="view-departments" class="hidden fade-in space-y-6">
         <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <div>
-            <h3 class="text-lg font-bold text-slate-800">科室管理</h3>
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+              科室管理
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
+            </h3>
             <p class="text-slate-500 text-sm">定义项目关联的临床科室</p>
           </div>
           <div id="dept-add-panel" class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3">
@@ -980,11 +1000,73 @@
         </div>
       </div>
 
+      <!-- 页面：角色管理 -->
+      <div id="view-roles" class="hidden fade-in space-y-6">
+        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+              角色权限控制
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
+            </h3>
+            <p class="text-slate-500 text-sm">管理系统角色与功能权限</p>
+          </div>
+          <button onclick="openAddRoleDrawer()" id="btn-create-role"
+            class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all">
+            <i class="ri-add-line text-lg"></i> 创建角色
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex min-h-[600px] overflow-hidden">
+           <!-- Left: Role List -->
+           <div class="w-64 border-r border-slate-100 bg-slate-50/50 flex flex-col">
+              <div class="p-4 border-b border-slate-100">
+                 <div class="relative">
+                    <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" placeholder="搜索角色" class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-500 focus:bg-white transition-all bg-white">
+                 </div>
+              </div>
+              <div class="flex-1 overflow-y-auto p-3 space-y-1" id="role-list-container">
+                 <!-- JS Rendered -->
+              </div>
+           </div>
+           
+           <!-- Right: Permissions -->
+           <div class="flex-1 flex flex-col bg-white">
+              <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center">
+                 <div>
+                    <h2 class="text-xl font-bold text-slate-800" id="current-role-name">超级管理员</h2>
+                    <p class="text-xs text-slate-500 mt-1">拥有系统所有功能的操作权限</p>
+                 </div>
+                 <div class="flex items-center gap-4">
+                    <button onclick="toggleViewMode()" class="flex items-center gap-1 text-sm text-slate-500 hover:text-brand-600 transition-colors" id="view-mode-toggle">
+                       <i class="ri-refresh-line"></i>
+                       <span>切换为超级管理员</span>
+                    </button>
+                    <button id="btn-save-role-perms" onclick="toggleEditMode()" class="px-4 py-2 text-sm font-bold text-white bg-brand-600 rounded-lg hover:bg-brand-700 shadow-lg shadow-brand-500/30 transition-all">
+                       编辑权限配置
+                    </button>
+                 </div>
+              </div>
+              <div class="flex-1 overflow-y-auto p-8">
+                 <div class="space-y-8" id="role-permission-container">
+                    <!-- JS Rendered -->
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
+
       <!-- 页面 5：中心管理列表 (新增) -->
       <div id="view-centers" class="hidden fade-in space-y-6">
         <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <div>
-            <h3 class="text-lg font-bold text-slate-800">中心管理</h3>
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+              中心管理
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-emerald-100 text-emerald-700">中心管理员</span>
+            </h3>
             <p class="text-slate-500 text-sm">管理多中心临床试验的各个分中心信息</p>
           </div>
           <button
@@ -1314,7 +1396,11 @@
       <div id="view-users" class="hidden fade-in space-y-6">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h3 class="text-lg font-bold text-slate-800">用户管理</h3>
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+              用户管理
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
+            </h3>
             <p class="text-slate-500 text-sm">维护系统用户、组织归属与角色权限</p>
           </div>
           <div class="flex items-center gap-3">
@@ -1567,7 +1653,12 @@
         <!-- 头部操作 -->
         <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <div>
-            <h3 class="text-lg font-bold text-slate-800">预设维度库</h3>
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+              预设维度库
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-indigo-100 text-indigo-700">开发者账户</span>
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-purple-100 text-purple-700">超级管理员</span>
+              <span class="ml-2 px-2 py-0.5 text-xs font-normal rounded bg-emerald-100 text-emerald-700">中心管理员</span>
+            </h3>
             <p class="text-slate-500 text-sm">
               定义全局可用的随机化分层因素。
             </p>
@@ -2722,6 +2813,44 @@
     </div>
   </div>
 
+  <!-- 新增角色抽屉 -->
+  <div id="add-role-drawer" class="fixed inset-0 z-[70] hidden">
+     <div id="add-role-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeAddRoleDrawer()"></div>
+     <div id="add-role-panel" class="absolute top-0 right-0 h-full w-full max-w-lg bg-white shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+           <div>
+              <h3 class="text-lg font-bold text-slate-800">创建新角色</h3>
+              <p class="text-xs text-slate-500 mt-0.5">定义新角色的名称与基础权限</p>
+           </div>
+           <button onclick="closeAddRoleDrawer()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+              <i class="ri-close-line text-xl"></i>
+           </button>
+        </div>
+        <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+           <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">角色名称</label>
+              <input type="text" id="new-role-name" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500" placeholder="例如：数据录入员">
+           </div>
+           <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">角色描述</label>
+              <textarea id="new-role-desc" rows="3" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500" placeholder="简要描述该角色的职责与权限范围..."></textarea>
+           </div>
+           <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">功能权限配置</label>
+              <div class="space-y-4" id="new-role-perm-list">
+                 <!-- JS Rendered checkboxes -->
+              </div>
+           </div>
+        </div>
+        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+           <button onclick="closeAddRoleDrawer()" class="px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 rounded-xl transition-all">取消</button>
+           <button onclick="saveNewRole()" class="px-6 py-2.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/30 rounded-xl transition-all flex items-center gap-2">
+              <i class="ri-check-line"></i> 创建
+           </button>
+        </div>
+     </div>
+  </div>
+
   <script>
     /* ================= 新增科室抽屉逻辑 ================= */
     const ADD_DEPT_LIST = [
@@ -2794,6 +2923,253 @@
             alert("添加成功");
         }, 300);
     }
+
+    /* ================= 角色管理逻辑 (Roles) ================= */
+    const PERMISSION_CONFIG = {
+        "项目管理": ["查看", "新增", "编辑", "删除", "导入", "导出"],
+        "维度管理": ["查看", "新增", "编辑", "删除"],
+        "科室管理": ["查看", "新增", "删除"],
+        "中心管理": ["查看", "新增", "编辑", "删除"],
+        "用户管理": ["查看", "新增", "编辑", "重置密码"],
+        "角色管理": ["查看", "新增", "编辑", "分配权限"]
+    };
+
+    let ROLES = [
+        { id: 'admin', name: '超级管理员', desc: '拥有系统所有功能的操作权限', perms: 'all' },
+        { id: 'dev', name: '开发者', desc: '系统维护与开发人员', perms: 'all' },
+        { id: 'center_admin', name: '中心管理员', desc: '负责管理分中心事务与人员', perms: { "项目管理": ["查看"], "中心管理": ["查看", "编辑"], "用户管理": ["查看", "新增"] } },
+        { id: 'pi', name: '主要研究者 (PI)', desc: '负责项目临床研究执行与管理', perms: { "项目管理": ["查看", "编辑"], "维度管理": ["查看"], "用户管理": ["查看"] } },
+        { id: 'crc', name: 'CRC 协调员', desc: '协助研究者进行非医学性事务', perms: { "项目管理": ["查看"], "用户管理": ["查看"] } }
+    ];
+
+    let currentRoleId = 'admin';
+    let currentViewMode = 'dev'; // 'dev' or 'admin'
+    let isEditing = false;
+
+    function renderRoleList() {
+        const container = document.getElementById('role-list-container');
+        container.innerHTML = ROLES.map(role => `
+            <div onclick="selectRole('${role.id}')" 
+                 class="p-3 rounded-lg cursor-pointer transition-all ${role.id === currentRoleId ? 'bg-brand-50 border border-brand-100' : 'hover:bg-slate-50 border border-transparent'}">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="font-bold text-sm ${role.id === currentRoleId ? 'text-brand-700' : 'text-slate-700'}">${role.name}</span>
+                    ${role.perms === 'all' ? '<i class="ri-shield-star-line text-amber-500"></i>' : ''}
+                </div>
+                <p class="text-xs text-slate-400 truncate">${role.desc}</p>
+            </div>
+        `).join('');
+        
+        renderRolePermissions();
+    }
+
+    function selectRole(id) {
+        currentRoleId = id;
+        renderRoleList();
+    }
+
+    function toggleViewMode() {
+        currentViewMode = currentViewMode === 'dev' ? 'admin' : 'dev';
+        const toggleBtn = document.getElementById('view-mode-toggle');
+        const createBtn = document.getElementById('btn-create-role');
+        const saveBtn = document.getElementById('btn-save-role-perms');
+
+        if (currentViewMode === 'dev') {
+            toggleBtn.innerHTML = '<i class="ri-refresh-line"></i> <span>切换为超级管理员</span>';
+            createBtn.classList.remove('hidden');
+            saveBtn.classList.remove('hidden');
+        } else {
+            toggleBtn.innerHTML = '<i class="ri-refresh-line"></i> <span>切换为开发者</span>';
+            createBtn.classList.add('hidden');
+            saveBtn.classList.add('hidden');
+            if (isEditing) toggleEditMode(); 
+        }
+        renderRolePermissions();
+    }
+
+    function toggleEditMode() {
+        isEditing = !isEditing;
+        const btn = document.getElementById('btn-save-role-perms');
+        
+        if (isEditing) {
+            btn.innerText = '保存编辑配置';
+            btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-500/30');
+            btn.classList.remove('bg-brand-600', 'hover:bg-brand-700', 'shadow-brand-500/30');
+        } else {
+            alert("角色权限编辑成功！");
+            btn.innerText = '编辑权限配置';
+            btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-500/30');
+            btn.classList.add('bg-brand-600', 'hover:bg-brand-700', 'shadow-brand-500/30');
+        }
+        renderRolePermissions();
+    }
+
+    function renderRolePermissions() {
+        const role = ROLES.find(r => r.id === currentRoleId);
+        if (!role) return;
+
+        document.getElementById('current-role-name').innerText = role.name;
+        const container = document.getElementById('role-permission-container');
+        
+        if (role.perms === 'all') {
+            container.innerHTML = `
+                <div class="p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                    <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ri-shield-star-line text-3xl text-amber-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">最高权限账户</h3>
+                    <p class="text-slate-500 text-sm">当前角色拥有系统的所有操作权限，无需单独配置。</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        for (const [module, actions] of Object.entries(PERMISSION_CONFIG)) {
+            const userPerms = role.perms[module] || [];
+            
+            html += `
+                <div>
+                    <h4 class="font-bold text-slate-700 mb-3 flex items-center">
+                        <span class="w-1 h-4 bg-brand-500 rounded-full mr-2"></span>
+                        ${module}
+                    </h4>
+            `;
+
+            if (currentViewMode === 'admin') {
+                if (userPerms.length === 0) {
+                    html += `<p class="text-sm text-slate-400 italic">无权限</p>`;
+                } else {
+                    html += `<div class="flex flex-wrap gap-2">`;
+                    html += actions.filter(a => userPerms.includes(a)).map(action => `
+                        <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded border border-slate-200">${action}</span>
+                    `).join('');
+                    html += `</div>`;
+                }
+            } else {
+                html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-3">`;
+                html += actions.map(action => {
+                    const isChecked = userPerms.includes(action);
+                    const isDisabled = !isEditing;
+                    
+                    return `
+                        <label class="flex items-center p-2 rounded border ${isChecked ? 'bg-brand-50 border-brand-200' : 'bg-white border-slate-200'} ${isDisabled ? 'opacity-80 cursor-not-allowed' : 'cursor-pointer'}">
+                            <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500 border-slate-300 mr-2" 
+                                ${isChecked ? 'checked' : ''} 
+                                ${isDisabled ? 'disabled' : ''}
+                                onchange="updateRolePerm('${module}', '${action}', this.checked)">
+                            <span class="text-sm ${isChecked ? 'text-brand-700 font-medium' : 'text-slate-600'}">${action}</span>
+                        </label>
+                    `;
+                }).join('');
+                html += `</div>`;
+            }
+            
+            html += `</div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function updateRolePerm(module, action, checked) {
+        const role = ROLES.find(r => r.id === currentRoleId);
+        if (role.perms === 'all') return;
+        
+        if (!role.perms[module]) role.perms[module] = [];
+        
+        if (checked) {
+            if (!role.perms[module].includes(action)) role.perms[module].push(action);
+        } else {
+            role.perms[module] = role.perms[module].filter(a => a !== action);
+        }
+        
+        renderRolePermissions();
+    }
+
+    /* ================= 新增角色抽屉逻辑 ================= */
+    function openAddRoleDrawer() {
+        const drawer = document.getElementById('add-role-drawer');
+        const backdrop = document.getElementById('add-role-backdrop');
+        const panel = document.getElementById('add-role-panel');
+        
+        drawer.classList.remove('hidden');
+        setTimeout(() => {
+            backdrop.classList.remove('opacity-0');
+            panel.classList.remove('translate-x-full');
+        }, 10);
+
+        document.getElementById('new-role-name').value = '';
+        document.getElementById('new-role-desc').value = '';
+        renderNewRolePerms();
+    }
+
+    function closeAddRoleDrawer() {
+        const drawer = document.getElementById('add-role-drawer');
+        const backdrop = document.getElementById('add-role-backdrop');
+        const panel = document.getElementById('add-role-panel');
+        
+        backdrop.classList.add('opacity-0');
+        panel.classList.add('translate-x-full');
+        setTimeout(() => drawer.classList.add('hidden'), 300);
+    }
+
+    function renderNewRolePerms() {
+        const container = document.getElementById('new-role-perm-list');
+        let html = '';
+        for (const [module, actions] of Object.entries(PERMISSION_CONFIG)) {
+            html += `
+                <div class="border border-slate-200 rounded-lg p-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-slate-700 text-sm">${module}</span>
+                        <label class="text-xs text-brand-600 cursor-pointer hover:underline">
+                            <input type="checkbox" class="hidden" onchange="toggleAllNewRolePerm('${module}', this.checked)"> 全选
+                        </label>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${actions.map(action => `
+                            <label class="flex items-center bg-slate-50 px-2 py-1 rounded border border-slate-200 hover:border-brand-300 cursor-pointer">
+                                <input type="checkbox" name="new-role-perm" data-module="${module}" value="${action}" class="rounded text-brand-600 focus:ring-brand-500 border-slate-300 mr-1.5">
+                                <span class="text-xs text-slate-600">${action}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    function toggleAllNewRolePerm(module, checked) {
+        const inputs = document.querySelectorAll(`input[name="new-role-perm"][data-module="${module}"]`);
+        inputs.forEach(input => input.checked = checked);
+    }
+
+    function saveNewRole() {
+        const name = document.getElementById('new-role-name').value.trim();
+        const desc = document.getElementById('new-role-desc').value.trim();
+        if (!name) { alert("请输入角色名称"); return; }
+        
+        const perms = {};
+        document.querySelectorAll('input[name="new-role-perm"]:checked').forEach(input => {
+            const module = input.getAttribute('data-module');
+            const action = input.value;
+            if (!perms[module]) perms[module] = [];
+            perms[module].push(action);
+        });
+
+        const newId = 'role_' + Date.now();
+        ROLES.push({
+            id: newId,
+            name: name,
+            desc: desc || '自定义新角色',
+            perms: perms
+        });
+
+        closeAddRoleDrawer();
+        if (document.getElementById('view-roles').classList.contains('hidden') === false) {
+            renderRoleList();
+            selectRole(newId);
+        }
+        alert("新角色创建成功！");
+    }
   </script>
 
   <!-- 简单的 JS 逻辑处理页面切换 -->
@@ -2803,6 +3179,7 @@
       document.getElementById("view-project-detail").classList.add("hidden");
       document.getElementById("view-dimensions").classList.add("hidden");
       document.getElementById("view-departments").classList.add("hidden");
+      document.getElementById("view-roles").classList.add("hidden");
       document.getElementById("view-centers").classList.add("hidden");
       document.getElementById("view-center-detail").classList.add("hidden");
       document.getElementById("view-users").classList.add("hidden");
@@ -2839,6 +3216,13 @@
           .getElementById("nav-departments")
           .classList.add("active", "bg-brand-50", "text-brand-600");
         document.getElementById("page-title").innerText = "科室管理";
+      } else if (tabName === "roles") {
+        document.getElementById("view-roles").classList.remove("hidden");
+        document
+          .getElementById("nav-roles")
+          .classList.add("active", "bg-brand-50", "text-brand-600");
+        document.getElementById("page-title").innerText = "角色管理";
+        renderRoleList(); // Initialize
       } else if (tabName === "centers") {
         document.getElementById("view-centers").classList.remove("hidden");
         document
@@ -4181,6 +4565,15 @@
         }
     }
   </script>
+  <!-- 浮动按钮：打开小程序模拟页面 -->
+  <a href="miniprogram.html" target="_blank"
+    class="fixed bottom-8 right-8 z-[100] w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-lg shadow-brand-500/40 flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 group"
+    title="打开小程序模拟">
+    <i class="ri-smartphone-line text-2xl"></i>
+    <span class="absolute right-full mr-3 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+      小程序模拟
+    </span>
+  </a>
 </body>
 
 </html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小程序模拟</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+        body { font-family: "Inter", sans-serif; }
+        
+        /* 隐藏滚动条 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* 手机外壳阴影 */
+        .phone-shadow {
+            box-shadow: 
+                0 0 0 2px #1f2937,
+                0 0 0 6px #374151,
+                0 20px 50px -10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-8 overflow-hidden">
+    
+    <!-- 手机容器 -->
+    <div class="relative w-[375px] h-[812px] bg-white rounded-[40px] phone-shadow overflow-hidden flex flex-col border-8 border-slate-800">
+        
+        <!-- 顶部刘海/状态栏区域 -->
+        <div class="absolute top-0 left-0 right-0 h-11 z-50 flex justify-between items-center px-6 text-black pointer-events-none">
+            <div class="text-xs font-semibold time-display">9:41</div>
+            <div class="flex items-center gap-1.5">
+                <i class="ri-signal-wifi-fill text-xs"></i>
+                <i class="ri-battery-fill text-xs"></i>
+            </div>
+        </div>
+        
+        <!-- 顶部刘海遮罩 -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[30px] bg-slate-800 rounded-b-2xl z-50"></div>
+
+        <!-- 小程序导航栏 -->
+        <div class="mt-8 h-12 flex items-center justify-center relative border-b border-slate-100 bg-white z-40">
+            <div class="font-bold text-base text-slate-800">CRS 助手</div>
+            <!-- 胶囊按钮模拟 -->
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 w-[80px] h-[30px] rounded-full border border-slate-200 bg-white/50 flex items-center justify-around px-2">
+                <i class="ri-more-fill text-slate-700 text-lg"></i>
+                <div class="w-[1px] h-4 bg-slate-200"></div>
+                <i class="ri-checkbox-blank-circle-line text-slate-700 text-lg"></i>
+            </div>
+        </div>
+
+        <!-- 内容区域 (可滚动) -->
+        <div class="flex-1 overflow-y-auto no-scrollbar bg-slate-50 relative">
+            
+            <!-- 占位内容 -->
+            <div class="flex flex-col items-center justify-center h-full p-6 space-y-6">
+                <div class="w-24 h-24 bg-brand-50 rounded-full flex items-center justify-center animate-bounce shadow-sm">
+                    <i class="ri-code-s-slash-line text-4xl text-brand-600"></i>
+                </div>
+                
+                <div class="text-center space-y-2">
+                    <h2 class="text-xl font-bold text-slate-800">功能开发中</h2>
+                    <p class="text-sm text-slate-500 leading-relaxed max-w-[240px]">
+                        这里是小程序端的主界面容器。<br>后续将在此处实现移动端交互逻辑。
+                    </p>
+                </div>
+
+                <div class="w-full space-y-3 pt-8">
+                    <!-- 模拟骨架屏条目 -->
+                    <div class="h-16 bg-white rounded-xl shadow-sm border border-slate-100 w-full animate-pulse flex items-center px-4 gap-4">
+                        <div class="w-10 h-10 bg-slate-100 rounded-full"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-3 bg-slate-100 rounded w-2/3"></div>
+                            <div class="h-2 bg-slate-100 rounded w-1/2"></div>
+                        </div>
+                    </div>
+                    <div class="h-16 bg-white rounded-xl shadow-sm border border-slate-100 w-full animate-pulse flex items-center px-4 gap-4">
+                        <div class="w-10 h-10 bg-slate-100 rounded-full"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-3 bg-slate-100 rounded w-2/3"></div>
+                            <div class="h-2 bg-slate-100 rounded w-1/2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-8">
+                    <a href="index.html" class="text-xs text-brand-600 font-medium flex items-center gap-1 hover:underline opacity-80">
+                        <i class="ri-arrow-left-line"></i> 返回 PC 控制台
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 底部 Home Indicator -->
+        <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-[120px] h-1 bg-slate-800 rounded-full z-50"></div>
+    </div>
+
+    <!-- 简单的背景装饰 -->
+    <div class="fixed top-0 left-0 w-full h-full -z-10 bg-slate-100">
+        <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-brand-100/50 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-indigo-100/50 rounded-full blur-3xl"></div>
+    </div>
+
+    <script>
+        // 简单的配置 Tailwind 颜色
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: "#eef2ff",
+                            100: "#e0e7ff",
+                            500: "#6366f1",
+                            600: "#4f46e5",
+                            900: "#1e1b4b",
+                        },
+                    },
+                },
+            },
+        };
+
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('.time-display').innerText = `${hours}:${minutes}`;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
