@@ -77,56 +77,63 @@
 
 <body class="bg-slate-50 text-slate-800 h-screen flex overflow-hidden">
   <!-- 左侧导航栏 -->
-  <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shadow-sm z-20 transition-all duration-300">
-    <div class="h-20 flex items-center px-6 border-b border-slate-100">
-      <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center mr-3 shadow-sm shadow-brand-200">
-        <i class="ri-pie-chart-2-fill text-white text-xl"></i>
+  <aside id="sidebar" class="w-72 bg-white border-r border-slate-200 flex flex-col shadow-sm z-20 transition-all duration-300">
+    <div class="relative h-20 flex items-center px-6 border-b border-slate-100 transition-all duration-300 overflow-hidden whitespace-nowrap">
+      <div class="w-8 h-8 min-w-[2rem] rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+        <img src="logo.svg" alt="logo" class="w-8 h-8" />
       </div>
-      <h1 class="font-bold text-lg tracking-wide text-slate-800">中央随机化系统</h1>
+      <div class="flex flex-col gap-2 transition-all duration-300 origin-left" id="sidebar-header-content">
+        <h1 class="font-bold text-lg tracking-wide text-slate-800">中央随机化系统</h1>
+      </div>
     </div>
 
-    <nav class="flex-1 py-6 space-y-2 px-3">
+    <nav class="flex-1 py-6 space-y-2 px-3 overflow-x-hidden">
       <a href="#" onclick="switchTab('projects')" id="nav-projects"
-        class="nav-item active bg-brand-50 text-brand-600 flex items-center px-4 py-3 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
-        <i class="ri-apps-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-        <span>项目管理</span>
+        class="nav-item active bg-brand-50 text-brand-600 flex items-center px-4 py-3 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+        <i class="ri-apps-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+        <span class="nav-text transition-all duration-300 origin-left">项目管理</span>
       </a>
       <a href="#" onclick="switchTab('dimensions')" id="nav-dimensions"
-        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
-        <i class="ri-equalizer-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-        <span>维度管理</span>
+        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+        <i class="ri-equalizer-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+        <span class="nav-text transition-all duration-300 origin-left">维度管理</span>
       </a>
       <a href="#" onclick="switchTab('departments')" id="nav-departments"
-        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
-        <i class="ri-hospital-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-        <span>科室管理</span>
+        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+        <i class="ri-hospital-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+        <span class="nav-text transition-all duration-300 origin-left">科室管理</span>
       </a>
       <a href="#" onclick="switchTab('centers')" id="nav-centers"
-        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
-        <i class="ri-building-4-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-        <span>中心管理</span>
+        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+        <i class="ri-building-4-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+        <span class="nav-text transition-all duration-300 origin-left">中心管理</span>
       </a>
       <a href="#" onclick="switchTab('roles')" id="nav-roles"
-        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
-        <i class="ri-shield-user-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-        <span>角色管理</span>
+        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+        <i class="ri-shield-user-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+        <span class="nav-text transition-all duration-300 origin-left">角色管理</span>
       </a>
       <a href="#" onclick="switchTab('users')" id="nav-users"
-        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium">
-        <i class="ri-user-3-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-        <span>用户管理</span>
+        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+        <i class="ri-user-3-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+        <span class="nav-text transition-all duration-300 origin-left">用户管理</span>
       </a>
     </nav>
 
-    <div class="p-6 border-t border-slate-100 bg-slate-50/50">
-      <div class="flex items-center gap-3">
-        <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff"
-          class="w-10 h-10 rounded-full border-2 border-white shadow-sm" />
-        <div>
-          <p class="text-sm font-bold text-slate-700">管理员</p>
-          <p class="text-xs text-slate-500">admin@crs.com</p>
+    <div id="sidebar-footer" class="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex flex-row items-center justify-between transition-all duration-300 overflow-hidden">
+      <div class="flex items-center justify-center gap-3 group cursor-pointer overflow-hidden flex-shrink-0" onclick="window.location.reload()" title="刷新系统">
+        <div class="w-8 h-8 min-w-[2rem] rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-brand-600 group-hover:border-brand-200 transition-all shadow-sm flex-shrink-0">
+           <i class="ri-refresh-line text-lg group-hover:rotate-180 transition-transform duration-700"></i>
+        </div>
+        <div id="sidebar-version-info" class="transition-all duration-300 origin-left whitespace-nowrap">
+          <p class="text-xs font-bold text-slate-600 font-mono">v1.0.0</p>
+          <p class="text-[10px] text-slate-400 font-mono">commitid</p>
         </div>
       </div>
+      
+      <button onclick="toggleSidebar()" id="sidebar-toggle-btn" class="text-slate-400 hover:text-brand-600 transition-colors p-1 rounded-md hover:bg-slate-100 flex-shrink-0">
+        <i class="ri-menu-fold-line text-xl transition-transform duration-300"></i>
+      </button>
     </div>
   </aside>
 
@@ -158,6 +165,30 @@
           class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
           <i class="ri-settings-3-line"></i>
         </button>
+        <div class="h-6 w-px bg-slate-200 mx-2"></div>
+        <div class="relative">
+          <div onclick="toggleUserDropdown()" class="flex items-center gap-3 cursor-pointer hover:bg-slate-50 p-1.5 rounded-lg transition-colors select-none">
+             <div class="text-right hidden md:block">
+              <p class="text-sm font-bold text-slate-700">管理员</p>
+              <p class="text-xs text-slate-500">admin@crs.com</p>
+            </div>
+            <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff"
+              class="w-9 h-9 rounded-full border border-slate-200 shadow-sm" />
+          </div>
+          
+          <!-- Dropdown Menu -->
+          <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-50 transform origin-top-right transition-all duration-200">
+            <button class="w-full text-left px-4 py-2.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-2 transition-colors">
+              <i class="ri-lock-password-line text-lg"></i>
+              <span>修改密码</span>
+            </button>
+            <div class="h-px bg-slate-100 my-1"></div>
+            <button class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 hover:text-red-600 flex items-center gap-2 transition-colors">
+              <i class="ri-logout-box-r-line text-lg"></i>
+              <span>退出登录</span>
+            </button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -318,7 +349,7 @@
       </div>
 
       <!-- 页面 4：科室管理 (新增) -->
-      <div id="view-departments" class="hidden fade-in space-y-6">
+      <div id="view-departments" class="hidden fade-in space-y-6 p-8">
         <div class="flex justify-start mb-6">
           <div id="dept-add-panel" class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3 shadow-sm">
             <div class="relative">
@@ -411,7 +442,7 @@
         </div>
       </div>
       <!-- 页面 2：项目详情 (默认隐藏) -->
-      <div id="view-project-detail" class="hidden fade-in space-y-6">
+      <div id="view-project-detail" class="hidden fade-in space-y-6 p-8">
         <!-- 返回面包屑 -->
         <div class="flex items-center justify-between">
           <button onclick="backToProjects()"
@@ -997,8 +1028,8 @@
       </div>
 
       <!-- 页面：角色管理 -->
-      <div id="view-roles" class="hidden fade-in space-y-6">
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex min-h-[600px] overflow-hidden">
+      <div id="view-roles" class="hidden fade-in space-y-6 p-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex min-h-[720px] overflow-hidden">
            <!-- Left: Role List -->
            <div class="w-64 border-r border-slate-100 bg-slate-50/50 flex flex-col">
               <div class="p-4 border-b border-slate-100">
@@ -1039,7 +1070,7 @@
       </div>
 
       <!-- 页面 5：中心管理列表 (新增) -->
-      <div id="view-centers" class="hidden fade-in space-y-6">
+      <div id="view-centers" class="hidden fade-in space-y-6 p-8">
         <div class="flex justify-end mb-6">
           <button
             class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all">
@@ -1365,7 +1396,7 @@
       </div>
 
       <!-- 页面 7：用户管理 (默认隐藏) -->
-      <div id="view-users" class="hidden fade-in space-y-6">
+      <div id="view-users" class="hidden fade-in space-y-6 p-8">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-4">
           <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-end">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
@@ -1613,7 +1644,7 @@
       </div>
 
       <!-- 页面 3：维度管理 (默认隐藏) -->
-      <div id="view-dimensions" class="hidden fade-in space-y-6">
+      <div id="view-dimensions" class="hidden fade-in space-y-6 p-8">
         <!-- 操作区 -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <!-- 筛选 -->
@@ -5561,6 +5592,68 @@
         iconEl.classList.remove(currentClass);
         iconEl.classList.add(ICON_LIST[nextIdx]);
     }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const headerContent = document.getElementById('sidebar-header-content');
+      const navTexts = document.querySelectorAll('.nav-text');
+      const versionInfo = document.getElementById('sidebar-version-info');
+      const footer = document.getElementById('sidebar-footer');
+      const toggleBtnIcon = document.querySelector('#sidebar-toggle-btn i');
+      
+      const isExpanded = sidebar.classList.contains('w-72');
+      
+      if (isExpanded) {
+        // Collapse
+        sidebar.classList.replace('w-72', 'w-20');
+        
+        headerContent.classList.add('opacity-0', 'w-0');
+        
+        navTexts.forEach(t => t.classList.add('opacity-0', 'w-0'));
+        
+        versionInfo.classList.add('opacity-0', 'w-0');
+        
+        footer.classList.replace('px-6', 'px-2');
+        footer.classList.replace('flex-row', 'flex-col'); 
+        footer.classList.replace('justify-between', 'justify-center');
+        footer.classList.add('gap-4');
+        
+        toggleBtnIcon.classList.replace('ri-menu-fold-line', 'ri-menu-unfold-line');
+      } else {
+        // Expand
+        sidebar.classList.replace('w-20', 'w-72');
+        
+        headerContent.classList.remove('opacity-0', 'w-0');
+        
+        navTexts.forEach(t => t.classList.remove('opacity-0', 'w-0'));
+        
+        versionInfo.classList.remove('opacity-0', 'w-0');
+        
+        footer.classList.replace('px-2', 'px-6');
+        footer.classList.replace('flex-col', 'flex-row');
+        footer.classList.replace('justify-center', 'justify-between');
+        footer.classList.remove('gap-4');
+
+        toggleBtnIcon.classList.replace('ri-menu-unfold-line', 'ri-menu-fold-line');
+      }
+    }
+
+    function toggleUserDropdown() {
+      const dropdown = document.getElementById('user-dropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('user-dropdown');
+      const profileTrigger = dropdown.previousElementSibling; // The profile div
+      
+      if (!dropdown.classList.contains('hidden') && 
+          !dropdown.contains(event.target) && 
+          !profileTrigger.contains(event.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
   </script>
   <!-- 浮动按钮：打开小程序模拟页面 -->
   <a href="miniprogram.html" target="_blank"
