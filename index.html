@@ -2955,44 +2955,38 @@
           </div>
 
           <!-- Step 3 Content: Grouping -->
-          <div id="wiz-step-content-3" class="hidden space-y-6 animate-fade-in">
-              <div class="bg-slate-50 rounded-2xl border border-slate-200 p-8 space-y-8 relative overflow-hidden">
-                  <!-- Decorative BG -->
-                  <div class="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-                      <i class="ri-group-2-fill text-9xl text-slate-400"></i>
-                  </div>
-
-                  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10">
-                      <div>
-                          <h4 class="text-lg font-bold text-slate-800 flex items-center">
-                              <i class="ri-equalizer-line mr-2 text-brand-500"></i> 规模与分组设定
-                          </h4>
-                          <p class="text-sm text-slate-500 mt-1">设定项目的总样本量及各分组的配额</p>
-                      </div>
-                      <div id="wiz-validation-msg" class="text-sm text-right text-emerald-600 font-bold bg-white px-3 py-1.5 rounded-lg border border-emerald-100 shadow-sm">
-                          <i class="ri-checkbox-circle-line align-bottom"></i> 合计匹配
-                      </div>
-                  </div>
-
-                  <div class="relative z-10">
-                      <label class="block text-sm font-bold text-slate-700 mb-2">项目总人数</label>
-                      <div class="relative max-w-xs">
-                          <input type="number" id="wiz-total-count" value="100" min="2" oninput="wizDistributeCounts()" class="w-full rounded-xl border-slate-300 bg-white border px-4 py-3 text-xl font-bold text-slate-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-colors shadow-sm">
-                          <span class="absolute right-4 top-3.5 text-slate-400 font-medium">人</span>
-                      </div>
-                  </div>
-
-                  <div id="wiz-group-list" class="space-y-3 relative z-10">
-                       <!-- Injected by JS -->
-                  </div>
-
-                  <button type="button" onclick="wizAddNewGroup()" class="relative z-10 w-full py-4 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-white transition-all flex justify-center items-center gap-2 group shadow-sm hover:shadow-md">
-                      <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center group-hover:bg-brand-100 group-hover:text-brand-600 transition-colors">
-                          <i class="ri-add-line text-lg"></i>
-                      </div>
-                      增加新的分组
-                  </button>
+          <div id="wiz-step-content-3" class="hidden animate-fade-in pb-10">
+              <!-- Header -->
+              <div class="flex justify-between items-center mb-6">
+                   <h3 class="text-xl font-bold text-slate-800 border-l-4 border-amber-500 pl-3">第三步：配置人数配额</h3>
+                   <button onclick="wizResetUniform()" class="text-slate-500 hover:text-brand-600 text-sm font-medium flex items-center gap-1 transition-colors">
+                       <i class="ri-refresh-line"></i> 重置均匀分配
+                   </button>
               </div>
+
+              <!-- Total Count Bar -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex items-center gap-4">
+                  <label class="font-bold text-slate-700">项目总人数:</label>
+                  <div class="relative w-32">
+                      <input type="number" id="wiz-total-count" value="100" oninput="wizOnTotalChange()" class="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg font-bold text-center focus:ring-brand-500 focus:border-brand-500 transition-shadow">
+                      <span class="absolute right-3 top-2.5 text-slate-400 text-xs">人</span>
+                  </div>
+                  <div class="text-xs text-slate-400 flex-1 text-right hidden sm:block">
+                      * 修改总人数将自动平均分配给各分组
+                  </div>
+              </div>
+
+              <!-- Groups Container -->
+              <div id="wiz-group-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                  <!-- Cards injected here by JS -->
+              </div>
+              
+              <!-- Add Group Button -->
+              <button type="button" onclick="wizAddNewGroup()" class="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-slate-50 transition-all flex justify-center items-center gap-2 mt-6">
+                  <i class="ri-add-line text-lg"></i> 增加新的分组
+              </button>
+              
+              <p class="text-center text-xs text-slate-400 mt-6">* 修改数值后，系统将自动校验总人数是否匹配项目设定。</p>
           </div>
 
       </div>
@@ -5598,99 +5592,245 @@
     }
 
     /* ================= Wizard Step 3 Logic ================= */
+    let WIZ_FACTORS = [];
+
     function wizInitDefaultGroups() {
-        const container = document.getElementById('wiz-group-list');
-        container.innerHTML = ''; 
-        wizCreateGroupElement('实验组', 'ri-flask-line');
-        wizCreateGroupElement('对照组', 'ri-shield-check-line');
-        wizDistributeCounts();
+        const container = document.getElementById('wiz-group-container');
+        container.innerHTML = '';
+        
+        // Prepare Factors (Cartesian Product)
+        WIZ_FACTORS = wizGetCartesianProduct();
+        
+        // Initial Groups
+        wizCreateGroupCard('实验组', 'ri-flask-line', 'indigo', 50);
+        wizCreateGroupCard('对照组', 'ri-shield-check-line', 'emerald', 50);
+        
+        // Initial Distribution
+        wizOnTotalChange();
     }
 
-    function wizCreateGroupElement(defaultName = '新分组', defaultIcon = 'ri-capsule-line') {
-        const container = document.getElementById('wiz-group-list');
-        const div = document.createElement('div');
-        div.className = "wiz-group-row flex items-center gap-3 animate-fade-in bg-white p-3 rounded-xl border border-slate-100 shadow-sm"; 
+    function wizGetCartesianProduct() {
+        const dims = [];
+        // Checkboxes in Step 2
+        if (document.querySelector('input[value="gender"]').checked) dims.push(['男', '女']);
+        if (document.querySelector('input[value="age"]').checked) dims.push(['4-7', '8-10']);
+        if (document.querySelector('input[value="diopter"]').checked) dims.push(['-1.0~-0.5', '-0.4~0']);
         
+        if (dims.length === 0) return ['默认']; // Fallback
+        
+        // Generate product
+        return dims.reduce((acc, curr) => {
+            const res = [];
+            acc.forEach(a => {
+                curr.forEach(b => {
+                    res.push(a + ' ' + b); // Using space separator
+                });
+            });
+            return res;
+        });
+    }
+
+    function wizCreateGroupCard(name, icon, colorTheme, initialCount) {
+        const container = document.getElementById('wiz-group-container');
+        const groupId = 'wiz-group-' + Date.now() + Math.random().toString(36).substr(2, 5);
+        
+        const theme = {
+            indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-100', badge: 'bg-indigo-100 text-indigo-700' },
+            emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100', badge: 'bg-emerald-100 text-emerald-700' },
+            slate: { bg: 'bg-slate-50', text: 'text-slate-600', border: 'border-slate-100', badge: 'bg-slate-100 text-slate-700' }
+        }[colorTheme] || { bg: 'bg-slate-50', text: 'text-slate-600', border: 'border-slate-100', badge: 'bg-slate-100 text-slate-700' };
+
+        const div = document.createElement('div');
+        div.id = groupId;
+        div.className = `wiz-group-card rounded-2xl border ${theme.border} ${theme.bg} overflow-hidden transition-all shadow-sm hover:shadow-md`;
+        
+        // Factors HTML
+        let factorsHtml = '';
+        WIZ_FACTORS.forEach((f, idx) => {
+            // Parse factor string for better display (e.g. "男 4-7 -1.0~0.5" -> Chips)
+            const chips = f.split(' ').map(s => `<span class="bg-white/60 px-1.5 py-0.5 rounded text-slate-500 border border-slate-200/50">${s}</span>`).join('');
+            
+            factorsHtml += `
+                <div class="flex items-center justify-between gap-4 p-3 bg-white/50 rounded-xl border border-white/60">
+                    <div class="flex flex-wrap gap-1 text-[10px] font-medium leading-none">
+                        ${chips}
+                    </div>
+                    <input type="number" 
+                        class="wiz-factor-input w-16 text-center text-sm font-bold text-slate-700 bg-white border border-slate-200 rounded-lg py-1 focus:ring-1 focus:ring-brand-500 focus:border-brand-500"
+                        value="0" 
+                        min="0"
+                        data-group-id="${groupId}"
+                        oninput="wizOnFactorChange('${groupId}')"
+                    >
+                </div>
+            `;
+        });
+
         div.innerHTML = `
-            <div onclick="wizRotateIcon(this)" class="w-10 h-10 flex-shrink-0 bg-slate-50 text-slate-500 rounded-lg flex items-center justify-center cursor-pointer hover:bg-indigo-50 hover:text-indigo-600 transition-colors" title="点击切换图标">
-                <i class="${defaultIcon} text-lg"></i>
+            <!-- Header -->
+            <div class="p-4 flex items-center justify-between border-b ${theme.border} bg-white/30 backdrop-blur-sm">
+                <div class="flex items-center gap-3">
+                    <i class="${icon} ${theme.text} text-xl"></i>
+                    <input type="text" value="${name}" class="bg-transparent border-0 border-b border-transparent hover:border-slate-300 focus:border-brand-500 focus:ring-0 text-slate-800 font-bold w-24 sm:w-32 transition-colors px-0 py-0.5">
+                </div>
+                <div class="flex items-center gap-2">
+                     <div class="relative">
+                        <input type="number" 
+                            class="wiz-group-total-input w-20 text-center font-bold text-sm rounded-lg border-0 bg-white shadow-sm ring-1 ring-slate-200 focus:ring-2 focus:ring-brand-500 py-1.5 text-slate-700"
+                            value="${initialCount}"
+                            min="${WIZ_FACTORS.length}"
+                            oninput="wizOnGroupTotalChange('${groupId}')"
+                        >
+                     </div>
+                     <button onclick="wizToggleGroupCollapse('${groupId}')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/50 text-slate-400 transition-colors">
+                        <i class="ri-arrow-up-s-line transition-transform duration-300 transform" id="icon-${groupId}"></i>
+                     </button>
+                </div>
             </div>
-            <div class="flex-1">
-                <input type="text" value="${defaultName}" class="w-full text-sm border-0 bg-transparent border-b border-slate-200 focus:border-brand-500 focus:ring-0 px-1 py-1 text-slate-700 font-bold placeholder-slate-400" placeholder="分组名称">
+            
+            <!-- Content (Factors) -->
+            <div id="content-${groupId}" class="p-4 space-y-2 max-h-[320px] overflow-y-auto custom-scrollbar">
+                ${factorsHtml}
             </div>
-            <div class="w-24 relative">
-                <input type="number" oninput="wizValidateSum()" class="wiz-group-count-input w-full text-sm text-center border border-slate-200 rounded-lg py-2 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 bg-slate-50 font-bold text-slate-700">
-                <span class="absolute right-2 top-2 text-[10px] text-slate-400 pointer-events-none">人</span>
-            </div>
-            <button onclick="wizRemoveGroup(this)" class="wiz-delete-btn w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="删除分组">
-                <i class="ri-delete-bin-line"></i>
-            </button>
         `;
+        
         container.appendChild(div);
-        wizUpdateDeleteButtons();
     }
 
     function wizAddNewGroup() {
-        if (document.querySelectorAll('.wiz-group-row').length >= 10) { alert("分组数量已达上限"); return; }
-        wizCreateGroupElement(`分组 ${document.querySelectorAll('.wiz-group-row').length + 1}`);
-        wizDistributeCounts();
+        const count = document.querySelectorAll('.wiz-group-card').length;
+        if (count >= 10) { alert("分组数量已达上限"); return; }
+        wizCreateGroupCard(`分组 ${count + 1}`, 'ri-group-line', 'slate', 0);
+        wizOnTotalChange(); // Redistribute total to include new group
     }
 
-    function wizRemoveGroup(btn) {
-        if (document.querySelectorAll('.wiz-group-row').length <= 2) return;
-        btn.closest('.wiz-group-row').remove();
-        wizUpdateDeleteButtons();
-        wizDistributeCounts();
-    }
-
-    function wizUpdateDeleteButtons() {
-        const rows = document.querySelectorAll('.wiz-group-row');
-        const btns = document.querySelectorAll('.wiz-delete-btn');
-        if (rows.length <= 2) btns.forEach(b => b.classList.add('invisible', 'pointer-events-none'));
-        else btns.forEach(b => b.classList.remove('invisible', 'pointer-events-none'));
-    }
-
-    function wizDistributeCounts() {
-        const total = parseInt(document.getElementById('wiz-total-count').value) || 0;
-        const inputs = document.querySelectorAll('.wiz-group-count-input');
-        const count = inputs.length;
-        if (count === 0) return;
-        const baseVal = Math.floor(total / count);
-        let remainder = total % count;
+    function wizToggleGroupCollapse(groupId) {
+        const content = document.getElementById(`content-${groupId}`);
+        const icon = document.getElementById(`icon-${groupId}`);
         
-        inputs.forEach((input, index) => {
-            let val = baseVal;
-            if (index < remainder) val += 1;
-            input.value = val;
-        });
-        wizValidateSum();
-    }
-
-    function wizValidateSum() {
-        const total = parseInt(document.getElementById('wiz-total-count').value) || 0;
-        const inputs = document.querySelectorAll('.wiz-group-count-input');
-        let sum = 0;
-        inputs.forEach(input => sum += (parseInt(input.value) || 0));
-        
-        const msgDiv = document.getElementById('wiz-validation-msg');
-        if (sum === total) {
-            msgDiv.className = "text-sm text-right text-emerald-600 font-bold bg-white px-3 py-1.5 rounded-lg border border-emerald-100 shadow-sm transition-colors";
-            msgDiv.innerHTML = `<i class="ri-checkbox-circle-line align-bottom"></i> 合计匹配 (${sum}人)`;
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            icon.classList.remove('rotate-180');
         } else {
-            const diff = sum - total;
-            msgDiv.className = "text-sm text-right text-red-500 font-bold bg-white px-3 py-1.5 rounded-lg border border-red-100 shadow-sm transition-colors";
-            msgDiv.innerHTML = `<i class="ri-error-warning-line align-bottom"></i> 偏差 ${diff > 0 ? '+' + diff : diff} 人`;
+            content.classList.add('hidden');
+            icon.classList.add('rotate-180');
         }
     }
 
-    function wizRotateIcon(el) {
-        const iconEl = el.querySelector('i');
-        const currentClass = Array.from(iconEl.classList).find(c => c.startsWith('ri-'));
-        let idx = ICON_LIST.indexOf(currentClass);
-        if (idx === -1) idx = 0;
-        let nextIdx = (idx + 1) % ICON_LIST.length;
-        iconEl.classList.remove(currentClass);
-        iconEl.classList.add(ICON_LIST[nextIdx]);
+    function wizOnTotalChange() {
+        const totalInput = document.getElementById('wiz-total-count');
+        let total = parseInt(totalInput.value) || 0;
+        
+        // Enforce min total based on groups and factors
+        const groups = document.querySelectorAll('.wiz-group-card');
+        const minPerGroup = WIZ_FACTORS.length;
+        const minTotal = groups.length * minPerGroup;
+        
+        if (total < minTotal) {
+            // total = minTotal; 
+            // totalInput.value = total;
+            // Optionally warn or auto-correct? Let's just distribute what we have and let inputs clamp
+        }
+
+        // Distribute total evenly among groups
+        if (groups.length === 0) return;
+        
+        const baseGroup = Math.floor(total / groups.length);
+        let remainder = total % groups.length;
+        
+        groups.forEach((card, idx) => {
+            const groupInput = card.querySelector('.wiz-group-total-input');
+            let gCount = baseGroup;
+            if (idx < remainder) gCount++;
+            
+            groupInput.value = gCount;
+            wizDistributeGroupFactors(card.id, gCount);
+        });
+    }
+
+    function wizOnGroupTotalChange(groupId) {
+        // 1. Update this group's factors
+        const card = document.getElementById(groupId);
+        const groupInput = card.querySelector('.wiz-group-total-input');
+        let val = parseInt(groupInput.value) || 0;
+        
+        // Min check
+        if (val < WIZ_FACTORS.length) {
+            val = WIZ_FACTORS.length;
+            groupInput.value = val;
+        }
+        
+        wizDistributeGroupFactors(groupId, val);
+        
+        // 2. Update Total Count
+        wizUpdateProjectTotal();
+    }
+
+    function wizDistributeGroupFactors(groupId, totalCount) {
+        const card = document.getElementById(groupId);
+        const inputs = card.querySelectorAll('.wiz-factor-input');
+        const count = inputs.length;
+        if (count === 0) return;
+
+        const base = Math.floor(totalCount / count);
+        let rem = totalCount % count;
+        
+        inputs.forEach((inp, idx) => {
+            let val = base;
+            if (idx < rem) val++;
+            inp.value = val;
+        });
+        
+        // Handle Readonly state based on mode
+        const mode = document.querySelector('input[name="wizMatchMode"]:checked').value;
+        inputs.forEach(inp => {
+            if (mode === 'random') {
+                inp.disabled = true;
+                inp.classList.add('bg-slate-100', 'text-slate-500');
+                inp.classList.remove('bg-white', 'text-slate-700');
+            } else {
+                inp.disabled = false;
+                inp.classList.remove('bg-slate-100', 'text-slate-500');
+                inp.classList.add('bg-white', 'text-slate-700');
+            }
+        });
+    }
+
+    function wizOnFactorChange(groupId) {
+        const card = document.getElementById(groupId);
+        const inputs = card.querySelectorAll('.wiz-factor-input');
+        let sum = 0;
+        inputs.forEach(inp => sum += (parseInt(inp.value) || 0));
+        
+        // Update Group Total Input
+        card.querySelector('.wiz-group-total-input').value = sum;
+        
+        // Update Project Total
+        wizUpdateProjectTotal();
+    }
+
+    function wizUpdateProjectTotal() {
+        const groupInputs = document.querySelectorAll('.wiz-group-total-input');
+        let sum = 0;
+        groupInputs.forEach(inp => sum += (parseInt(inp.value) || 0));
+        document.getElementById('wiz-total-count').value = sum;
+    }
+
+    function wizResetUniform() {
+        wizOnTotalChange(); // Re-trigger even distribution
+    }
+    
+    // Override toggle mode to refresh UI state
+    const originalWizToggleMatchMode = wizToggleMatchMode;
+    wizToggleMatchMode = function() {
+        if (originalWizToggleMatchMode) originalWizToggleMatchMode();
+        
+        // Refresh all groups distribution state (enable/disable inputs)
+        const groups = document.querySelectorAll('.wiz-group-card');
+        groups.forEach(g => {
+             const total = parseInt(g.querySelector('.wiz-group-total-input').value) || 0;
+             wizDistributeGroupFactors(g.id, total);
+        });
     }
 
     function toggleSidebar() {
