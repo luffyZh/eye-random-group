@@ -1196,6 +1196,15 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+                        <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center">
+                            <i class="ri-pencil-line text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">CRC数量</p>
+                            <p class="text-sm font-bold text-slate-800">60 人</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
                         <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
                             <i class="ri-folder-shield-2-line text-xl"></i>
                         </div>
@@ -1217,6 +1226,9 @@
                 </button>
                 <button onclick="switchCenterTab('depts')" id="tab-center-depts" class="px-8 py-4 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">
                     科室管理
+                </button>
+                 <button onclick="switchCenterTab('crc')" id="tab-center-crc" class="px-8 py-4 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">
+                    CRC管理
                 </button>
             </div>
 
@@ -1378,6 +1390,70 @@
                                 <tr class="hover:bg-slate-50/50 transition-colors">
                                     <td class="px-5 py-3 text-slate-800 font-medium">
                                         李助理
+                                    </td>
+                                    <td class="px-5 py-3 text-slate-600">li_assist</td>
+                                    <td class="px-5 py-3 text-slate-500">13700137000</td>
+                                    <td class="px-5 py-3 text-slate-400">2023-02-12</td>
+                                    <td class="px-5 py-3 text-right">
+                                        <button class="text-brand-600 hover:text-brand-700 mr-3 text-xs font-bold">编辑</button>
+                                        <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content 3: CRC管理 -->
+            <div id="content-center-crc" class="flex-1 flex hidden fade-in">
+                <div class="flex-1 p-6 bg-white rounded-br-2xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 text-lg">CRC列表</h3>
+                        <button class="bg-white border border-slate-200 hover:border-brand-500 text-slate-600 hover:text-brand-600 px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
+                            <i class="ri-user-add-line"></i> 新增CRC
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-hidden rounded-xl border border-slate-100">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-100 text-xs text-slate-500 uppercase">
+                                    <th class="px-5 py-3 font-semibold">姓名</th>
+                                    <th class="px-5 py-3 font-semibold">账号名称</th>
+                                    <th class="px-5 py-3 font-semibold">手机号</th>
+                                    <th class="px-5 py-3 font-semibold">创建时间</th>
+                                    <th class="px-5 py-3 font-semibold text-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-5 py-3 text-slate-800 font-bold flex items-center gap-2">
+                                        张同学
+                                    </td>
+                                    <td class="px-5 py-3 text-slate-600">zhang_prof</td>
+                                    <td class="px-5 py-3 text-slate-500">13800138000</td>
+                                    <td class="px-5 py-3 text-slate-400">2023-01-15</td>
+                                    <td class="px-5 py-3 text-right">
+                                        <button class="text-brand-600 hover:text-brand-700 mr-3 text-xs font-bold">编辑</button>
+                                        <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-5 py-3 text-slate-800 font-medium">
+                                        李同学
+                                    </td>
+                                    <td class="px-5 py-3 text-slate-600">li_doc</td>
+                                    <td class="px-5 py-3 text-slate-500">13900139000</td>
+                                    <td class="px-5 py-3 text-slate-400">2023-02-10</td>
+                                    <td class="px-5 py-3 text-right">
+                                        <button class="text-brand-600 hover:text-brand-700 mr-3 text-xs font-bold">编辑</button>
+                                        <button class="text-red-500 hover:text-red-600 text-xs font-bold">删除</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-5 py-3 text-slate-800 font-medium">
+                                        周助理
                                     </td>
                                     <td class="px-5 py-3 text-slate-600">li_assist</td>
                                     <td class="px-5 py-3 text-slate-500">13700137000</td>
@@ -2697,17 +2773,17 @@
           <div id="wiz-step-content-1" class="space-y-6 animate-fade-in">
               <!-- Row 1: Name, Code, Share -->
               <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-                  <div class="md:col-span-3">
+                  <div class="md:col-span-3 relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">项目名称 <span class="text-red-500">*</span></label>
                       <input id="wiz-np-name" type="text" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="例如：儿童近视防控临床研究">
                   </div>
-                  <div class="md:col-span-1">
+                  <div class="md:col-span-1 relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">项目码 (Code) <span class="text-red-500">*</span></label>
                       <div class="relative">
                           <input id="wiz-np-code" type="text" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm font-mono uppercase focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="CODE_2024">
                       </div>
                   </div>
-                  <div class="md:col-span-1">
+                  <div class="md:col-span-1 relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">是否共享数据</label>
                       <label class="relative inline-flex items-center cursor-pointer mt-1.5">
                           <input type="checkbox" id="wiz-np-share-switch" class="sr-only peer" onchange="wizToggleShareSwitch()">
@@ -2721,7 +2797,7 @@
               </div>
 
               <!-- Row 2: Description -->
-              <div>
+              <div class="relative">
                   <label class="block text-sm font-bold text-slate-700 mb-2">项目描述</label>
                   <textarea id="wiz-np-desc" rows="3" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="简述项目的研究目的、背景及主要入排标准..."></textarea>
               </div>
@@ -2750,7 +2826,7 @@
                       </div>
                   </div>
                   
-                  <div class="md:col-span-1">
+                  <div class="md:col-span-1 relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">项目负责人 <span class="text-red-500">*</span></label>
                       <button type="button" id="wiz-leader-trigger" onclick="wizToggleLeaderDropdown()" class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50 hover:bg-white transition-colors">
                           <span id="wiz-leader-display" class="text-slate-500 truncate">需先选中心</span>
@@ -2759,7 +2835,7 @@
                       <div id="wiz-leader-dropdown" class="hidden absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto p-2 space-y-1"></div>
                   </div>
 
-                  <div class="md:col-span-1">
+                  <div class="md:col-span-1 relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">协作医生</label>
                       <button type="button" id="wiz-collab-trigger" onclick="wizToggleCollabDropdown()" class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50 hover:bg-white transition-colors">
                           <span id="wiz-collab-display" class="text-slate-500 truncate">需先选中心</span>
@@ -2768,7 +2844,7 @@
                       <div id="wiz-collab-dropdown" class="hidden absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto p-2 space-y-1"></div>
                   </div>
 
-                  <div class="md:col-span-1">
+                  <div class="md:col-span-1 relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">床研究协调员 CRC <span class="text-red-500">*</span></label>
                       <button type="button" id="wiz-crc-trigger" onclick="wizToggleCrcDropdown()" class="w-full text-left rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm flex justify-between items-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pointer-events-none opacity-50 hover:bg-white transition-colors">
                           <span id="wiz-crc-display" class="text-slate-500 truncate">需先选中心</span>
@@ -2780,14 +2856,14 @@
               
               <!-- Criteria -->
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6 border-t border-slate-100">
-                  <div>
+                  <div class="relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">纳入标准</label>
                       <div id="wiz-inclusion-list" class="space-y-2 mb-3"></div>
                       <button type="button" onclick="wizAddCriteria('inclusion')" class="w-full py-2.5 border-2 border-dashed border-emerald-200 rounded-xl text-emerald-600 text-sm font-bold hover:bg-emerald-50 hover:border-emerald-300 transition-all flex justify-center items-center gap-1">
                           <i class="ri-add-line"></i> 添加纳入标准
                       </button>
                   </div>
-                  <div>
+                  <div class="relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">排除标准</label>
                       <div id="wiz-exclusion-list" class="space-y-2 mb-3"></div>
                       <button type="button" onclick="wizAddCriteria('exclusion')" class="w-full py-2.5 border-2 border-dashed border-red-200 rounded-xl text-red-600 text-sm font-bold hover:bg-red-50 hover:border-red-300 transition-all flex justify-center items-center gap-1">
@@ -3875,6 +3951,8 @@
         const deptsTab = document.getElementById('tab-center-depts');
         const overviewContent = document.getElementById('content-center-overview');
         const deptsContent = document.getElementById('content-center-depts');
+        const crcTab = document.getElementById('tab-center-crc');
+        const crcContent = document.getElementById('content-center-crc');
 
         if (tabName === 'overview') {
             // Activate Overview
@@ -3883,10 +3961,14 @@
             
             deptsTab.classList.remove('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
             deptsTab.classList.add('text-slate-500', 'hover:text-slate-700');
+            
+            crcTab.classList.remove('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            crcTab.classList.add('text-slate-500', 'hover:text-slate-700');
 
             overviewContent.classList.remove('hidden');
+            crcContent.classList.add('hidden');
             deptsContent.classList.add('hidden');
-        } else {
+        } else if (tabName === 'depts') {
             // Activate Depts
             deptsTab.classList.add('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
             deptsTab.classList.remove('text-slate-500', 'hover:text-slate-700');
@@ -3894,8 +3976,26 @@
             overviewTab.classList.remove('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
             overviewTab.classList.add('text-slate-500', 'hover:text-slate-700');
 
+            crcTab.classList.remove('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            crcTab.classList.add('text-slate-500', 'hover:text-slate-700');
+
             overviewContent.classList.add('hidden');
+            crcContent.classList.add('hidden');
             deptsContent.classList.remove('hidden');
+        } else if (tabName === 'crc') {
+            // Activate CRC
+            crcTab.classList.add('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            crcTab.classList.remove('text-slate-500', 'hover:text-slate-700');
+
+            overviewTab.classList.remove('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            overviewTab.classList.add('text-slate-500', 'hover:text-slate-700');
+
+            deptsTab.classList.remove('text-brand-600', 'border-b-2', 'border-brand-600', 'bg-brand-50/50');
+            deptsTab.classList.add('text-slate-500', 'hover:text-slate-700');
+
+            overviewContent.classList.add('hidden');
+            deptsContent.classList.add('hidden');
+            crcContent.classList.remove('hidden');
         }
     }
 
