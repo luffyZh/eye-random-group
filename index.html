@@ -2919,64 +2919,194 @@
 
           <!-- Step 3 Content: Grouping -->
           <div id="wiz-step-content-3" class="hidden animate-fade-in pb-10">
-              <!-- Grouping Mode (Moved from Step 2) -->
-              <div class="mb-8">
-                  <h4 class="text-sm font-bold text-slate-700 mb-3">选择分组模式</h4>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                       <label class="relative cursor-pointer group">
-                            <input type="radio" name="wizMatchMode" value="random" class="peer sr-only" checked onchange="wizToggleMatchMode()">
-                            <div class="p-4 rounded-xl border-2 border-slate-200 hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all shadow-sm">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 peer-checked:bg-brand-100 peer-checked:text-brand-600 flex items-center justify-center transition-colors">
-                                        <i class="ri-shuffle-line text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <span class="block font-bold text-slate-700 peer-checked:text-brand-800 text-sm">均匀分组 (Uniform)</span>
-                                        <span class="text-xs text-slate-500">系统自动均匀分配，适合完全随机场景。</span>
-                                    </div>
-                                </div>
-                            </div>
-                       </label>
-                       <label class="relative cursor-pointer group">
-                            <input type="radio" name="wizMatchMode" value="free" class="peer sr-only" onchange="wizToggleMatchMode()">
-                            <div class="p-4 rounded-xl border-2 border-slate-200 hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all shadow-sm">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 peer-checked:bg-brand-100 peer-checked:text-brand-600 flex items-center justify-center transition-colors">
-                                        <i class="ri-equalizer-line text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <span class="block font-bold text-slate-700 peer-checked:text-brand-800 text-sm">自由分组 (Free)</span>
-                                        <span class="text-xs text-slate-500">手动调整各组配额，适合复杂干预场景。</span>
-                                    </div>
-                                </div>
-                            </div>
-                       </label>
+              
+              <!-- Header with Toggle -->
+              <div class="flex justify-between items-start mb-8 border-b border-slate-100 pb-4">
+                  <div>
+                      <h3 class="text-lg font-bold text-slate-900">分组与随机化配置</h3>
+                      <p class="text-sm text-slate-500">配置各组比例及随机化算法</p>
+                  </div>
+                  <div class="flex items-center bg-slate-50 rounded-lg p-1.5 border border-slate-200">
+                      <div class="mr-3 text-right">
+                          <span class="block text-xs font-bold text-slate-700">二阶段裂变 (Multi-stage)</span>
+                          <span class="block text-[10px] text-slate-400">支持二次随机化分配</span>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" id="wiz-fission-toggle" class="sr-only peer" onchange="wizToggleFissionMode()">
+                          <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                      </label>
                   </div>
               </div>
 
-              <!-- Total Count Bar -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex items-center gap-4">
-                  <label class="font-bold text-slate-700">项目总人数:</label>
-                  <div class="relative w-32">
-                      <input type="number" id="wiz-total-count" value="100" oninput="wizOnTotalChange()" class="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg font-bold text-center focus:ring-brand-500 focus:border-brand-500 transition-shadow">
-                      <span class="absolute right-3 top-2.5 text-slate-400 text-xs">人</span>
+              <!-- Mode: Simple (Default) -->
+              <div id="wiz-mode-simple">
+                  <!-- Grouping Mode (Moved from Step 2) -->
+                  <div class="mb-8">
+                      <h4 class="text-sm font-bold text-slate-700 mb-3">选择分组模式</h4>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                           <label class="relative cursor-pointer group">
+                                <input type="radio" name="wizMatchMode" value="random" class="peer sr-only" checked onchange="wizToggleMatchMode()">
+                                <div class="p-4 rounded-xl border-2 border-slate-200 hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all shadow-sm">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 peer-checked:bg-brand-100 peer-checked:text-brand-600 flex items-center justify-center transition-colors">
+                                            <i class="ri-shuffle-line text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <span class="block font-bold text-slate-700 peer-checked:text-brand-800 text-sm">均匀分组 (Uniform)</span>
+                                            <span class="text-xs text-slate-500">系统自动均匀分配，适合完全随机场景。</span>
+                                        </div>
+                                    </div>
+                                </div>
+                           </label>
+                           <label class="relative cursor-pointer group">
+                                <input type="radio" name="wizMatchMode" value="free" class="peer sr-only" onchange="wizToggleMatchMode()">
+                                <div class="p-4 rounded-xl border-2 border-slate-200 hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all shadow-sm">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 peer-checked:bg-brand-100 peer-checked:text-brand-600 flex items-center justify-center transition-colors">
+                                            <i class="ri-equalizer-line text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <span class="block font-bold text-slate-700 peer-checked:text-brand-800 text-sm">自由分组 (Free)</span>
+                                            <span class="text-xs text-slate-500">手动调整各组配额，适合复杂干预场景。</span>
+                                        </div>
+                                    </div>
+                                </div>
+                           </label>
+                      </div>
                   </div>
-                  <div class="text-xs text-slate-400 flex-1 text-right hidden sm:block">
-                      * 修改总人数将自动平均分配给各分组
+
+                  <!-- Total Count Bar -->
+                  <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex items-center gap-4">
+                      <label class="font-bold text-slate-700">项目总人数:</label>
+                      <div class="relative w-32">
+                          <input type="number" id="wiz-total-count" value="100" oninput="wizOnTotalChange()" class="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg font-bold text-center focus:ring-brand-500 focus:border-brand-500 transition-shadow">
+                          <span class="absolute right-3 top-2.5 text-slate-400 text-xs">人</span>
+                      </div>
+                      <div class="text-xs text-slate-400 flex-1 text-right hidden sm:block">
+                          * 修改总人数将自动平均分配给各分组
+                      </div>
                   </div>
+
+                  <!-- Groups Container -->
+                  <div id="wiz-group-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                      <!-- Cards injected here by JS -->
+                  </div>
+                  
+                  <!-- Add Group Button -->
+                  <button type="button" onclick="wizAddNewGroup()" class="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-slate-50 transition-all flex justify-center items-center gap-2 mt-6">
+                      <i class="ri-add-line text-lg"></i> 增加新的分组
+                  </button>
+                  
+                  <p class="text-center text-xs text-slate-400 mt-6">* 修改数值后，系统将自动校验总人数是否匹配项目设定。</p>
               </div>
 
-              <!-- Groups Container -->
-              <div id="wiz-group-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                  <!-- Cards injected here by JS -->
+              <!-- Mode: Fission (Multi-stage) -->
+              <div id="wiz-mode-fission" class="hidden">
+                   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                       <!-- Left Panel: Flow Visualization -->
+                       <div class="lg:col-span-2 space-y-6">
+                           <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                               <h4 class="font-bold text-slate-800 mb-1">项目分组结构</h4>
+                               <p class="text-xs text-slate-500">配置第一阶段及裂变后的第二阶段分组逻辑</p>
+                           </div>
+                           
+                           <!-- Flow Tree Container (Replaced by 2-Column Layout) -->
+                           <div id="wiz-fission-flow" class="grid grid-cols-2 gap-8">
+                                <!-- Stage 1 Column -->
+                                <div id="wiz-stage1-col" class="space-y-4">
+                                    <h5 class="font-bold text-slate-700 border-b border-slate-200 pb-2">第一阶段 (Stage 1)</h5>
+                                    <!-- Injected JS -->
+                                </div>
+                                
+                                <!-- Stage 2 Column -->
+                                <div id="wiz-stage2-col" class="space-y-4">
+                                    <h5 class="font-bold text-slate-700 border-b border-slate-200 pb-2">第二阶段 (Stage 2)</h5>
+                                    <!-- Injected JS -->
+                                </div>
+                           </div>
+                       </div>
+
+                       <!-- Right Panel: Configuration (Modal or Side Panel, kept as is but controlled by JS) -->
+                       <div class="lg:col-span-1 hidden" id="wiz-config-panel-container">
+                           <div id="wiz-fission-config-panel" class="bg-white rounded-xl border border-slate-200 shadow-lg sticky top-6">
+                               <!-- Config Header -->
+                               <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl">
+                                   <div>
+                                       <h4 class="font-bold text-slate-800">裂变规则配置</h4>
+                                       <p class="text-xs text-slate-500">设置触发条件与分配逻辑</p>
+                                   </div>
+                                   <span id="wiz-config-target-badge" class="px-2 py-1 bg-slate-200 text-slate-600 text-xs font-bold rounded">请选择分组</span>
+                               </div>
+                               
+                               <!-- Config Body -->
+                               <div id="wiz-config-form" class="p-5 space-y-6 opacity-50 pointer-events-none">
+                                   
+                                   <!-- Trigger -->
+                                   <div>
+                                       <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                           <i class="ri-flashlight-line text-brand-500"></i> 触发机制
+                                       </label>
+                                       <div class="bg-slate-100 p-1 rounded-lg flex mb-3">
+                                           <button type="button" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800">主动触发</button>
+                                           <button type="button" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700">自动触发</button>
+                                       </div>
+                                       <div>
+                                           <label class="block text-xs font-bold text-slate-500 mb-1.5">医学指标要求 (备注)</label>
+                                           <input type="text" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500" value="视功能指标大于 0.8">
+                                           <p class="text-[10px] text-slate-400 mt-1">需医生在受试者详情页手动点击“裂变”按钮</p>
+                                       </div>
+                                   </div>
+
+                                   <!-- Balancing -->
+                                   <div>
+                                       <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                           <i class="ri-scales-3-line text-brand-500"></i> 平衡策略
+                                       </label>
+                                       <select class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500 mb-2">
+                                           <option>简单随机 (Simple Random)</option>
+                                           <option>继承原维度平衡 (Inherit)</option>
+                                       </select>
+                                       <div class="bg-blue-50 text-blue-700 text-xs p-2 rounded border border-blue-100 leading-relaxed">
+                                           <i class="ri-information-line mr-1"></i> 系统将在 B1/B2 组间自动平衡性别、年龄、屈光度。
+                                       </div>
+                                   </div>
+
+                                   <!-- Subgroups -->
+                                   <div>
+                                       <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                           <i class="ri-node-tree text-brand-500"></i> 裂变子组 (Stage 2)
+                                       </label>
+                                       <div class="space-y-3 mb-3">
+                                           <div class="flex items-center gap-2">
+                                               <span class="text-xs font-bold text-slate-600 w-12">裂变1组</span>
+                                               <div class="relative flex-1">
+                                                   <input type="number" value="25" class="w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center">
+                                                   <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
+                                               </div>
+                                           </div>
+                                           <div class="flex items-center gap-2">
+                                               <span class="text-xs font-bold text-slate-600 w-12">裂变2组</span>
+                                               <div class="relative flex-1">
+                                                   <input type="number" value="25" class="w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center">
+                                                   <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <button type="button" class="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-bold text-brand-600 hover:bg-brand-50 transition-colors">
+                                           + 增加子组
+                                       </button>
+                                   </div>
+
+                                   <!-- Action -->
+                                   <button type="button" class="w-full py-2.5 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30 hover:bg-brand-700 transition-all">
+                                       保存规则
+                                   </button>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
               </div>
-              
-              <!-- Add Group Button -->
-              <button type="button" onclick="wizAddNewGroup()" class="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-brand-400 hover:text-brand-600 hover:bg-slate-50 transition-all flex justify-center items-center gap-2 mt-6">
-                  <i class="ri-add-line text-lg"></i> 增加新的分组
-              </button>
-              
-              <p class="text-center text-xs text-slate-400 mt-6">* 修改数值后，系统将自动校验总人数是否匹配项目设定。</p>
+
           </div>
 
       </div>

@@ -3,6 +3,8 @@
 // Wizard State
 let currentWizStep = 1;
 let WIZ_FACTORS = [];
+let isFissionMode = false;
+let fissionRules = {}; // { groupId: { trigger: 'manual', threshold: 180, strategy: 'simple', subgroups: [{name:'B1', ratio:50}, {name:'B2', ratio:50}] } }
 
 // Entry Point
 function openNewProjectWizard() {
@@ -63,6 +65,11 @@ function wizReset() {
   wizToggleMatchMode();
 
   // Step 3 Reset
+  document.getElementById('wiz-fission-toggle').checked = false;
+  isFissionMode = false;
+  fissionRules = {};
+  wizToggleFissionMode(); // Reset UI
+  
   wizInitDefaultGroups();
 }
 
@@ -183,6 +190,7 @@ function wizCreateProject() {
          
          if (nameInput && drugInput && countInput) {
              groupsData.push({ 
+                 id: card.id,
                  name: nameInput.value, 
                  medicine: drugInput.value, 
                  count: countInput.value 
@@ -190,9 +198,13 @@ function wizCreateProject() {
          }
     });
     console.log("New Project Groups Data:", groupsData);
+    
+    if (isFissionMode) {
+        console.log("Fission Rules:", fissionRules);
+    }
 
     // Success
-    alert("项目创建成功！");
+    alert("项目创建成功！" + (isFissionMode ? " (含裂变配置)" : ""));
     cancelWizard();
 }
 
@@ -698,4 +710,175 @@ function wizUpdateProjectTotal() {
     let sum = 0;
     groupInputs.forEach(inp => sum += (parseInt(inp.value) || 0));
     document.getElementById('wiz-total-count').value = sum;
+}
+
+/* ================= Fission (Multi-stage) Logic ================= */
+
+function wizToggleFissionMode() {
+    isFissionMode = document.getElementById('wiz-fission-toggle').checked;
+    const simpleContainer = document.getElementById('wiz-mode-simple');
+    const fissionContainer = document.getElementById('wiz-mode-fission');
+
+    if (isFissionMode) {
+        simpleContainer.classList.add('hidden');
+        fissionContainer.classList.remove('hidden');
+        wizRenderFissionFlow();
+    } else {
+        simpleContainer.classList.remove('hidden');
+        fissionContainer.classList.add('hidden');
+    }
+}
+
+function wizRenderFissionFlow() {
+    const stage1Col = document.getElementById('wiz-stage1-col');
+    const stage2Col = document.getElementById('wiz-stage2-col');
+    
+    // Clear previous dynamic content but keep headers
+    // Re-inject Headers to be safe or use querySelector to append
+    stage1Col.innerHTML = `<h5 class="font-bold text-slate-700 border-b border-slate-200 pb-2">第一阶段 (Stage 1)</h5>`;
+    stage2Col.innerHTML = `<h5 class="font-bold text-slate-700 border-b border-slate-200 pb-2">第二阶段 (Stage 2)</h5>`;
+    
+    // Get current groups from the Simple Mode (Source of Truth)
+    const groups = [];
+    document.querySelectorAll('.wiz-group-card').forEach(card => {
+         const nameInput = card.querySelector('input[type="text"]'); 
+         const countInput = card.querySelector('.wiz-group-total-input');
+         if (nameInput) {
+             groups.push({
+                 id: card.id,
+                 name: nameInput.value,
+                 count: parseInt(countInput.value) || 0
+             });
+         }
+    });
+
+    const total = parseInt(document.getElementById('wiz-total-count').value) || 100;
+    // document.getElementById('wiz-fission-total-display').innerText = total; // Removed display in tree
+
+    // Render Stage 1 & Stage 2 Lists
+    groups.forEach(g => {
+        const ratio = Math.round((g.count / total) * 100);
+        
+        // --- Stage 1 Card (Read-only view) ---
+        const div1 = document.createElement('div');
+        div1.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm opacity-80";
+        div1.innerHTML = `
+            <h4 class="font-bold text-slate-800 text-lg">${g.name}</h4>
+            <div class="text-sm text-slate-500 mt-1">占比 ${ratio}% (${g.count}人)</div>
+        `;
+        stage1Col.appendChild(div1);
+
+        // --- Stage 2 Card (Interactive) ---
+        const rule = fissionRules[g.id];
+        const hasRule = !!rule;
+        
+        let subGroupsHtml = '';
+        if (hasRule && rule.subgroups) {
+            subGroupsHtml = `
+                <div class="mt-3 flex gap-2 pt-3 border-t border-slate-100 animate-fade-in">
+                    ${rule.subgroups.map(sg => `
+                        <div class="flex-1 bg-slate-50 border border-slate-200 rounded p-1.5 text-center">
+                            <div class="font-bold text-slate-700 text-xs">${sg.name}</div>
+                            <div class="text-[10px] text-slate-500">${sg.count}人</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        const div2 = document.createElement('div');
+        // Highlight active config
+        const badge = document.getElementById('wiz-config-target-badge');
+        const activeId = badge ? badge.getAttribute('data-id') : null;
+        const isActive = activeId === g.id;
+        const activeClass = isActive ? 'ring-2 ring-brand-500 border-brand-200 bg-brand-50/30' : 'border-slate-200 hover:border-brand-300';
+
+        div2.className = `bg-white border ${activeClass} rounded-xl p-4 shadow-sm transition-all relative`;
+        
+        div2.innerHTML = `
+            <div class="flex justify-between items-start">
+                <div>
+                    <h4 class="font-bold text-slate-800 text-lg">${g.name}</h4>
+                    <div class="text-sm text-slate-500 mt-1">${hasRule ? '将裂变为:' : '维持原组'}</div>
+                </div>
+                <div>
+                    ${hasRule ? 
+                        `<span class="cursor-pointer inline-flex items-center px-2 py-1 rounded text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100 gap-1" onclick="wizOpenFissionConfig('${g.id}', '${g.name}')">
+                            <i class="ri-flashlight-fill"></i> ${rule.trigger === 'manual' ? '主动' : '自动'}
+                         </span>` : 
+                        `<button class="text-sm text-brand-600 font-bold hover:underline transition-opacity flex items-center gap-1" onclick="wizOpenFissionConfig('${g.id}', '${g.name}')">
+                            <i class="ri-settings-3-line"></i> 配置裂变
+                         </button>`
+                    }
+                </div>
+            </div>
+            ${subGroupsHtml}
+        `;
+        stage2Col.appendChild(div2);
+    });
+}
+
+function wizOpenFissionConfig(groupId, groupName) {
+    // 1. Show Panel (if hidden)
+    const panelContainer = document.getElementById('wiz-config-panel-container');
+    panelContainer.classList.remove('hidden');
+
+    // 2. Update Badge
+    const badge = document.getElementById('wiz-config-target-badge');
+    badge.innerText = `针对 ${groupName}`;
+    badge.className = "px-2 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded animate-pulse-once";
+    badge.setAttribute('data-id', groupId);
+
+    // 3. Enable Form
+    const form = document.getElementById('wiz-config-form');
+    form.classList.remove('opacity-50', 'pointer-events-none');
+    
+    // 4. Load Existing Rule or Default
+    const rule = fissionRules[groupId] || {
+        trigger: 'manual',
+        threshold: '视功能指标大于 0.8',
+        strategy: 'simple',
+        subgroups: [
+            { name: '裂变1组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 },
+            { name: '裂变2组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 }
+        ]
+    };
+
+    // Populate Form (Mocking simple population logic for brevity)
+    // We would need IDs on these inputs to bind them properly. 
+    // For now, assume user clicks save.
+    
+    // Bind Save Button Action
+    const saveBtn = form.querySelector('button.bg-brand-600');
+    saveBtn.onclick = function() {
+        wizSaveFissionRule(groupId, groupName);
+    };
+    
+    // Re-render Flow to highlight selection
+    wizRenderFissionFlow();
+}
+
+function wizSaveFissionRule(groupId, groupName) {
+    // Mock saving form data
+    fissionRules[groupId] = {
+        trigger: 'manual',
+        threshold: '视功能指标大于 0.8',
+        strategy: 'simple',
+        subgroups: [
+            { name: '裂变1组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 },
+            { name: '裂变2组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 }
+        ]
+    };
+    
+    wizRenderFissionFlow();
+    
+    // Show feedback
+    const btn = document.querySelector('#wiz-config-form button.bg-brand-600');
+    const originalText = btn.innerText;
+    btn.innerText = "已保存";
+    btn.classList.add('bg-emerald-600');
+    setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.remove('bg-emerald-600');
+    }, 1000);
 }

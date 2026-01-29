@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二期核心功能：裂变配置原型</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* 自定义一些过渡动画 */
+        .transition-all-300 {
+            transition: all 0.3s ease-in-out;
+        }
+        /* 模拟 Switch 开关样式 */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #2563EB;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #2563EB;
+        }
+        /* 隐藏滚动条但允许滚动 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+
+    <div id="app" class="w-full max-w-6xl mx-auto p-6 space-y-8">
+        <!-- 头部区域 -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900">Step 3: 分组与随机化配置</h2>
+                <p class="text-slate-500 mt-1">配置各组比例及随机化算法</p>
+            </div>
+            
+            <!-- 裂变总开关 -->
+            <div class="flex items-center space-x-3 bg-white p-3 rounded-lg border shadow-sm">
+                <i data-lucide="git-fork" id="main-icon" class="w-5 h-5 text-slate-400 transition-colors"></i>
+                <div class="flex flex-col">
+                    <span class="text-sm font-medium">二阶段裂变 (Multi-stage)</span>
+                    <span class="text-xs text-slate-500">支持二次随机化分配</span>
+                </div>
+                
+                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" name="toggle" id="fission-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 left-0 top-0"/>
+                    <label for="fission-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300"></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容网格 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- 左侧：可视化结构 -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-xl border shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="text-lg font-semibold">项目分组结构</h3>
+                        <p id="structure-desc" class="text-sm text-slate-500 mt-1">配置初始入组的分组比例</p>
+                    </div>
+                    <div class="p-6 bg-slate-50/50 min-h-[500px]">
+                        <div class="relative pl-4">
+                            <!-- 垂直连接线 -->
+                            <div class="absolute left-12 top-0 bottom-0 w-0.5 bg-slate-200 z-0"></div>
+                            
+                            <div class="space-y-8 relative z-10">
+                                <!-- Start Node -->
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center border-4 border-white shadow-sm font-bold text-blue-700 z-10">
+                                        Start
+                                    </div>
+                                    <div class="bg-white border px-3 py-1 rounded-md text-sm font-medium text-slate-600 shadow-sm">
+                                        第一阶段 (入组 N=200)
+                                    </div>
+                                </div>
+
+                                <!-- Groups List Container -->
+                                <div id="groups-container" class="ml-20 space-y-6">
+                                    <!-- Groups will be injected here via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：配置面板 -->
+            <div class="lg:col-span-1">
+                <div id="config-panel" class="sticky top-6">
+                    <!-- Config Panel Content will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Data & State ---
+        const state = {
+            isFissionEnabled: false,
+            selectedGroupId: null, // 当前正在配置裂变的组ID
+            groups: [
+                { 
+                    id: 'A', name: 'A组', ratio: 25, count: 50, hasFission: false,
+                    fissionConfig: null 
+                },
+                { 
+                    id: 'B', name: 'B组', ratio: 50, count: 100, hasFission: true,
+                    fissionConfig: {
+                        triggerType: 'auto', // 'auto' | 'manual'
+                        triggerValue: '180',
+                        balanceStrategy: 'inherit',
+                        subGroups: [
+                            { name: 'B1组', ratio: 50 },
+                            { name: 'B2组', ratio: 50 }
+                        ]
+                    } 
+                },
+                { 
+                    id: 'C', name: 'C组', ratio: 25, count: 50, hasFission: false,
+                    fissionConfig: null 
+                },
+            ]
+        };
+
+        // --- DOM Elements ---
+        const toggleInput = document.getElementById('fission-toggle');
+        const mainIcon = document.getElementById('main-icon');
+        const structureDesc = document.getElementById('structure-desc');
+        const groupsContainer = document.getElementById('groups-container');
+        const configPanel = document.getElementById('config-panel');
+
+        // --- Initialization ---
+        function init() {
+            render();
+            
+            // Event Listener for Main Toggle
+            toggleInput.addEventListener('change', (e) => {
+                state.isFissionEnabled = e.target.checked;
+                // Reset selection when toggling off
+                if (!state.isFissionEnabled) {
+                    state.selectedGroupId = null;
+                }
+                render();
+            });
+        }
+
+        // --- Render Functions ---
+        function render() {
+            updateHeader();
+            renderGroups();
+            renderConfigPanel();
+            lucide.createIcons(); // Refresh icons
+        }
+
+        function updateHeader() {
+            if (state.isFissionEnabled) {
+                mainIcon.classList.remove('text-slate-400');
+                mainIcon.classList.add('text-blue-600');
+                structureDesc.textContent = "配置第一阶段及裂变后的第二阶段分组逻辑";
+            } else {
+                mainIcon.classList.remove('text-blue-600');
+                mainIcon.classList.add('text-slate-400');
+                structureDesc.textContent = "配置初始入组的分组比例";
+            }
+        }
+
+        function renderGroups() {
+            groupsContainer.innerHTML = state.groups.map(group => {
+                const isSelected = state.selectedGroupId === group.id;
+                const showFission = state.isFissionEnabled && group.hasFission;
+                
+                // Card Styles
+                let cardClass = "p-4 rounded-xl border-2 transition-all bg-white relative ";
+                if (state.isFissionEnabled && group.hasFission) {
+                    cardClass += "border-blue-500 bg-blue-50/30 ";
+                } else {
+                    cardClass += "border-slate-200 hover:border-slate-300 ";
+                }
+                if (isSelected) {
+                    cardClass += "ring-2 ring-blue-200 ring-offset-2 ";
+                }
+
+                // Button Styles
+                const btnClass = group.hasFission 
+                    ? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm" 
+                    : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50";
+
+                // Fission Content HTML
+                let fissionContent = '';
+                if (showFission && group.fissionConfig) {
+                    const config = group.fissionConfig;
+                    const triggerIcon = config.triggerType === 'auto' ? 'clock' : 'mouse-pointer';
+                    const triggerText = config.triggerType === 'auto' ? '自动触发' : '主动触发';
+                    const balanceText = config.balanceStrategy === 'inherit' ? '继承维度平衡' : 
+                                        config.balanceStrategy === 'random' ? '简单随机' : '人工指定';
+
+                    fissionContent = `
+                        <div class="mt-4 pt-4 border-t border-blue-100/50">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                    <i data-lucide="${triggerIcon}" class="w-3 h-3 mr-1"></i>
+                                    ${triggerText}
+                                </span>
+                                <span class="text-xs text-slate-500">→ 策略: ${balanceText}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                ${config.subGroups.map(sub => `
+                                    <div class="bg-white border border-blue-200 p-2 rounded text-center shadow-sm">
+                                        <div class="font-semibold text-blue-900 text-sm">${sub.name}</div>
+                                        <div class="text-xs text-blue-500">各占 ${sub.ratio}%</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="relative group-item">
+                        <!-- Horizontal Connector -->
+                        <div class="absolute -left-12 top-8 w-12 h-0.5 bg-slate-200"></div>
+                        
+                        <div class="${cardClass}">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-bold text-lg text-slate-800">${group.name}</h4>
+                                    <p class="text-sm text-slate-500">占比 ${group.ratio}% (${group.count}人)</p>
+                                </div>
+                                ${state.isFissionEnabled ? `
+                                    <button onclick="handleGroupAction('${group.id}')" class="flex items-center px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${btnClass}">
+                                        <i data-lucide="git-fork" class="w-3 h-3 mr-1.5"></i>
+                                        ${group.hasFission ? "配置裂变" : "添加裂变"}
+                                    </button>
+                                ` : ''}
+                            </div>
+                            ${fissionContent}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderConfigPanel() {
+            if (!state.isFissionEnabled) {
+                configPanel.innerHTML = `
+                    <div class="h-64 flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl p-8 bg-white/50">
+                        <i data-lucide="toggle-left" class="w-12 h-12 mb-4 opacity-20"></i>
+                        <p class="text-center text-sm">请先开启右上角的<br>「二阶段裂变」开关</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (!state.selectedGroupId) {
+                configPanel.innerHTML = `
+                    <div class="h-64 flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl p-8 bg-white/50">
+                        <i data-lucide="settings" class="w-12 h-12 mb-4 opacity-20"></i>
+                        <p class="text-center text-sm">点击左侧组别的<br>「添加裂变」按钮进行配置</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const group = state.groups.find(g => g.id === state.selectedGroupId);
+            const config = group.fissionConfig || { // Default fallback
+                triggerType: 'auto', 
+                triggerValue: '', 
+                balanceStrategy: 'inherit',
+                subGroups: []
+            };
+
+            configPanel.innerHTML = `
+                <div class="bg-white rounded-xl border border-blue-200 shadow-lg overflow-hidden">
+                    <div class="bg-blue-50/50 border-b border-blue-100 px-6 py-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-blue-900">裂变规则配置</h3>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded">针对 ${group.name}</span>
+                        </div>
+                        <p class="text-sm text-slate-500 mt-1">设置触发条件与分配逻辑</p>
+                    </div>
+                    
+                    <div class="p-6 space-y-6">
+                        <!-- 1. Trigger Type -->
+                        <div class="space-y-3">
+                            <label class="text-sm font-semibold flex items-center text-slate-700">
+                                <i data-lucide="settings-2" class="w-4 h-4 mr-2"></i>
+                                触发机制
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="updateConfig('triggerType', 'auto')" 
+                                    class="flex items-center justify-center px-4 py-2 rounded-md border text-sm font-medium transition-colors ${config.triggerType === 'auto' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}">
+                                    <i data-lucide="clock" class="w-4 h-4 mr-2"></i>
+                                    自动触发
+                                </button>
+                                <button onclick="updateConfig('triggerType', 'manual')" 
+                                    class="flex items-center justify-center px-4 py-2 rounded-md border text-sm font-medium transition-colors ${config.triggerType === 'manual' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}">
+                                    <i data-lucide="mouse-pointer" class="w-4 h-4 mr-2"></i>
+                                    主动触发
+                                </button>
+                            </div>
+
+                            <div class="bg-slate-50 p-3 rounded-md border border-slate-200 text-sm">
+                                ${config.triggerType === 'auto' ? `
+                                    <label class="text-xs text-slate-500 mb-1 block">触发时间点</label>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-slate-600">入组后</span>
+                                        <input type="number" value="${config.triggerValue || 180}" onchange="updateConfig('triggerValue', this.value)" class="w-24 h-8 px-2 rounded border border-slate-300 focus:outline-none focus:border-blue-500">
+                                        <span class="text-slate-600">天</span>
+                                    </div>
+                                ` : `
+                                    <label class="text-xs text-slate-500 mb-1 block">医学指标要求 (备注)</label>
+                                    <input type="text" placeholder="例如: 某指标 > 5.0" value="${config.triggerValue}" onchange="updateConfig('triggerValue', this.value)" class="w-full h-8 px-2 rounded border border-slate-300 focus:outline-none focus:border-blue-500">
+                                    <p class="text-xs text-slate-400 mt-1">需医生在受试者详情页手动点击“裂变”按钮</p>
+                                `}
+                            </div>
+                        </div>
+
+                        <!-- 2. Balance Strategy -->
+                        <div class="space-y-3">
+                            <label class="text-sm font-semibold flex items-center text-slate-700">
+                                <i data-lucide="scale" class="w-4 h-4 mr-2"></i>
+                                平衡策略
+                            </label>
+                            <select onchange="updateConfig('balanceStrategy', this.value)" class="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm focus:outline-none focus:border-blue-500">
+                                <option value="inherit" ${config.balanceStrategy === 'inherit' ? 'selected' : ''}>继承原维度平衡 (推荐)</option>
+                                <option value="random" ${config.balanceStrategy === 'random' ? 'selected' : ''}>简单随机 (Simple Random)</option>
+                                <option value="manual" ${config.balanceStrategy === 'manual' ? 'selected' : ''}>管理员指定 (Manual)</option>
+                            </select>
+                            <div class="bg-blue-50 border border-blue-100 rounded p-2 flex items-start">
+                                <i data-lucide="alert-circle" class="w-4 h-4 text-blue-600 mt-0.5 mr-2 flex-shrink-0"></i>
+                                <p class="text-xs text-blue-700">
+                                    系统将在 ${config.subGroups.map(s=>s.name).join('/') || '子组'} 间自动平衡性别、年龄、屈光度。
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 3. Sub Groups -->
+                        <div class="space-y-3">
+                            <label class="text-sm font-semibold text-slate-700">裂变子组 (Stage 2)</label>
+                            <div class="space-y-2">
+                                ${config.subGroups.map((sub, idx) => `
+                                    <div class="flex items-center space-x-2">
+                                        <input type="text" value="${sub.name}" class="flex-1 h-9 px-3 rounded border border-slate-300 text-sm focus:outline-none focus:border-blue-500" readonly>
+                                        <div class="flex items-center space-x-1 w-24">
+                                            <input type="number" value="${sub.ratio}" class="w-full h-9 px-2 rounded border border-slate-300 text-sm focus:outline-none focus:border-blue-500 text-center" readonly>
+                                            <span class="text-slate-500 text-xs">%</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button class="w-full py-2 border border-dashed border-blue-300 text-blue-600 text-sm rounded hover:bg-blue-50 transition-colors flex items-center justify-center">
+                                <i data-lucide="plus" class="w-3 h-3 mr-1"></i> 增加子组
+                            </button>
+                        </div>
+
+                        <div class="pt-4">
+                            <button onclick="saveConfig()" class="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                                保存规则
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Action Handlers ---
+
+        // 点击组别上的“配置裂变/添加裂变”按钮
+        window.handleGroupAction = function(groupId) {
+            const group = state.groups.find(g => g.id === groupId);
+            
+            // 如果还没配置过裂变，初始化一个默认配置
+            if (!group.hasFission) {
+                group.hasFission = true;
+                group.fissionConfig = {
+                    triggerType: 'auto',
+                    triggerValue: '180',
+                    balanceStrategy: 'inherit',
+                    subGroups: [
+                        { name: `${group.name}-1`, ratio: 50 },
+                        { name: `${group.name}-2`, ratio: 50 }
+                    ]
+                };
+            }
+            
+            state.selectedGroupId = groupId;
+            render();
+        };
+
+        // 更新配置项
+        window.updateConfig = function(key, value) {
+            const group = state.groups.find(g => g.id === state.selectedGroupId);
+            if (group && group.fissionConfig) {
+                group.fissionConfig[key] = value;
+                render(); // Re-render to show updates immediately
+            }
+        };
+
+        // 保存配置（模拟）
+        window.saveConfig = function() {
+            // 实际项目中这里会发送 API 请求
+            // 这里我们只是给个视觉反馈
+            const btn = document.querySelector('#config-panel button.bg-blue-600');
+            const originalText = btn.innerText;
+            btn.innerText = "已保存!";
+            btn.classList.add('bg-green-600', 'hover:bg-green-700');
+            btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            
+            setTimeout(() => {
+                state.selectedGroupId = null; // Close panel
+                render();
+            }, 800);
+        };
+
+        // Start App
+        init();
+
+    </script>
+</body>
+</html>
