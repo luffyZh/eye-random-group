@@ -5301,19 +5301,38 @@
     }
 
     function wizReset() {
-      // Step 1 Reset
-      document.getElementById('wiz-np-name').value = '';
-      document.getElementById('wiz-np-code').value = '';
-      document.getElementById('wiz-np-desc').value = '';
-      document.getElementById('wiz-center-display-text').innerText = "请选择参与中心...";
-      document.getElementById('wiz-center-display-text').classList.add('text-slate-500');
-      document.querySelectorAll('#wiz-center-dropdown input').forEach(el => el.checked = false);
-      SELECTED_CENTERS = [];
+      // Step 1 Reset (Auto-fill for testing)
+      document.getElementById('wiz-np-name').value = '儿童近视防控临床研究';
+      document.getElementById('wiz-np-code').value = 'CODE_2024';
+      document.getElementById('wiz-np-desc').value = '这是一个用于测试的默认项目描述。';
+
+      // Reset doctors first
       wizDisableDoctorSelectors();
-      document.getElementById('wiz-np-share-switch').checked = false;
-       wizToggleShareSwitch();
-       document.getElementById('wiz-inclusion-list').innerHTML = '';
-      document.getElementById('wiz-exclusion-list').innerHTML = '';
+      
+      // Default Center
+      const defaultCenter = "徐州眼视光中心";
+      document.querySelectorAll('#wiz-center-dropdown input').forEach(el => el.checked = (el.value === defaultCenter));
+      wizUpdateCenterDisplay();
+
+      // Default Leader & CRC
+      wizSelectLeader("王强", defaultCenter);
+      wizToggleCrc("张玲", defaultCenter);
+
+      // Default Share
+      document.getElementById('wiz-np-share-switch').checked = true;
+      wizToggleShareSwitch();
+      
+      // Default Criteria
+      document.getElementById('wiz-inclusion-list').innerHTML = `
+        <div class="flex items-center gap-2 animate-fade-in">
+            <input type="text" class="flex-1 rounded-lg border bg-emerald-50 border-emerald-300 focus:border-emerald-500 px-3 py-2.5 text-sm transition-colors" value="年龄 6-12 岁" placeholder="请输入纳入标准">
+            <button type="button" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+        </div>`;
+      document.getElementById('wiz-exclusion-list').innerHTML = `
+        <div class="flex items-center gap-2 animate-fade-in">
+            <input type="text" class="flex-1 rounded-lg border bg-red-50 border-red-300 focus:border-red-500 px-3 py-2.5 text-sm transition-colors" value="有其他眼部疾病" placeholder="请输入排除标准">
+            <button type="button" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+        </div>`;
       
       // Step 2 Reset
       document.querySelector('input[name="wizMatchMode"][value="random"]').checked = true;
@@ -5423,7 +5442,7 @@
     function wizCreateProject() {
         // Validation for Step 3
         const total = parseInt(document.getElementById('wiz-total-count').value) || 0;
-        const inputs = document.querySelectorAll('.wiz-group-count-input');
+        const inputs = document.querySelectorAll('.wiz-group-total-input');
         let sum = 0;
         inputs.forEach(input => sum += (parseInt(input.value) || 0));
         
@@ -5431,6 +5450,24 @@
             alert(`分组人数之和 (${sum}) 不等于项目总人数 (${total})，请调整。`);
             return;
         }
+
+        // Collect Medicine Data
+        const groupsData = [];
+        document.querySelectorAll('.wiz-group-card').forEach(card => {
+             // Assuming first text input is name, drug input has specific class
+             const nameInput = card.querySelector('input[type="text"]'); 
+             const drugInput = card.querySelector('.wiz-group-drug-input');
+             const countInput = card.querySelector('.wiz-group-total-input');
+             
+             if (nameInput && drugInput && countInput) {
+                 groupsData.push({ 
+                     name: nameInput.value, 
+                     medicine: drugInput.value, 
+                     count: countInput.value 
+                 });
+             }
+        });
+        console.log("New Project Groups Data:", groupsData);
 
         // Success
         alert("项目创建成功！");
@@ -5769,13 +5806,22 @@
         div.innerHTML = `
             <!-- Header -->
             <div class="p-4 flex items-center justify-between border-b ${theme.border} bg-white/30 backdrop-blur-sm">
-                <div class="flex items-center gap-3">
-                    <div class="relative group/icon cursor-pointer" onclick="wizRotateGroupIcon(this, '${groupId}')" title="点击切换图标">
-                        <i class="${icon} ${theme.text} text-xl transition-transform group-hover/icon:scale-110"></i>
+                <!-- Left: Icon + Name + Medicine -->
+                <div class="flex items-center gap-4 flex-1 mr-4">
+                    <div class="relative group/icon cursor-pointer shrink-0" onclick="wizRotateGroupIcon(this, '${groupId}')" title="点击切换图标">
+                        <i class="${icon} ${theme.text} text-3xl transition-transform group-hover/icon:scale-110"></i>
                     </div>
-                    <input type="text" value="${name}" class="bg-transparent border-0 border-b border-transparent hover:border-slate-300 focus:border-brand-500 focus:ring-0 text-slate-800 font-bold w-24 sm:w-32 transition-colors px-0 py-0.5">
+                    <div class="flex flex-col gap-1.5 flex-1 w-full">
+                         <input type="text" value="${name}" class="bg-transparent border-0 border-b border-transparent hover:border-slate-300 focus:border-brand-500 focus:ring-0 text-slate-800 font-bold text-base w-full transition-colors px-0 py-0.5 placeholder-slate-400" placeholder="分组名称">
+                         <div class="flex items-center gap-2 w-full">
+                            <span class="text-xs font-bold text-slate-500 whitespace-nowrap">药品:</span>
+                            <input type="text" class="wiz-group-drug-input bg-white/50 rounded border border-slate-200 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs text-slate-700 w-2/3 px-2 py-1 transition-colors placeholder-slate-400" placeholder="0.02%阿托品滴眼液">
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2">
+
+                <!-- Right: Count + Collapse -->
+                <div class="flex items-center gap-2 shrink-0">
                      <div class="relative">
                         <input type="number" 
                             class="wiz-group-total-input w-20 text-center font-bold text-sm rounded-lg border-0 bg-white shadow-sm ring-1 ring-slate-200 focus:ring-2 focus:ring-brand-500 py-1.5 text-slate-700"
