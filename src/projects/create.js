@@ -612,5 +612,90 @@ function wizOnTotalChange() {
     
     if (total < minTotal) {
         // total = minTotal; 
+        // totalInput.value = total;
+        // Optionally warn or auto-correct? Let's just distribute what we have and let inputs clamp
     }
+
+    // Distribute total evenly among groups
+    if (groups.length === 0) return;
+    
+    const baseGroup = Math.floor(total / groups.length);
+    let remainder = total % groups.length;
+    
+    groups.forEach((card, idx) => {
+        const groupInput = card.querySelector('.wiz-group-total-input');
+        let gCount = baseGroup;
+        if (idx < remainder) gCount++;
+        
+        groupInput.value = gCount;
+        wizDistributeGroupFactors(card.id, gCount);
+    });
+}
+
+function wizOnGroupTotalChange(groupId) {
+    // 1. Update this group's factors
+    const card = document.getElementById(groupId);
+    const groupInput = card.querySelector('.wiz-group-total-input');
+    let val = parseInt(groupInput.value) || 0;
+    
+    // Min check
+    if (val < WIZ_FACTORS.length) {
+        val = WIZ_FACTORS.length;
+        groupInput.value = val;
+    }
+    
+    wizDistributeGroupFactors(groupId, val);
+    
+    // 2. Update Total Count
+    wizUpdateProjectTotal();
+}
+
+function wizDistributeGroupFactors(groupId, totalCount) {
+    const card = document.getElementById(groupId);
+    const inputs = card.querySelectorAll('.wiz-factor-input');
+    const count = inputs.length;
+    if (count === 0) return;
+
+    const base = Math.floor(totalCount / count);
+    let rem = totalCount % count;
+    
+    inputs.forEach((inp, idx) => {
+        let val = base;
+        if (idx < rem) val++;
+        inp.value = val;
+    });
+    
+    // Handle Readonly state based on mode
+    const mode = document.querySelector('input[name="wizMatchMode"]:checked').value;
+    inputs.forEach(inp => {
+        if (mode === 'random') {
+            inp.disabled = true;
+            inp.classList.add('bg-slate-100', 'text-slate-500');
+            inp.classList.remove('bg-white', 'text-slate-700');
+        } else {
+            inp.disabled = false;
+            inp.classList.remove('bg-slate-100', 'text-slate-500');
+            inp.classList.add('bg-white', 'text-slate-700');
+        }
+    });
+}
+
+function wizOnFactorChange(groupId) {
+    const card = document.getElementById(groupId);
+    const inputs = card.querySelectorAll('.wiz-factor-input');
+    let sum = 0;
+    inputs.forEach(inp => sum += (parseInt(inp.value) || 0));
+    
+    // Update Group Total Input
+    card.querySelector('.wiz-group-total-input').value = sum;
+    
+    // Update Project Total
+    wizUpdateProjectTotal();
+}
+
+function wizUpdateProjectTotal() {
+    const groupInputs = document.querySelectorAll('.wiz-group-total-input');
+    let sum = 0;
+    groupInputs.forEach(inp => sum += (parseInt(inp.value) || 0));
+    document.getElementById('wiz-total-count').value = sum;
 }
