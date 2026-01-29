@@ -1,0 +1,616 @@
+// src/projects/create.js
+
+// Wizard State
+let currentWizStep = 1;
+let WIZ_FACTORS = [];
+
+// Entry Point
+function openNewProjectWizard() {
+  // Hide View Projects
+  document.getElementById('view-projects').classList.add('hidden');
+  // Show Wizard
+  document.getElementById('create-project-wizard').classList.remove('hidden');
+  
+  wizReset();
+  wizGoToStep(1);
+}
+
+function cancelWizard() {
+  // Hide Wizard
+  document.getElementById('create-project-wizard').classList.add('hidden');
+  // Show View Projects
+  document.getElementById('view-projects').classList.remove('hidden');
+}
+
+function wizReset() {
+  // Step 1 Reset (Auto-fill for testing)
+  document.getElementById('wiz-np-name').value = '儿童近视防控临床研究';
+  document.getElementById('wiz-np-code').value = 'CODE_2024';
+  document.getElementById('wiz-np-desc').value = '这是一个用于测试的默认项目描述。';
+
+  // Reset doctors first
+  wizDisableDoctorSelectors();
+  
+  // Default Center
+  const defaultCenter = "徐州眼视光中心";
+  document.querySelectorAll('#wiz-center-dropdown input').forEach(el => el.checked = (el.value === defaultCenter));
+  wizUpdateCenterDisplay();
+
+  // Default Leader & CRC
+  wizSelectLeader("王强", defaultCenter);
+  wizToggleCrc("张玲", defaultCenter);
+
+  // Default Share
+  document.getElementById('wiz-np-share-switch').checked = true;
+  wizToggleShareSwitch();
+  
+  // Default Criteria
+  document.getElementById('wiz-inclusion-list').innerHTML = `
+    <div class="flex items-center gap-2 animate-fade-in">
+        <input type="text" class="flex-1 rounded-lg border bg-emerald-50 border-emerald-300 focus:border-emerald-500 px-3 py-2.5 text-sm transition-colors" value="年龄 6-12 岁" placeholder="请输入纳入标准">
+        <button type="button" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+    </div>`;
+  document.getElementById('wiz-exclusion-list').innerHTML = `
+    <div class="flex items-center gap-2 animate-fade-in">
+        <input type="text" class="flex-1 rounded-lg border bg-red-50 border-red-300 focus:border-red-500 px-3 py-2.5 text-sm transition-colors" value="有其他眼部疾病" placeholder="请输入排除标准">
+        <button type="button" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>
+    </div>`;
+  
+  // Step 2 Reset
+  document.querySelector('input[name="wizMatchMode"][value="random"]').checked = true;
+  document.querySelectorAll('input[name="wizDims"]').forEach(el => el.checked = false);
+  document.getElementById('wiz-dims-config-container').innerHTML = '';
+  wizToggleMatchMode();
+
+  // Step 3 Reset
+  wizInitDefaultGroups();
+}
+
+function wizGoToStep(step) {
+  if (step < 1 || step > 3) return;
+  
+  // Validation when moving forward
+  if (step > currentWizStep) {
+     if (currentWizStep === 1) {
+         const name = document.getElementById('wiz-np-name').value.trim();
+         const code = document.getElementById('wiz-np-code').value.trim();
+         if (!name) { alert("请填写项目名称"); return; }
+         if (!code) { alert("请填写项目编码"); return; }
+         if (SELECTED_CENTERS.length === 0) { alert("请至少选择一个研究中心"); return; }
+         if (!leaderSelected) { alert("请选择项目负责人"); return; }
+         if (crcSelected.size === 0) { alert("请至少选择一位 CRC"); return; }
+     }
+     // Step 2 validation (dimensions)
+     if (currentWizStep === 2) {
+         const checkedDims = document.querySelectorAll('input[name="wizDims"]:checked');
+         if (checkedDims.length === 0) { alert("请至少选择一个分层维度"); return; }
+         
+         // Initialize Step 3 data when leaving Step 2
+         wizInitDefaultGroups();
+     }
+  }
+
+  currentWizStep = step;
+
+  // Update Header Indicators
+  for (let i = 1; i <= 3; i++) {
+      const ind = document.getElementById(`wiz-step-indicator-${i}`);
+      const bar = document.getElementById(`wiz-step-bar-${i}`); // i is bar index? No, bars are 1 and 2.
+      const title = document.getElementById(`wiz-step-title-${i}`);
+      
+      if (i === step) {
+         // Active
+         ind.className = "w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-brand-500/30 transition-all ring-4 ring-brand-50 transform scale-110";
+         title.className = "text-sm font-bold text-slate-800";
+      } else if (i < step) {
+         // Completed
+         ind.className = "w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-lg shadow-md transition-all ring-4 ring-white";
+         ind.innerHTML = '<i class="ri-check-line"></i>';
+         title.className = "text-sm font-bold text-slate-800";
+      } else {
+         // Inactive
+         ind.className = "w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-lg transition-all ring-4 ring-white";
+         ind.innerHTML = i;
+         title.className = "text-sm font-bold text-slate-500";
+      }
+  }
+
+  // Update Bars
+  if (step >= 2) document.getElementById('wiz-step-bar-1').classList.remove('w-0');
+  else document.getElementById('wiz-step-bar-1').classList.add('w-0');
+  
+  if (step >= 3) document.getElementById('wiz-step-bar-1').classList.remove('w-0'); // Bar 1 also filled
+  if (step >= 3) document.getElementById('wiz-step-bar-2').classList.remove('w-0');
+  else document.getElementById('wiz-step-bar-2').classList.add('w-0');
+
+
+  // Update Content Visibility
+  for (let i = 1; i <= 3; i++) {
+      const content = document.getElementById(`wiz-step-content-${i}`);
+      if (i === step) {
+          content.classList.remove('hidden');
+      } else {
+          content.classList.add('hidden');
+      }
+  }
+
+  // Update Footer Buttons
+  const btnPrev = document.getElementById('wiz-btn-prev');
+  const btnNext = document.getElementById('wiz-btn-next');
+
+  if (step === 1) {
+      btnPrev.classList.add('hidden');
+      btnNext.innerHTML = '下一步 <i class="ri-arrow-right-line"></i>';
+      btnNext.onclick = wizNext;
+  } else if (step === 2) {
+      btnPrev.classList.remove('hidden');
+      btnNext.innerHTML = '下一步 <i class="ri-arrow-right-line"></i>';
+      btnNext.onclick = wizNext;
+  } else if (step === 3) {
+      btnPrev.classList.remove('hidden');
+      btnNext.innerHTML = '<i class="ri-check-double-line mr-1"></i> 完成创建';
+      btnNext.onclick = wizCreateProject;
+  }
+}
+
+function wizNext() {
+   wizGoToStep(currentWizStep + 1);
+}
+
+function wizPrev() {
+   wizGoToStep(currentWizStep - 1);
+}
+
+function wizCreateProject() {
+    // Validation for Step 3
+    const total = parseInt(document.getElementById('wiz-total-count').value) || 0;
+    const inputs = document.querySelectorAll('.wiz-group-total-input');
+    let sum = 0;
+    inputs.forEach(input => sum += (parseInt(input.value) || 0));
+    
+    if (sum !== total) {
+        alert(`分组人数之和 (${sum}) 不等于项目总人数 (${total})，请调整。`);
+        return;
+    }
+
+    // Collect Medicine Data
+    const groupsData = [];
+    document.querySelectorAll('.wiz-group-card').forEach(card => {
+         // Assuming first text input is name, drug input has specific class
+         const nameInput = card.querySelector('input[type="text"]'); 
+         const drugInput = card.querySelector('.wiz-group-drug-input');
+         const countInput = card.querySelector('.wiz-group-total-input');
+         
+         if (nameInput && drugInput && countInput) {
+             groupsData.push({ 
+                 name: nameInput.value, 
+                 medicine: drugInput.value, 
+                 count: countInput.value 
+             });
+         }
+    });
+    console.log("New Project Groups Data:", groupsData);
+
+    // Success
+    alert("项目创建成功！");
+    cancelWizard();
+}
+
+/* ================= Wizard Step 1 Logic ================= */
+function wizToggleShareSwitch() {
+    const isChecked = document.getElementById('wiz-np-share-switch').checked;
+    const label = document.getElementById('wiz-np-share-label');
+    
+    if (isChecked) {
+        label.innerText = '共享';
+        label.classList.remove('text-slate-500');
+        label.classList.add('text-brand-600');
+    } else {
+        label.innerText = '不共享';
+        label.classList.remove('text-brand-600');
+        label.classList.add('text-slate-500');
+    }
+    
+    document.querySelector('input[name="wiz-np-share"][value="yes"]').checked = isChecked;
+    document.querySelector('input[name="wiz-np-share"][value="no"]').checked = !isChecked;
+}
+
+function wizToggleCenterSelect() {
+    document.getElementById('wiz-center-dropdown').classList.toggle('hidden');
+}
+
+function wizUpdateCenterDisplay() {
+  const checked = Array.from(document.querySelectorAll('#wiz-center-dropdown input:checked')).map(el => el.value);
+  const displaySpan = document.getElementById('wiz-center-display-text');
+
+  if (checked.length === 0) {
+    displaySpan.innerText = "请选择参与中心...";
+    displaySpan.classList.add('text-slate-500');
+    displaySpan.classList.remove('text-slate-800');
+    SELECTED_CENTERS = [];
+    wizDisableDoctorSelectors();
+  } else {
+    displaySpan.innerText = `已选择 ${checked.length} 个中心`;
+    displaySpan.classList.remove('text-slate-500');
+    displaySpan.classList.add('text-slate-800');
+    SELECTED_CENTERS = checked;
+    wizEnableDoctorSelectors();
+    wizRenderDoctorOptions();
+  }
+}
+
+function wizDisableDoctorSelectors() {
+    const triggers = ['wiz-leader-trigger', 'wiz-collab-trigger', 'wiz-crc-trigger'];
+    triggers.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.add('pointer-events-none', 'opacity-50');
+    });
+    document.getElementById('wiz-leader-display').innerText = '需先选中心';
+    document.getElementById('wiz-collab-display').innerText = '需先选中心';
+    document.getElementById('wiz-crc-display').innerText = '需先选中心';
+    leaderSelected = null;
+    collabSelected = new Set();
+    crcSelected = new Set();
+}
+
+function wizEnableDoctorSelectors() {
+    const triggers = ['wiz-leader-trigger', 'wiz-collab-trigger', 'wiz-crc-trigger'];
+    triggers.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('pointer-events-none', 'opacity-50');
+    });
+    // Reset text if it was "Need to select..."
+    if (document.getElementById('wiz-leader-display').innerText === '需先选中心') {
+         document.getElementById('wiz-leader-display').innerText = '请选择负责人...';
+    }
+    if (document.getElementById('wiz-collab-display').innerText === '需先选中心') {
+         document.getElementById('wiz-collab-display').innerText = '请选择协作医生...';
+    }
+    if (document.getElementById('wiz-crc-display').innerText === '需先选中心') {
+         document.getElementById('wiz-crc-display').innerText = '请选择 CRC...';
+    }
+}
+
+function wizRenderDoctorOptions() {
+  // Reusing GLOBAL DATA: DOCTOR_DATA, CRC_DATA
+  const leaderDD = document.getElementById('wiz-leader-dropdown');
+  const collabDD = document.getElementById('wiz-collab-dropdown');
+  const crcDD = document.getElementById('wiz-crc-dropdown');
+  
+  let leaderHtml = '';
+  let collabHtml = '';
+  let crcHtml = '';
+
+  SELECTED_CENTERS.forEach(center => {
+    (DOCTOR_DATA[center] || []).forEach(name => {
+      const id = `${center}-${name}`;
+      leaderHtml += `<button type="button" class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm" onclick="wizSelectLeader('${name}','${center}')"><span class="text-slate-700">${name}</span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></button>`;
+      
+      const checked = collabSelected.has(id) ? 'checked' : '';
+      collabHtml += `<label class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm cursor-pointer"><span class="flex items-center gap-2"><input type="checkbox" ${checked} onchange="wizToggleCollab('${name}','${center}')" class="rounded text-brand-600 border-slate-300 focus:ring-brand-500"><span class="text-slate-700">${name}</span></span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></label>`;
+    });
+    
+    (CRC_DATA[center] || []).forEach(name => {
+      const id = `${center}-${name}`;
+      const checked = crcSelected.has(id) ? 'checked' : '';
+      crcHtml += `<label class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-slate-50 text-sm cursor-pointer"><span class="flex items-center gap-2"><input type="checkbox" ${checked} onchange="wizToggleCrc('${name}','${center}')" class="rounded text-brand-600 border-slate-300 focus:ring-brand-500"><span class="text-slate-700">${name}</span></span><span class="flex items-center gap-1 text-slate-500"><i class="ri-hospital-line"></i>${center}</span></label>`;
+    });
+  });
+
+  leaderDD.innerHTML = leaderHtml || `<div class="px-3 py-2 text-xs text-slate-500">无数据</div>`;
+  collabDD.innerHTML = collabHtml || `<div class="px-3 py-2 text-xs text-slate-500">无数据</div>`;
+  crcDD.innerHTML = crcHtml || `<div class="px-3 py-2 text-xs text-slate-500">无数据</div>`;
+}
+
+function wizToggleLeaderDropdown() { document.getElementById('wiz-leader-dropdown').classList.toggle('hidden'); }
+function wizToggleCollabDropdown() { document.getElementById('wiz-collab-dropdown').classList.toggle('hidden'); }
+function wizToggleCrcDropdown() { document.getElementById('wiz-crc-dropdown').classList.toggle('hidden'); }
+
+function wizSelectLeader(name, center) {
+    leaderSelected = { name, center };
+    document.getElementById('wiz-leader-display').innerText = `${name} (${center})`;
+    document.getElementById('wiz-leader-dropdown').classList.add('hidden');
+}
+
+function wizToggleCollab(name, center) {
+    const id = `${center}-${name}`;
+    if (collabSelected.has(id)) collabSelected.delete(id);
+    else collabSelected.add(id);
+    const count = collabSelected.size;
+    document.getElementById('wiz-collab-display').innerText = count ? `已选择 ${count} 人` : '请选择协作医生...';
+}
+
+function wizToggleCrc(name, center) {
+    const id = `${center}-${name}`;
+    if (crcSelected.has(id)) crcSelected.delete(id);
+    else crcSelected.add(id);
+    const count = crcSelected.size;
+    document.getElementById('wiz-crc-display').innerText = count ? `已选择 ${count} 人` : '请选择 CRC...';
+}
+
+function wizAddCriteria(type) {
+    const list = document.getElementById(type === 'inclusion' ? 'wiz-inclusion-list' : 'wiz-exclusion-list');
+    const row = document.createElement('div');
+    const color = type === 'inclusion' ? 'bg-emerald-50 border-emerald-300 focus:border-emerald-500' : 'bg-red-50 border-red-300 focus:border-red-500';
+    row.className = 'flex items-center gap-2 animate-fade-in';
+    row.innerHTML = `<input type="text" class="flex-1 rounded-lg border ${color} px-3 py-2.5 text-sm transition-colors" placeholder="${type==='inclusion'?'请输入纳入标准':'请输入排除标准'}"><button type="button" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" onclick="this.parentElement.remove()"><i class="ri-delete-bin-line"></i></button>`;
+    list.appendChild(row);
+    row.querySelector('input').focus();
+}
+
+ function wizRenderSelectedDimensions() {
+     const container = document.getElementById('wiz-dims-config-container');
+     container.innerHTML = '';
+     
+     const selectedDims = document.querySelectorAll('input[name="wizDims"]:checked');
+     
+     selectedDims.forEach(checkbox => {
+         const val = checkbox.value;
+         const label = checkbox.closest('label').querySelector('.block').innerText;
+         
+         // Define default segments for each type
+         let segmentsHtml = '';
+         let editHtml = '';
+         
+         if (val === 'gender') {
+             segmentsHtml = `
+                <div class="flex h-10 w-full rounded-lg overflow-hidden font-bold text-white text-sm shadow-sm">
+                    <div class="flex-1 bg-emerald-500 flex items-center justify-center">男</div>
+                    <div class="flex-1 bg-indigo-500 flex items-center justify-center">女</div>
+                </div>
+             `;
+         } else if (val === 'age') {
+             segmentsHtml = `
+                <div class="flex h-10 w-full rounded-lg overflow-hidden font-bold text-white text-sm shadow-sm">
+                    <div class="flex-1 bg-emerald-500 flex items-center justify-center">4-7岁</div>
+                    <div class="flex-1 bg-indigo-500 flex items-center justify-center">8-10岁</div>
+                </div>
+             `;
+         } else if (val === 'diopter') {
+             segmentsHtml = `
+                <div class="flex h-10 w-full rounded-lg overflow-hidden font-bold text-white text-sm shadow-sm">
+                    <div class="flex-1 bg-emerald-300 flex items-center justify-center">中度近视</div>
+                    <div class="flex-1 bg-indigo-500 flex items-center justify-center">轻度近视</div>
+                    <div class="flex-1 bg-purple-200 flex items-center justify-center">正视</div>
+                </div>
+             `;
+             
+             // Show edit panel for diopter as example
+             editHtml = `
+                <div class="mt-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm relative animate-fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">正在配置选项</span>
+                            <span class="font-bold text-slate-800">轻度近视</span>
+                        </div>
+                        <div class="flex gap-3 text-xs font-bold">
+                            <button class="text-red-500 flex items-center gap-1 hover:text-red-600"><i class="ri-delete-bin-line"></i> 删除此段</button>
+                            <button class="text-slate-400 hover:text-brand-600">收起</button>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1.5">选项展示名称</label>
+                            <input type="text" value="轻度近视" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1.5">数值起始 (Min)</label>
+                                <div class="relative">
+                                    <input type="number" value="-1.50" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pr-8">
+                                    <span class="absolute right-2 top-2 text-xs text-slate-400 font-bold bg-slate-100 px-1 rounded">D</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1.5">数值截止 (Max)</label>
+                                <div class="relative">
+                                    <input type="number" value="-0.51" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pr-8">
+                                    <span class="absolute right-2 top-2 text-xs text-slate-400 font-bold bg-slate-100 px-1 rounded">D</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             `;
+         }
+         
+         const div = document.createElement('div');
+         div.className = "animate-fade-in";
+         div.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="bg-indigo-50 text-indigo-600 text-[10px] px-2 py-0.5 rounded font-bold border border-indigo-100">维度名称</span>
+                    <h4 class="font-bold text-slate-800">${label}</h4>
+                </div>
+                <button class="text-slate-300 hover:text-red-500 transition-colors"><i class="ri-delete-bin-line text-lg"></i></button>
+            </div>
+            ${segmentsHtml}
+            ${editHtml}
+         `;
+         container.appendChild(div);
+     });
+ }
+
+ function wizToggleMatchMode() {
+    // Just visual updates or logic if needed
+    // Currently mode is just a selection
+    // Also refresh Step 3 state if needed
+    const mode = document.querySelector('input[name="wizMatchMode"]:checked').value;
+    // Refresh inputs state
+    const groups = document.querySelectorAll('.wiz-group-card');
+    groups.forEach(g => {
+         const total = parseInt(g.querySelector('.wiz-group-total-input').value) || 0;
+         wizDistributeGroupFactors(g.id, total);
+    });
+}
+
+/* ================= Wizard Step 3 Logic ================= */
+
+function wizInitDefaultGroups() {
+    const container = document.getElementById('wiz-group-container');
+    container.innerHTML = '';
+    
+    // Prepare Factors (Cartesian Product)
+    WIZ_FACTORS = wizGetCartesianProduct();
+    
+    // Initial Groups
+    wizCreateGroupCard('实验组', 'ri-flask-line', 'indigo', 50);
+    wizCreateGroupCard('对照组', 'ri-shield-check-line', 'emerald', 50);
+    
+    // Initial Distribution
+    wizOnTotalChange();
+}
+
+function wizGetCartesianProduct() {
+    const dims = [];
+    // Checkboxes in Step 2
+    if (document.querySelector('input[value="gender"]').checked) dims.push(['男', '女']);
+    if (document.querySelector('input[value="age"]').checked) dims.push(['4-7', '8-10']);
+    if (document.querySelector('input[value="diopter"]').checked) dims.push(['-1.0~-0.5', '-0.4~0']);
+    
+    if (dims.length === 0) return ['默认']; // Fallback
+    
+    // Generate product
+    return dims.reduce((acc, curr) => {
+        const res = [];
+        acc.forEach(a => {
+            curr.forEach(b => {
+                res.push(a + ' ' + b); // Using space separator
+            });
+        });
+        return res;
+    });
+}
+
+function wizCreateGroupCard(name, icon, colorTheme, initialCount) {
+    const container = document.getElementById('wiz-group-container');
+    const groupId = 'wiz-group-' + Date.now() + Math.random().toString(36).substr(2, 5);
+    
+    // Extended Themes (5 colors)
+    const themes = {
+        indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-100', hover: 'hover:text-indigo-600', active: 'bg-indigo-100' },
+        emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100', hover: 'hover:text-emerald-600', active: 'bg-emerald-100' },
+        amber: { bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-100', hover: 'hover:text-amber-600', active: 'bg-amber-100' },
+        sky: { bg: 'bg-sky-50', text: 'text-sky-600', border: 'border-sky-100', hover: 'hover:text-sky-600', active: 'bg-sky-100' },
+        rose: { bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-100', hover: 'hover:text-rose-600', active: 'bg-rose-100' },
+        slate: { bg: 'bg-slate-50', text: 'text-slate-600', border: 'border-slate-100', hover: 'hover:text-slate-600', active: 'bg-slate-100' }
+    };
+    
+    const theme = themes[colorTheme] || themes.slate;
+
+    const div = document.createElement('div');
+    div.id = groupId;
+    div.className = `wiz-group-card rounded-2xl border ${theme.border} ${theme.bg} overflow-hidden transition-all shadow-sm hover:shadow-md`;
+    
+    // Factors HTML
+    let factorsHtml = '';
+    WIZ_FACTORS.forEach((f, idx) => {
+        const chips = f.split(' ').map(s => `<span class="bg-white/60 px-1.5 py-0.5 rounded text-slate-500 border border-slate-200/50">${s}</span>`).join('');
+        
+        factorsHtml += `
+            <div class="flex items-center justify-between gap-4 p-3 bg-white/50 rounded-xl border border-white/60">
+                <div class="flex flex-wrap gap-1 text-[10px] font-medium leading-none">
+                    ${chips}
+                </div>
+                <input type="number" 
+                    class="wiz-factor-input w-16 text-center text-sm font-bold text-slate-700 bg-white border border-slate-200 rounded-lg py-1 focus:ring-1 focus:ring-brand-500 focus:border-brand-500"
+                    value="0" 
+                    min="0"
+                    data-group-id="${groupId}"
+                    oninput="wizOnFactorChange('${groupId}')"
+                >
+            </div>
+        `;
+    });
+
+    div.innerHTML = `
+        <!-- Header -->
+        <div class="p-4 flex items-center justify-between border-b ${theme.border} bg-white/30 backdrop-blur-sm">
+            <!-- Left: Icon + Name + Medicine -->
+            <div class="flex items-center gap-4 flex-1 mr-4">
+                <div class="relative group/icon cursor-pointer shrink-0" onclick="wizRotateGroupIcon(this, '${groupId}')" title="点击切换图标">
+                    <i class="${icon} ${theme.text} text-3xl transition-transform group-hover/icon:scale-110"></i>
+                </div>
+                <div class="flex flex-col gap-1.5 flex-1 w-full">
+                     <input type="text" value="${name}" class="bg-transparent border-0 border-b border-transparent hover:border-slate-300 focus:border-brand-500 focus:ring-0 text-slate-800 font-bold text-base w-full transition-colors px-0 py-0.5 placeholder-slate-400" placeholder="分组名称">
+                     <div class="flex items-center gap-2 w-full">
+                        <span class="text-xs font-bold text-slate-500 whitespace-nowrap">药品:</span>
+                        <input type="text" class="wiz-group-drug-input bg-white/50 rounded border border-slate-200 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs text-slate-700 w-2/3 px-2 py-1 transition-colors placeholder-slate-400" placeholder="0.02%阿托品滴眼液">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Count + Collapse -->
+            <div class="flex items-center gap-2 shrink-0">
+                 <div class="relative">
+                    <input type="number" 
+                        class="wiz-group-total-input w-20 text-center font-bold text-sm rounded-lg border-0 bg-white shadow-sm ring-1 ring-slate-200 focus:ring-2 focus:ring-brand-500 py-1.5 text-slate-700"
+                        value="${initialCount}"
+                        min="${WIZ_FACTORS.length}"
+                        oninput="wizOnGroupTotalChange('${groupId}')"
+                    >
+                 </div>
+                 <button onclick="wizToggleGroupCollapse('${groupId}')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/50 text-slate-400 transition-colors">
+                    <i class="ri-arrow-down-s-line transition-transform duration-300 transform" id="icon-${groupId}"></i>
+                 </button>
+            </div>
+        </div>
+        
+        <!-- Content (Factors) - Default Collapsed (hidden) -->
+        <div id="content-${groupId}" class="hidden p-4 space-y-2 max-h-[320px] overflow-y-auto custom-scrollbar">
+            ${factorsHtml}
+        </div>
+    `;
+    
+    container.appendChild(div);
+}
+
+function wizRotateGroupIcon(el, groupId) {
+    const iconEl = el.querySelector('i');
+    const currentClass = Array.from(iconEl.classList).find(c => c.startsWith('ri-'));
+    let idx = ICON_LIST.indexOf(currentClass);
+    if (idx === -1) idx = 0;
+    let nextIdx = (idx + 1) % ICON_LIST.length;
+    iconEl.classList.remove(currentClass);
+    iconEl.classList.add(ICON_LIST[nextIdx]);
+}
+
+function wizAddNewGroup() {
+    const count = document.querySelectorAll('.wiz-group-card').length;
+    if (count >= 10) { alert("分组数量已达上限"); return; }
+    
+    // Cycle through themes for new groups
+    const themes = ['amber', 'rose', 'sky', 'indigo', 'emerald'];
+    const theme = themes[count % themes.length];
+    
+    wizCreateGroupCard(`分组 ${count + 1}`, 'ri-group-line', theme, 0);
+    wizOnTotalChange(); // Redistribute total to include new group
+}
+
+function wizToggleGroupCollapse(groupId) {
+    const content = document.getElementById(`content-${groupId}`);
+    const icon = document.getElementById(`icon-${groupId}`);
+    
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.classList.remove('rotate-180');
+    } else {
+        content.classList.add('hidden');
+        icon.classList.add('rotate-180');
+    }
+}
+
+function wizOnTotalChange() {
+    const totalInput = document.getElementById('wiz-total-count');
+    let total = parseInt(totalInput.value) || 0;
+    
+    // Enforce min total based on groups and factors
+    const groups = document.querySelectorAll('.wiz-group-card');
+    const minPerGroup = WIZ_FACTORS.length;
+    const minTotal = groups.length * minPerGroup;
+    
+    if (total < minTotal) {
+        // total = minTotal; 
+    }
+}
