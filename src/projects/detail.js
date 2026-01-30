@@ -1,3 +1,4 @@
+
 // src/projects/detail.js
 
 
@@ -9,7 +10,7 @@ document.addEventListener('change', function(e){
   }
 });
 
-/* ================= 分组视图切换逻辑 ================= */
+/* ================= 分组视图切换逻辑 (普通项目) ================= */
 
 function toggleGroupView(count) {
   const grid = document.getElementById('group-grid');
@@ -30,6 +31,59 @@ function toggleGroupView(count) {
     // Hide 3rd group
     targetGroup.classList.add('hidden');
   }
+}
+
+/* ================= 裂变视图切换逻辑 (裂变项目) ================= */
+
+let isFissionExpanded = false;
+
+function toggleFissionGroupView() {
+  const grid = document.getElementById('group-grid');
+  const parentCtrl = document.getElementById('fission-group-ctrl-parent');
+  const sub1 = document.getElementById('fission-group-ctrl-sub1');
+  const sub2 = document.getElementById('fission-group-ctrl-sub2');
+  const toggleText = document.getElementById('fission-toggle-text');
+  const expDetails = document.getElementById('factor-details-fission-exp-container');
+
+  isFissionExpanded = !isFissionExpanded;
+
+  if (isFissionExpanded) {
+    // 切换到裂变视图 (3列：强化干预 + 子组1 + 子组2)
+    grid.classList.remove('md:grid-cols-2');
+    grid.classList.add('md:grid-cols-3');
+
+    parentCtrl.classList.add('hidden');
+    sub1.classList.remove('hidden');
+    sub2.classList.remove('hidden');
+    
+    // 隐藏强化干预组的因子详情
+    if (expDetails) expDetails.classList.add('hidden');
+
+    toggleText.innerText = "切换回原始视图";
+  } else {
+    // 切换回原始视图 (2列：强化干预 + 对照组)
+    grid.classList.remove('md:grid-cols-3');
+    grid.classList.add('md:grid-cols-2');
+
+    parentCtrl.classList.remove('hidden');
+    sub1.classList.add('hidden');
+    sub2.classList.add('hidden');
+    
+    // 显示强化干预组的因子详情
+    if (expDetails) expDetails.classList.remove('hidden');
+
+    toggleText.innerText = "切换裂变视图";
+  }
+}
+
+// 暴露给 layout.js 重置状态用
+function resetFissionGroupView() {
+  isFissionExpanded = true; // 先设为 true, 让 toggle 变成 false
+  toggleFissionGroupView(); // 触发一次 toggle 回到 false 状态
+  
+  // 确保重置时详情是显示的
+  const expDetails = document.getElementById('factor-details-fission-exp-container');
+  if (expDetails) expDetails.classList.remove('hidden');
 }
 
 /* ================= 因子详情展开逻辑 ================= */

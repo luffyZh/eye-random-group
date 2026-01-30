@@ -159,10 +159,23 @@ function openProjectDetail(isFission = false) {
       fissionContent.forEach(el => el.classList.remove('hidden'));
       normalContent.forEach(el => el.classList.add('hidden'));
       if(projectTitle) projectTitle.innerText = "冠心病介入治疗术后心脏康复分级干预策略的多中心随机对照研究";
+      
+      // Reset Fission Group View to default state
+      if (typeof resetFissionGroupView === 'function') {
+        resetFissionGroupView();
+      }
   } else {
       fissionContent.forEach(el => el.classList.add('hidden'));
       normalContent.forEach(el => el.classList.remove('hidden'));
       if(projectTitle) projectTitle.innerText = "光刻微结构近视管理镜片在儿童青少年近视防控中的有效性及佩戴安全舒适性的随机对照临床研究";
+      
+      // Reset Normal Group View to default state (2 groups)
+      if (typeof toggleGroupView === 'function') {
+        toggleGroupView(2);
+        // Reset radio button UI if needed
+        const radios = document.getElementsByName('group');
+        if (radios && radios.length > 0) radios[0].checked = true;
+      }
   }
 }
 

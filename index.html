@@ -292,6 +292,7 @@
                 </button>
               </div>
             </div>
+
           </div>
 
           <!-- 示例卡片 2 (裂变示例) -->
@@ -680,8 +681,8 @@
             <div class="flex items-center gap-3">
               <h3 class="text-lg font-bold text-slate-800">分组与维度概览</h3>
             </div>
-            <!-- Radio Button 样式筛选 -->
-            <div class="bg-slate-200/50 p-1 rounded-xl flex items-center">
+            <!-- Radio Button 样式筛选 (普通项目) -->
+            <div class="bg-slate-200/50 p-1 rounded-xl flex items-center normal-content">
               <label class="cursor-pointer">
                 <input type="radio" name="group" class="peer sr-only" checked onchange="toggleGroupView(2)" />
                 <span
@@ -693,10 +694,16 @@
                   class="block px-4 py-1 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">3个分组</span>
               </label>
             </div>
+
+            <!-- 裂变视图切换 (裂变项目) -->
+            <button id="fission-view-toggle" onclick="toggleFissionGroupView()" class="fission-content hidden flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-50 text-sm font-medium text-indigo-600 hover:bg-indigo-100 transition-colors">
+              <i class="ri-node-tree text-lg"></i>
+              <span id="fission-toggle-text">切换裂变视图</span>
+            </button>
           </div>
           <div id="group-grid" class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100 transition-all duration-300">
-            <!-- 实验组 -->
-            <div class="p-6">
+            <!-- 实验组 (普通项目) -->
+            <div class="p-6 normal-content">
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
@@ -806,8 +813,8 @@
               </div>
             </div>
 
-            <!-- 对照组 -->
-            <div class="p-6">
+            <!-- 对照组 (普通项目) -->
+            <div class="p-6 normal-content">
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
@@ -918,8 +925,8 @@
               </div>
             </div>
 
-            <!-- 目标组 (默认隐藏) -->
-            <div id="group-target" class="hidden p-6">
+            <!-- 目标组 (默认隐藏) (普通项目) -->
+            <div id="group-target" class="hidden p-6 normal-content">
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
@@ -1025,6 +1032,215 @@
                         <span class="text-rose-500 font-bold ml-1">(5)</span>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= Fission Project Groups ================= -->
+            
+            <!-- 强化干预组 (裂变项目 - 始终显示) -->
+            <div class="p-6 fission-content hidden">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                    <i class="ri-heart-pulse-line text-xl"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-slate-800">强化干预组</h4>
+                    <p class="text-xs text-slate-500">Intensive Intervention</p>
+                  </div>
+                </div>
+                <span class="text-2xl font-bold text-indigo-600">
+                  24
+                  <span class="text-2xl font-normal text-slate-500">&nbsp;/&nbsp;50</span>
+                  <span class="text-sm text-slate-500 font-normal">人</span>
+                </span>
+              </div>
+              <!-- 维度展示 -->
+              <div class="space-y-4">
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 mb-2 block uppercase">性别分布</span>
+                  <div class="flex gap-2">
+                    <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">男: 12</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">女: 12</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 mb-2 block uppercase">年龄段</span>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">40-50岁: 8</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">50-60岁: 10</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">60岁+: 6</span>
+                  </div>
+                </div>
+              </div>
+              <!-- 因子匹配详情 (Collapsible) -->
+              <div id="factor-details-fission-exp-container" class="mt-6">
+                <button onclick="toggleFactorDetails('fission-exp')" class="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-500 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors group">
+                  <span>因子匹配详情</span>
+                  <i id="icon-fission-exp" class="ri-arrow-down-s-line text-base transition-transform duration-300"></i>
+                </button>
+                
+                <!-- List -->
+                <div id="details-fission-exp" class="hidden mt-3 space-y-2">
+                  <div class="flex justify-between items-center text-xs">
+                    <div class="flex items-center gap-1 px-3 py-1 rounded-md bg-indigo-50 text-indigo-600 text-xs font-medium border border-slate-200" title="性别：男 | 年龄：40-50岁">
+                      性别:男 <span class="text-slate-300 mx-1">|</span>
+                      年龄:40-50岁
+                    </div>
+                    <div class="flex items-center gap-1 font-mono whitespace-nowrap">
+                      <span class="font-bold text-indigo-600">6</span>
+                      <span class="text-slate-400">/</span>
+                      <span class="text-slate-500">10</span>
+                      <span class="text-rose-500 font-bold ml-1">(4)</span>
+                    </div>
+                  </div>
+                  
+                  <div class="flex justify-between items-center text-xs">
+                    <div class="px-3 py-1 rounded-md bg-indigo-50 text-indigo-600 text-xs font-medium border border-slate-200" title="性别：女 | 年龄：50-60岁">
+                      性别:女 <span class="text-slate-300 mx-1">|</span> 
+                      年龄:50-60岁
+                    </div>
+                    <div class="flex items-center gap-1 font-mono whitespace-nowrap">
+                        <span class="font-bold text-indigo-600">5</span>
+                        <span class="text-slate-400">/</span>
+                        <span class="text-slate-500">10</span>
+                        <span class="text-rose-500 font-bold ml-1">(5)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 对照组 (裂变项目 - 原始视图显示) -->
+            <div id="fission-group-ctrl-parent" class="p-6 fission-content hidden">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                    <i class="ri-hospital-line text-xl"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-slate-800">对照组 (常规)</h4>
+                    <p class="text-xs text-slate-500">Standard Care</p>
+                  </div>
+                </div>
+                <span class="text-2xl font-bold text-emerald-600">
+                  26
+                  <span class="text-2xl font-normal text-slate-500">&nbsp;/&nbsp;50</span>
+                  <span class="text-sm text-slate-500 font-normal">人</span>
+                </span>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 mb-2 block uppercase">性别分布</span>
+                  <div class="flex gap-2">
+                    <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">男: 14</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">女: 12</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 mb-2 block uppercase">年龄段</span>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">40-50岁: 10</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">50-60岁: 10</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">60岁+: 6</span>
+                  </div>
+                </div>
+              </div>
+              <!-- 因子匹配详情 (Collapsible) -->
+              <div class="mt-6">
+                <button onclick="toggleFactorDetails('fission-ctrl')" class="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-500 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors group">
+                  <span>因子匹配详情</span>
+                  <i id="icon-fission-ctrl" class="ri-arrow-down-s-line text-base transition-transform duration-300"></i>
+                </button>
+                
+                <!-- List -->
+                <div id="details-fission-ctrl" class="hidden mt-3 space-y-2">
+                  <div class="flex justify-between items-center text-xs">
+                    <div class="flex items-center gap-1 px-3 py-1 rounded-md bg-emerald-50 text-emerald-600 text-xs font-medium border border-slate-200" title="性别：男 | 年龄：40-50岁">
+                      性别:男 <span class="text-slate-300 mx-1">|</span>
+                      年龄:40-50岁
+                    </div>
+                    <div class="flex items-center gap-1 font-mono whitespace-nowrap">
+                      <span class="font-bold text-emerald-600">6</span>
+                      <span class="text-slate-400">/</span>
+                      <span class="text-slate-500">10</span>
+                      <span class="text-rose-500 font-bold ml-1">(4)</span>
+                    </div>
+                  </div>
+                  
+                  <div class="flex justify-between items-center text-xs">
+                    <div class="px-3 py-1 rounded-md bg-emerald-50 text-emerald-600 text-xs font-medium border border-slate-200" title="性别：女 | 年龄：50-60岁">
+                      性别:女 <span class="text-slate-300 mx-1">|</span> 
+                      年龄:50-60岁
+                    </div>
+                    <div class="flex items-center gap-1 font-mono whitespace-nowrap">
+                        <span class="font-bold text-emerald-600">5</span>
+                        <span class="text-slate-400">/</span>
+                        <span class="text-slate-500">10</span>
+                        <span class="text-rose-500 font-bold ml-1">(5)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 对照组: 裂变子组1 (裂变项目 - 裂变视图显示) -->
+            <div id="fission-group-ctrl-sub1" class="hidden p-6 fission-content">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                    <i class="ri-user-follow-line text-xl"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-slate-800">对照组: 裂变子组1</h4>
+                    <p class="text-xs text-slate-500">Subgroup 1</p>
+                  </div>
+                </div>
+                <span class="text-2xl font-bold text-emerald-600">
+                  13
+                  <span class="text-2xl font-normal text-slate-500">&nbsp;/&nbsp;26</span>
+                </span>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 mb-2 block uppercase">来源</span>
+                  <div class="flex gap-2">
+                    <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">来自对照组裂变</span>
+                  </div>
+                </div>
+                <div class="text-xs text-slate-500">
+                  <p class="mb-1">包含原对照组中符合裂变条件的受试者。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 对照组: 裂变子组2 (裂变项目 - 裂变视图显示) -->
+            <div id="fission-group-ctrl-sub2" class="hidden p-6 fission-content">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                    <i class="ri-user-star-line text-xl"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-slate-800">对照组: 裂变子组2</h4>
+                    <p class="text-xs text-slate-500">Subgroup 2</p>
+                  </div>
+                </div>
+                <span class="text-2xl font-bold text-emerald-600">
+                  13
+                  <span class="text-2xl font-normal text-slate-500">&nbsp;/&nbsp;26</span>
+                </span>
+              </div>
+               <div class="space-y-4">
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 mb-2 block uppercase">来源</span>
+                  <div class="flex gap-2">
+                    <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium border border-emerald-100">来自对照组裂变</span>
+                  </div>
+                </div>
+                <div class="text-xs text-slate-500">
+                  <p class="mb-1">包含原对照组中剩余受试者。</p>
                 </div>
               </div>
             </div>
