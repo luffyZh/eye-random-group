@@ -543,3 +543,27 @@ function confirmFission() {
         // In a real app, we would refresh the table here
     }, 1500);
 }
+
+/* ================= Blind Mode Toggle ================= */
+let isBlindMode = false;
+
+function toggleBlindMode() {
+    isBlindMode = !isBlindMode;
+    const wrapper = document.getElementById('data-table-wrapper');
+    const btnIcon = document.querySelector('#blind-toggle-btn i');
+    const btnText = document.querySelector('#blind-toggle-btn span');
+    
+    if (isBlindMode) {
+        // Enable Blind Mode (Hide columns)
+        wrapper.classList.add('blind-mode-active');
+        btnIcon.classList.remove('ri-eye-line');
+        btnIcon.classList.add('ri-eye-off-line');
+        btnText.innerText = "退出盲态";
+    } else {
+        // Disable Blind Mode (Show columns)
+        wrapper.classList.remove('blind-mode-active');
+        btnIcon.classList.remove('ri-eye-off-line');
+        btnIcon.classList.add('ri-eye-line');
+        btnText.innerText = "盲态切换";
+    }
+}
