@@ -1,5 +1,9 @@
 
     /* ================= 角色管理逻辑 (Roles) ================= */
+    
+    // Current Logged-in User Role (Simulated)
+    let currentUserRole = 'dev'; // Default to 'dev' for development. Can be changed to test other roles.
+
     const PERMISSION_CONFIG = {
         "项目管理": ["查看", "新增", "编辑", "删除", "导入", "导出"],
         "维度管理": ["查看", "新增", "编辑", "删除"],
@@ -12,7 +16,7 @@
     let ROLES = [
         { id: 'admin', name: '超级管理员', desc: '拥有系统所有功能的操作权限', perms: 'all' },
         { id: 'dev', name: '开发者', desc: '系统维护与开发人员', perms: 'all' },
-        { id: 'center_admin', name: '中心管理员', desc: '负责管理分中心事务与人员', perms: { "项目管理": ["查看"], "中心管理": ["查看", "编辑"], "用户管理": ["查看", "新增"] } },
+        { id: 'center_admin', name: '中心管理员', desc: '负责管理分中心事务与人员', perms: { "项目管理": ["查看", "新增"], "中心管理": ["查看", "编辑"], "用户管理": ["查看", "新增"] } },
         { id: 'pi', name: '主要研究者 (PI)', desc: '负责项目临床研究执行与管理', perms: { "项目管理": ["查看", "编辑"], "维度管理": ["查看"], "用户管理": ["查看"] } },
         { id: 'crc', name: 'CRC 协调员', desc: '协助研究者进行非医学性事务', perms: { "项目管理": ["查看"], "用户管理": ["查看"] } }
     ];
@@ -246,3 +250,23 @@
         }
         alert("新角色创建成功！");
     }
+
+    // ================= Global Permission Logic =================
+    function updateGlobalButtonPermissions() {
+        const createBtn = document.getElementById('btn-create-project');
+        if (createBtn) {
+            // Check permissions based on currentUserRole
+            const role = ROLES.find(r => r.id === currentUserRole);
+            let canCreate = false;
+            if (role) {
+                if (role.perms === 'all') canCreate = true;
+                else if (role.perms["项目管理"] && role.perms["项目管理"].includes("新增")) canCreate = true;
+            }
+            
+            if (canCreate) createBtn.classList.remove('hidden');
+            else createBtn.classList.add('hidden');
+        }
+    }
+
+    // Initialize Permissions
+    updateGlobalButtonPermissions();

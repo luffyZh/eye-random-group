@@ -8,6 +8,23 @@ let fissionRules = {}; // { groupId: { trigger: 'manual', threshold: 180, strate
 
 // Entry Point
 function openNewProjectWizard() {
+  // Permission check
+  const allowedRoles = ['dev', 'admin', 'center_admin'];
+  if (typeof currentUserRole !== 'undefined' && !allowedRoles.includes(currentUserRole)) {
+      alert("您没有权限创建项目");
+      return;
+  }
+
+  // Update Header to "创建项目"
+  updateHeader({
+      title: "创建项目",
+      permissions: [
+          { text: "开发者账户", color: "indigo" },
+          { text: "超级管理员", color: "purple" },
+          { text: "中心管理员", color: "emerald" }
+      ]
+  });
+
   // Hide View Projects
   document.getElementById('view-projects').classList.add('hidden');
   // Show Wizard
@@ -22,6 +39,11 @@ function cancelWizard() {
   document.getElementById('create-project-wizard').classList.add('hidden');
   // Show View Projects
   document.getElementById('view-projects').classList.remove('hidden');
+
+  // Restore Header to "项目管理"
+  if (typeof routeConfig !== 'undefined' && routeConfig.projects) {
+      updateHeader(routeConfig.projects);
+  }
 }
 
 function wizReset() {
@@ -722,10 +744,18 @@ function wizToggleFissionMode() {
     if (isFissionMode) {
         simpleContainer.classList.add('hidden');
         fissionContainer.classList.remove('hidden');
+        
+        // Reset Right Panel
+        document.getElementById('wiz-config-panel-container').classList.remove('hidden');
+        document.getElementById('wiz-config-placeholder').classList.remove('hidden');
+        document.getElementById('wiz-config-content').classList.add('hidden');
+        
         wizRenderFissionFlow();
     } else {
         simpleContainer.classList.remove('hidden');
         fissionContainer.classList.add('hidden');
+        // Hide config panel
+        document.getElementById('wiz-config-panel-container').classList.add('hidden');
     }
 }
 
@@ -789,7 +819,9 @@ function wizRenderFissionFlow() {
         const div2 = document.createElement('div');
         // Highlight active config
         const badge = document.getElementById('wiz-config-target-badge');
-        const activeId = badge ? badge.getAttribute('data-id') : null;
+        // Check if content is visible to determine active state
+        const isContentVisible = !document.getElementById('wiz-config-content').classList.contains('hidden');
+        const activeId = isContentVisible && badge ? badge.getAttribute('data-id') : null;
         const isActive = activeId === g.id;
         const activeClass = isActive ? 'ring-2 ring-brand-500 border-brand-200 bg-brand-50/30' : 'border-slate-200 hover:border-brand-300';
 
@@ -819,9 +851,9 @@ function wizRenderFissionFlow() {
 }
 
 function wizOpenFissionConfig(groupId, groupName) {
-    // 1. Show Panel (if hidden)
-    const panelContainer = document.getElementById('wiz-config-panel-container');
-    panelContainer.classList.remove('hidden');
+    // 1. Show Panel Content, Hide Placeholder
+    document.getElementById('wiz-config-placeholder').classList.add('hidden');
+    document.getElementById('wiz-config-content').classList.remove('hidden');
 
     // 2. Update Badge
     const badge = document.getElementById('wiz-config-target-badge');
@@ -829,11 +861,7 @@ function wizOpenFissionConfig(groupId, groupName) {
     badge.className = "px-2 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded animate-pulse-once";
     badge.setAttribute('data-id', groupId);
 
-    // 3. Enable Form
-    const form = document.getElementById('wiz-config-form');
-    form.classList.remove('opacity-50', 'pointer-events-none');
-    
-    // 4. Load Existing Rule or Default
+    // 3. Load Existing Rule or Default
     const rule = fissionRules[groupId] || {
         trigger: 'manual',
         threshold: '视功能指标大于 0.8',
@@ -844,11 +872,12 @@ function wizOpenFissionConfig(groupId, groupName) {
         ]
     };
 
-    // Populate Form (Mocking simple population logic for brevity)
-    // We would need IDs on these inputs to bind them properly. 
-    // For now, assume user clicks save.
-    
+    // Populate Form 
+    // Set Balance Strategy
+    wizSetBalanceStrategy(rule.strategy || 'simple');
+
     // Bind Save Button Action
+    const form = document.getElementById('wiz-config-form');
     const saveBtn = form.querySelector('button.bg-brand-600');
     saveBtn.onclick = function() {
         wizSaveFissionRule(groupId, groupName);
@@ -858,12 +887,35 @@ function wizOpenFissionConfig(groupId, groupName) {
     wizRenderFissionFlow();
 }
 
+function wizSetBalanceStrategy(strategy) {
+    const btnSimple = document.getElementById('btn-balance-simple');
+    const btnInherit = document.getElementById('btn-balance-inherit');
+    const hint = document.getElementById('wiz-balance-hint');
+    
+    // Store current strategy in a data attribute on the container for save logic
+    const container = document.getElementById('wiz-balance-strategy-group');
+    container.setAttribute('data-value', strategy);
+
+    if (strategy === 'simple') {
+        btnSimple.className = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
+        btnInherit.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
+        hint.innerHTML = '<i class="ri-information-line mr-1"></i> 进行简单随机算法分配，不保证原组维度的平衡。';
+    } else {
+        btnSimple.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
+        btnInherit.className = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
+        hint.innerHTML = '<i class="ri-information-line mr-1"></i> 系统将在裂变子组间自动平衡原组的维度。';
+    }
+}
+
 function wizSaveFissionRule(groupId, groupName) {
+    // Get Strategy
+    const strategy = document.getElementById('wiz-balance-strategy-group').getAttribute('data-value') || 'simple';
+
     // Mock saving form data
     fissionRules[groupId] = {
         trigger: 'manual',
         threshold: '视功能指标大于 0.8',
-        strategy: 'simple',
+        strategy: strategy,
         subgroups: [
             { name: '裂变1组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 },
             { name: '裂变2组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 }

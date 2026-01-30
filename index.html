@@ -216,7 +216,7 @@
             </label>
           </div>
           <!-- 找到这个按钮：在 id="view-projects" 内部 -->
-          <button onclick="openNewProjectWizard()"
+          <button id="btn-create-project" onclick="openNewProjectWizard()"
             class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
             <i class="ri-add-line text-lg"></i> 新增项目
           </button>
@@ -2722,16 +2722,10 @@
     <div id="create-project-wizard" class="hidden fade-in flex flex-col h-full bg-slate-50 relative z-0 p-8">
       <!-- Wizard Header -->
       <div class="mb-8">
-         <div class="flex items-center gap-2 text-sm text-slate-500 mb-4">
-            <span class="cursor-pointer hover:text-brand-600" onclick="cancelWizard()">项目总览</span>
-            <i class="ri-arrow-right-s-line"></i>
-            <span class="text-slate-800 font-bold">创建新项目</span>
-         </div>
-
          <div class="flex items-center justify-between max-w-4xl mx-auto px-4">
             <!-- Step 1 -->
             <div class="flex flex-col items-center relative z-10 w-1/3 group cursor-pointer" onclick="wizGoToStep(1)">
-               <div id="wiz-step-indicator-1" class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-brand-500/30 transition-all ring-4 ring-white">1</div>
+               <div id="wiz-step-indicator-1" class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-brand-500/30 transition-all ring-4 ring-white">1</div>
                <div class="mt-3 text-center transition-all">
                   <p id="wiz-step-title-1" class="text-sm font-bold text-slate-800">基础设置</p>
                   <p class="text-xs text-slate-500 hidden sm:block">项目基本信息</p>
@@ -2744,7 +2738,7 @@
             
             <!-- Step 2 -->
             <div class="flex flex-col items-center relative z-10 w-1/3 group cursor-pointer" onclick="wizGoToStep(2)">
-               <div id="wiz-step-indicator-2" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-lg transition-all ring-4 ring-white">2</div>
+               <div id="wiz-step-indicator-2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-lg transition-all ring-4 ring-white">2</div>
                <div class="mt-3 text-center transition-all">
                   <p id="wiz-step-title-2" class="text-sm font-bold text-slate-500">维度选择</p>
                   <p class="text-xs text-slate-500 hidden sm:block">配置实验维度</p>
@@ -2757,7 +2751,7 @@
 
             <!-- Step 3 -->
             <div class="flex flex-col items-center relative z-10 w-1/3 group cursor-pointer" onclick="wizGoToStep(3)">
-               <div id="wiz-step-indicator-3" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-lg transition-all ring-4 ring-white">3</div>
+               <div id="wiz-step-indicator-3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-lg transition-all ring-4 ring-white">3</div>
                <div class="mt-3 text-center transition-all">
                   <p id="wiz-step-title-3" class="text-sm font-bold text-slate-500">分组配置</p>
                   <p class="text-xs text-slate-500 hidden sm:block">设定分组与人数</p>
@@ -3028,79 +3022,94 @@
 
                        <!-- Right Panel: Configuration (Modal or Side Panel, kept as is but controlled by JS) -->
                        <div class="lg:col-span-1 hidden" id="wiz-config-panel-container">
-                           <div id="wiz-fission-config-panel" class="bg-white rounded-xl border border-slate-200 shadow-lg sticky top-6">
-                               <!-- Config Header -->
-                               <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl">
-                                   <div>
-                                       <h4 class="font-bold text-slate-800">裂变规则配置</h4>
-                                       <p class="text-xs text-slate-500">设置触发条件与分配逻辑</p>
-                                   </div>
-                                   <span id="wiz-config-target-badge" class="px-2 py-1 bg-slate-200 text-slate-600 text-xs font-bold rounded">请选择分组</span>
-                               </div>
+                           <div id="wiz-fission-config-panel" class="bg-white rounded-xl border border-slate-200 shadow-lg sticky top-6 min-h-[400px]">
                                
-                               <!-- Config Body -->
-                               <div id="wiz-config-form" class="p-5 space-y-6 opacity-50 pointer-events-none">
-                                   
-                                   <!-- Trigger -->
-                                   <div>
-                                       <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
-                                           <i class="ri-flashlight-line text-brand-500"></i> 触发机制
-                                       </label>
-                                       <div class="bg-slate-100 p-1 rounded-lg flex mb-3">
-                                           <button type="button" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800">主动触发</button>
-                                           <button type="button" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700">自动触发</button>
-                                       </div>
+                               <!-- Placeholder (No selection) -->
+                               <div id="wiz-config-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
+                                   <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                       <i class="ri-node-tree text-3xl text-slate-300"></i>
+                                   </div>
+                                   <p class="text-sm font-bold">暂未选择需要配置裂变的分组</p>
+                                   <p class="text-xs mt-1 opacity-70">请在左侧点击分组进行配置</p>
+                               </div>
+
+                               <!-- Config Content (Hidden by default) -->
+                               <div id="wiz-config-content" class="hidden">
+                                   <!-- Config Header -->
+                                   <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-xl">
                                        <div>
-                                           <label class="block text-xs font-bold text-slate-500 mb-1.5">医学指标要求 (备注)</label>
-                                           <input type="text" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500" value="视功能指标大于 0.8">
-                                           <p class="text-[10px] text-slate-400 mt-1">需医生在受试者详情页手动点击“裂变”按钮</p>
+                                           <h4 class="font-bold text-slate-800">裂变规则配置</h4>
+                                           <p class="text-xs text-slate-500">设置触发条件与分配逻辑</p>
                                        </div>
+                                       <span id="wiz-config-target-badge" class="px-2 py-1 bg-slate-200 text-slate-600 text-xs font-bold rounded">请选择分组</span>
                                    </div>
-
-                                   <!-- Balancing -->
-                                   <div>
-                                       <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
-                                           <i class="ri-scales-3-line text-brand-500"></i> 平衡策略
-                                       </label>
-                                       <select class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500 mb-2">
-                                           <option>简单随机 (Simple Random)</option>
-                                           <option>继承原维度平衡 (Inherit)</option>
-                                       </select>
-                                       <div class="bg-blue-50 text-blue-700 text-xs p-2 rounded border border-blue-100 leading-relaxed">
-                                           <i class="ri-information-line mr-1"></i> 系统将在 B1/B2 组间自动平衡性别、年龄、屈光度。
-                                       </div>
-                                   </div>
-
-                                   <!-- Subgroups -->
-                                   <div>
-                                       <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
-                                           <i class="ri-node-tree text-brand-500"></i> 裂变子组 (Stage 2)
-                                       </label>
-                                       <div class="space-y-3 mb-3">
-                                           <div class="flex items-center gap-2">
-                                               <span class="text-xs font-bold text-slate-600 w-12">裂变1组</span>
-                                               <div class="relative flex-1">
-                                                   <input type="number" value="25" class="w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center">
-                                                   <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
-                                               </div>
+                                   
+                                   <!-- Config Body -->
+                                   <div id="wiz-config-form" class="p-5 space-y-6">
+                                       
+                                       <!-- Trigger -->
+                                       <div>
+                                           <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                               <i class="ri-flashlight-line text-brand-500"></i> 触发机制
+                                           </label>
+                                           <div class="bg-slate-100 p-1 rounded-lg flex mb-3">
+                                               <button type="button" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all">主动触发</button>
+                                               <button type="button" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all">自动触发</button>
                                            </div>
-                                           <div class="flex items-center gap-2">
-                                               <span class="text-xs font-bold text-slate-600 w-12">裂变2组</span>
-                                               <div class="relative flex-1">
-                                                   <input type="number" value="25" class="w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center">
-                                                   <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
-                                               </div>
+                                           <div>
+                                               <label class="block text-xs font-bold text-slate-500 mb-1.5">医学指标要求 (备注)</label>
+                                               <input type="text" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500" value="视功能指标大于 0.8">
+                                               <p class="text-[10px] text-slate-400 mt-1">需医生在受试者详情页手动点击“裂变”按钮</p>
                                            </div>
                                        </div>
-                                       <button type="button" class="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-bold text-brand-600 hover:bg-brand-50 transition-colors">
-                                           + 增加子组
+
+                                       <!-- Balancing -->
+                                       <div>
+                                           <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                               <i class="ri-scales-3-line text-brand-500"></i> 平衡策略
+                                           </label>
+                                           
+                                           <div class="bg-slate-100 p-1 rounded-lg flex mb-3" id="wiz-balance-strategy-group">
+                                               <button type="button" onclick="wizSetBalanceStrategy('simple')" id="btn-balance-simple" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all">简单随机</button>
+                                               <button type="button" onclick="wizSetBalanceStrategy('inherit')" id="btn-balance-inherit" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all">维度平衡</button>
+                                           </div>
+                                           
+                                           <div id="wiz-balance-hint" class="bg-blue-50 text-blue-700 text-xs p-2 rounded border border-blue-100 leading-relaxed">
+                                               <i class="ri-information-line mr-1"></i> 简单随机算法分配，不保证原组维度的平衡。
+                                           </div>
+                                       </div>
+
+                                       <!-- Subgroups -->
+                                       <div>
+                                           <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                               <i class="ri-node-tree text-brand-500"></i> 裂变子组 (Stage 2)
+                                           </label>
+                                           <div class="space-y-3 mb-3">
+                                               <div class="flex items-center gap-2">
+                                                   <span class="text-xs font-bold text-slate-600 w-12">裂变1组</span>
+                                                   <div class="relative flex-1">
+                                                       <input type="number" value="25" class="w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center">
+                                                       <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
+                                                   </div>
+                                               </div>
+                                               <div class="flex items-center gap-2">
+                                                   <span class="text-xs font-bold text-slate-600 w-12">裂变2组</span>
+                                                   <div class="relative flex-1">
+                                                       <input type="number" value="25" class="w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center">
+                                                       <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                           <button type="button" class="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-bold text-brand-600 hover:bg-brand-50 transition-colors">
+                                               + 增加子组
+                                           </button>
+                                       </div>
+
+                                       <!-- Action -->
+                                       <button type="button" class="w-full py-2.5 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30 hover:bg-brand-700 transition-all">
+                                           保存规则
                                        </button>
                                    </div>
-
-                                   <!-- Action -->
-                                   <button type="button" class="w-full py-2.5 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30 hover:bg-brand-700 transition-all">
-                                       保存规则
-                                   </button>
                                </div>
                            </div>
                        </div>
