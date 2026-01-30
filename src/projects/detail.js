@@ -123,11 +123,11 @@ function toggleCriteriaPanel() {
   const trigger = icon.parentElement;
   if (panel.classList.contains('hidden')) {
     panel.classList.remove('hidden');
-    icon.classList.remove('rotate-180');
+    icon.classList.add('rotate-180');
     if (trigger) trigger.setAttribute('aria-expanded', 'true');
   } else {
     panel.classList.add('hidden');
-    icon.classList.add('rotate-180');
+    icon.classList.remove('rotate-180');
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
   }
 }
@@ -480,6 +480,18 @@ function openFissionModal(id, name) {
     // Set user info
     document.getElementById('fission-user-name').innerText = name;
     document.getElementById('fission-user-id').innerText = id;
+
+    // Reset UI State
+    document.getElementById('fission-status-initial').classList.remove('hidden');
+    document.getElementById('fission-status-loading').classList.add('hidden');
+    document.getElementById('fission-status-result').classList.add('hidden');
+    
+    const btn = document.getElementById('btn-confirm-fission');
+    btn.disabled = false;
+    btn.innerText = "确认并执行裂变";
+    btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+    btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+    btn.onclick = confirmFission; // Reset onclick handler
     
     // Show Modal
     modal.classList.remove('hidden');
@@ -506,18 +518,27 @@ function confirmFission() {
     const btn = document.getElementById('btn-confirm-fission');
     const originalText = btn.innerHTML;
     
-    // Loading state
+    // 1. Button Loading State
     btn.disabled = true;
     btn.innerHTML = `<i class="ri-loader-4-line animate-spin mr-1"></i> 分配中...`;
+
+    // 2. Status Area Loading State
+    document.getElementById('fission-status-initial').classList.add('hidden');
+    document.getElementById('fission-status-loading').classList.remove('hidden');
     
     setTimeout(() => {
-        // Success state
-        closeFissionModal();
-        alert("裂变成功！\n\n已分配至：强化干预组 (A)\n随机号：R-9902\n药品号：D-112");
-        
-        // Reset button
+        // 3. Show Result
+        document.getElementById('fission-status-loading').classList.add('hidden');
+        document.getElementById('fission-status-result').classList.remove('hidden');
+
+        // 4. Update Button to "Complete" state
         btn.disabled = false;
-        btn.innerHTML = originalText;
+        btn.innerHTML = `<i class="ri-check-double-line mr-1"></i> 完成`;
+        btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+        
+        // Change button action to close
+        btn.onclick = closeFissionModal;
         
         // In a real app, we would refresh the table here
     }, 1500);
