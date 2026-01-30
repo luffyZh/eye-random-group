@@ -256,6 +256,21 @@ function wizToggleShareSwitch() {
     document.querySelector('input[name="wiz-np-share"][value="no"]').checked = !isChecked;
 }
 
+function wizToggleBlindSwitch() {
+    const isChecked = document.getElementById('wiz-np-blind-switch').checked;
+    const label = document.getElementById('wiz-np-blind-label');
+    
+    if (isChecked) {
+        label.innerText = '开启';
+        label.classList.remove('text-slate-500');
+        label.classList.add('text-brand-600');
+    } else {
+        label.innerText = '不开启';
+        label.classList.remove('text-brand-600');
+        label.classList.add('text-slate-500');
+    }
+}
+
 function wizToggleCenterSelect() {
     document.getElementById('wiz-center-dropdown').classList.toggle('hidden');
 }
