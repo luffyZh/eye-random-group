@@ -227,7 +227,7 @@
           <!-- 示例卡片 1 -->
           <div
             class="min-w-[320px] bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer relative overflow-hidden"
-            onclick="openProjectDetail()">
+            onclick="openProjectDetail(false)">
             <div class="flex justify-between items-start mb-4">
               <span
                 class="px-2.5 py-1 bg-brand-50 text-brand-600 text-xs font-bold rounded-md border border-brand-100 tracking-wider">CHILD_ELESCREEN</span>
@@ -280,12 +280,87 @@
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <!-- 共享开关 -->
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" value="" class="sr-only peer" checked disabled>
-                  <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
-                  <span class="ml-2 text-xs font-medium text-slate-400">共享</span>
-                </label>
+                <!-- 详情箭头 -->
+                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors"
+                  onclick="openProjectDetail(false); event.stopPropagation()">
+                  <i class="ri-arrow-right-line"></i>
+                </button>
+                <div class="w-px h-4 bg-slate-200 mx-1"></div>
+                <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  onclick="event.stopPropagation()">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 示例卡片 2 (裂变示例) -->
+          <div
+            class="min-w-[320px] bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+            onclick="openProjectDetail(true)">
+            <!-- 背景装饰 (可选) -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+            <div class="flex justify-between items-start mb-4 relative z-10">
+              <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-md border border-indigo-100 tracking-wider">CARDIO_FISSION_01</span>
+                  <!-- 裂变 Tag -->
+                  <span class="flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 text-amber-600 text-[10px] font-bold rounded border border-amber-100">
+                      <i class="ri-node-tree"></i> 裂变
+                  </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="flex h-3 w-3 relative">
+                  <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <span
+                  class="flex justify-center items-center gap-2 px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded border border-emerald-200">
+                  进行中
+                </span>
+              </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors relative z-10">
+              冠心病介入治疗术后心脏康复分级干预策略的多中心随机对照研究
+            </h3>
+            <p class="text-slate-400 text-sm mb-2 line-clamp-2">
+              2026-01-10
+            </p>
+            <p class="text-slate-500 text-sm mb-6 line-clamp-2">
+              本研究旨在探索基于风险分层的心脏康复分级干预策略对冠心病介入治疗术后患者心肺功能、生活质量及预后的影响。采用两阶段随机化设计（裂变设计），第一阶段根据初始风险评估分组，第二阶段针对特定亚组进行强化干预或常规随访的二次随机分配。
+            </p>
+
+            <!-- 进度条区域 -->
+            <div class="mb-6 relative z-10">
+              <div class="flex justify-between text-xs mb-1.5 font-medium">
+                <span class="text-slate-500">参与人数</span>
+                <span class="text-indigo-600">88 <span class="text-slate-400">/ 200</span></span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                <div class="bg-indigo-500 h-2.5 rounded-full" style="width: 44%"></div>
+              </div>
+            </div>
+
+            <!-- 底部 Action -->
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100 relative z-10">
+              <div class="flex -space-x-2 overflow-hidden">
+                <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+                  src="https://ui-avatars.com/api/?name=Doc1&background=random" alt="" />
+                <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+                  src="https://ui-avatars.com/api/?name=Doc2&background=random" alt="" />
+                <div
+                  class="h-8 w-8 rounded-full ring-2 ring-white bg-slate-100 flex items-center justify-center text-xs text-slate-500 font-bold">
+                  +88
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <!-- 详情箭头 -->
+                <button class="p-2 text-brand-500 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors"
+                  onclick="openProjectDetail(true); event.stopPropagation()">
+                  <i class="ri-arrow-right-line"></i>
+                </button>
                 <div class="w-px h-4 bg-slate-200 mx-1"></div>
                 <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                   onclick="event.stopPropagation()">
@@ -480,6 +555,11 @@
                     class="flex justify-center items-center gap-2 px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded border border-emerald-200">
                     进行中
                   </span>
+                  
+                  <!-- 裂变状态 Tag (默认隐藏) -->
+                  <span class="fission-content hidden flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 text-amber-600 text-xs font-bold rounded border border-amber-100">
+                      <i class="ri-flashlight-fill"></i> 裂变阶段: Stage 1
+                  </span>
                 </div>
                 <span
                   class="px-2.5 py-1 bg-brand-50 text-brand-600 text-xs font-bold rounded-md border border-brand-100 tracking-wider">项目码:
@@ -496,8 +576,11 @@
                   class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200 tracking-wider">CRC:
                   张同学</span>
               </div>
-              <p class="text-slate-600 max-w-4xl leading-relaxed">
+              <p class="text-slate-600 max-w-4xl leading-relaxed normal-content">
                 主要目的：评价不同光刻微结构近视管理镜片对控制儿童青少年近视进展的有效性和佩戴的安全舒适性，探索对近视防控有效的离焦微透镜设计及光刻微结构近视管理镜片应用于近视防控的可行性。次要目的：了解和分析儿童青少年近视防控诊疗情况和相关影响因素，例如初发年龄、性别、佩戴时长、用眼习惯等。
+              </p>
+              <p class="text-slate-600 max-w-4xl leading-relaxed fission-content hidden">
+                本研究旨在探索基于风险分层的心脏康复分级干预策略对冠心病介入治疗术后患者心肺功能、生活质量及预后的影响。采用两阶段随机化设计（裂变设计），第一阶段根据初始风险评估分组，第二阶段针对特定亚组进行强化干预或常规随访的二次随机分配。
               </p>
             </div>
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-[240px]">
@@ -539,6 +622,56 @@
               <div class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-slate-700">研究医生认为不适合纳入项目的其他原因等</div>
             </div>
           </div>
+        </div>
+
+        <!-- 裂变配置概览卡片 (新增) -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm fission-content hidden">
+             <div class="px-6 py-4 border-b border-slate-100 bg-amber-50/30 flex justify-between items-center">
+                 <div class="flex items-center gap-2">
+                     <div class="p-1.5 bg-amber-100 rounded text-amber-600">
+                         <i class="ri-node-tree text-lg"></i>
+                     </div>
+                     <div>
+                         <h3 class="text-sm font-bold text-slate-800">裂变规则配置</h3>
+                         <p class="text-xs text-slate-500">当前项目的多阶段随机化逻辑</p>
+                     </div>
+                 </div>
+                 <span class="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded border border-amber-200">自动触发模式</span>
+             </div>
+             <div class="p-6">
+                 <div class="flex items-center gap-4">
+                     <!-- 触发条件 -->
+                     <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-100">
+                         <h4 class="text-xs font-bold text-slate-500 mb-2 uppercase">触发机制 (Trigger)</h4>
+                         <div class="flex items-center gap-3">
+                             <span class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 shadow-sm">
+                                 <i class="ri-flashlight-line"></i>
+                             </span>
+                             <div>
+                                 <p class="text-sm font-bold text-slate-700">自动触发</p>
+                                 <p class="text-xs text-slate-500">条件: 随访周期满 3 个月 且 心功能指标 < 正常值</p>
+                             </div>
+                         </div>
+                     </div>
+                     
+                     <!-- 箭头 -->
+                     <i class="ri-arrow-right-line text-slate-300 text-xl"></i>
+
+                     <!-- 平衡策略 -->
+                     <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-100">
+                         <h4 class="text-xs font-bold text-slate-500 mb-2 uppercase">平衡策略 (Strategy)</h4>
+                         <div class="flex items-center gap-3">
+                             <span class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 shadow-sm">
+                                 <i class="ri-scales-3-line"></i>
+                             </span>
+                             <div>
+                                 <p class="text-sm font-bold text-slate-700">继承原维度平衡</p>
+                                 <p class="text-xs text-slate-500">系统将在子组间自动平衡性别、年龄等基线特征</p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
         </div>
 
         <!-- 中部：分组详情卡片 -->
@@ -920,25 +1053,23 @@
                   <th class="px-6 py-4 font-semibold">近视度数</th>
                   <th class="px-6 py-4 font-semibold">分组</th>
                   <th class="px-6 py-4 font-semibold">维度标签</th>
+                  <!-- 新增列 -->
+                  <th class="px-6 py-4 font-semibold fission-content hidden">随机号</th>
+                  <th class="px-6 py-4 font-semibold fission-content hidden">药品号</th>
+                  <th class="px-6 py-4 font-semibold fission-content hidden">裂变状态</th>
+                  <th class="px-6 py-4 font-semibold text-right">操作</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 text-sm">
-                <!-- Row 1 -->
-                <tr class="hover:bg-slate-50/80 transition-colors">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    0001
-                  </td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    CHILD_ELESCREEN_0001
-                  </td>
-                  <td class="px-6 py-4 font-semibold text-slate-800">
-                    张小明
-                  </td>
+                <!-- Row 1 (Normal) -->
+                <tr class="hover:bg-slate-50/80 transition-colors normal-content">
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0001</td>
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">CHILD_ELESCREEN_0001</td>
+                  <td class="px-6 py-4 font-semibold text-slate-800">张小明</td>
                   <td class="px-6 py-4 text-slate-600">8岁</td>
                   <td class="px-6 py-4 text-slate-600">-1.50D</td>
                   <td class="px-6 py-4">
-                    <span
-                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">实验组</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">实验组</span>
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex gap-1 flex-wrap">
@@ -946,25 +1077,98 @@
                       <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">7-10岁</span>
                     </div>
                   </td>
+                  <td class="px-6 py-4 text-right">
+                    <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">查看详情</button>
+                  </td>
                 </tr>
-                <!-- Row 2 -->
-                <tr class="hover:bg-slate-50/80 transition-colors">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    0002
+
+                <!-- Row 1 (Fission - Stage 1, Can Fission) -->
+                <tr class="hover:bg-slate-50/80 transition-colors fission-content hidden">
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0001</td>
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">CARDIO_0001</td>
+                  <td class="px-6 py-4 font-semibold text-slate-800">刘建国</td>
+                  <td class="px-6 py-4 text-slate-600">65岁</td>
+                  <td class="px-6 py-4 text-slate-600">EF 45%</td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700">对照组</span>
                   </td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    --
+                  <td class="px-6 py-4">
+                    <div class="flex gap-1 flex-wrap">
+                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">男</span>
+                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">>60岁</span>
+                    </div>
                   </td>
+                  <!-- Fission Columns -->
+                  <td class="px-6 py-4 font-mono text-slate-500">R-8821</td>
+                  <td class="px-6 py-4 font-mono text-slate-500">D-009</td>
+                  <td class="px-6 py-4">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">
+                        Stage 1
+                      </span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex items-center justify-end gap-3">
+                        <button onclick="openFissionModal('0001', '刘建国')" class="text-indigo-600 hover:text-indigo-700 font-bold text-xs flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 hover:bg-indigo-100 transition-colors">
+                            <i class="ri-flashlight-fill"></i> 裂变
+                        </button>
+                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 2 (Normal) -->
+                <tr class="hover:bg-slate-50/80 transition-colors normal-content">
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0002</td>
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">--</td>
                   <td class="px-6 py-4 font-semibold text-slate-800">李雅</td>
                   <td class="px-6 py-4 text-slate-600">6岁</td>
                   <td class="px-6 py-4 text-slate-600">-0.50D</td>
                   <td class="px-6 py-4">
-                    <span
-                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-emerald-700">--</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-slate-400 bg-slate-100">未入组</span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-1 flex-wrap">--</div>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">查看详情</button>
+                  </td>
+                </tr>
+
+                <!-- Row 2 (Fission - Stage 2, Fissioned) -->
+                <tr class="hover:bg-slate-50/80 transition-colors fission-content hidden">
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0002</td>
+                  <td class="px-6 py-4 font-mono font-medium text-slate-600">CARDIO_0002</td>
+                  <td class="px-6 py-4 font-semibold text-slate-800">王淑芬</td>
+                  <td class="px-6 py-4 text-slate-600">58岁</td>
+                  <td class="px-6 py-4 text-slate-600">EF 52%</td>
+                  <td class="px-6 py-4">
+                    <div class="flex flex-col items-start gap-1">
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 opacity-50 line-through decoration-slate-400">对照组</span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">
+                            <i class="ri-arrow-return-right-line mr-1"></i>强化干预组
+                        </span>
+                    </div>
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex gap-1 flex-wrap">
-                      --
+                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">女</span>
+                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">50-60岁</span>
+                    </div>
+                  </td>
+                  <!-- Fission Columns -->
+                  <td class="px-6 py-4 font-mono text-slate-500">R-9902</td>
+                  <td class="px-6 py-4 font-mono text-slate-500">D-112</td>
+                  <td class="px-6 py-4">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">
+                        Stage 2
+                      </span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex items-center justify-end gap-3">
+                        <button class="text-slate-300 cursor-not-allowed font-medium text-xs flex items-center gap-1 px-2 py-1" disabled>
+                            <i class="ri-check-line"></i> 已裂变
+                        </button>
+                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
                     </div>
                   </td>
                 </tr>
@@ -2563,10 +2767,78 @@
          </div>
       </div>
 
-      <!-- Wizard Content -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 overflow-y-auto max-w-6xl mx-auto w-full mb-20 custom-scrollbar">
+          <!-- Fission Modal (New) -->
+          <div class="fixed inset-0 z-[60] hidden" id="fission-modal">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0" id="fission-backdrop"></div>
+            
+            <!-- Panel -->
+            <div class="absolute inset-0 flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" id="fission-panel">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-2xl">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">受试者裂变处理</h3>
+                            <p class="text-xs text-slate-500">将符合条件的受试者分配至二级子组</p>
+                        </div>
+                        <button onclick="closeFissionModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                            <i class="ri-close-line text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="p-6 space-y-6">
+                        <!-- 裂变规则提示 -->
+                        <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 flex gap-3">
+                            <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
+                                <i class="ri-flashlight-fill text-amber-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-800 mb-1">裂变规则已触发</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    当前受试者满足 <span class="font-bold text-amber-700">"随访满3个月且指标未达标"</span> 的条件。系统将根据预设的 <span class="font-bold text-amber-700">"维度平衡策略"</span> 自动将其分配至新的子组。
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 用户信息确认 -->
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">受试者信息</h4>
+                            <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                <div class="w-12 h-12 bg-white rounded-full border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xl">
+                                    <i class="ri-user-smile-line"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800" id="fission-user-name">刘建国</h3>
+                                    <p class="text-xs text-slate-500 font-mono" id="fission-user-id">#0001</p>
+                                </div>
+                                <div class="ml-auto text-right">
+                                    <span class="block text-xs text-slate-400">当前分组</span>
+                                    <span class="text-sm font-bold text-emerald-600">对照组 (Stage 1)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 警告 -->
+                        <p class="text-xs text-center text-slate-400">
+                            <i class="ri-information-line mr-1"></i> 此操作不可逆，请确认受试者已签署新的知情同意书。
+                        </p>
+                    </div>
+
+                    <div class="p-6 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl flex gap-3">
+                        <button onclick="closeFissionModal()" class="flex-1 py-2.5 text-slate-600 font-bold text-sm bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                            暂不处理
+                        </button>
+                        <button id="btn-confirm-fission" onclick="confirmFission()" class="flex-1 py-2.5 text-white font-bold text-sm bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                            确认并执行裂变
+                        </button>
+                    </div>
+                </div>
+            </div>
+          </div>
           
-          <!-- Step 1 Content: Basic Info -->
+          <!-- Wizard Content -->
+       <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 overflow-y-auto max-w-6xl mx-auto w-full mb-20 custom-scrollbar">
+           
+           <!-- Step 1 Content: Basic Info -->
           <div id="wiz-step-content-1" class="space-y-6 animate-fade-in">
               <!-- Row 1: Name, Code, Share -->
               <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
@@ -2855,14 +3127,20 @@
                                            <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
                                                <i class="ri-flashlight-line text-brand-500"></i> 触发机制
                                            </label>
-                                           <div class="bg-slate-100 p-1 rounded-lg flex mb-3">
-                                               <button type="button" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all">主动触发</button>
-                                               <button type="button" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all">自动触发</button>
+                                           <div class="bg-slate-100 p-1 rounded-lg flex mb-3" id="wiz-trigger-group">
+                                               <button type="button" onclick="wizSetTriggerMode('manual')" id="btn-trigger-manual" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all">主动触发</button>
+                                               <button type="button" onclick="wizSetTriggerMode('auto')" id="btn-trigger-auto" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all">自动触发</button>
+                                           </div>
+                                           <div id="wiz-trigger-hint" class="bg-indigo-50 text-indigo-700 text-xs p-2 rounded border border-indigo-100 leading-relaxed mb-3">
+                                               <i class="ri-information-line mr-1"></i> 当受试者符合裂变规则后，由工作人员主动点击裂变。
                                            </div>
                                            <div>
-                                               <label class="block text-xs font-bold text-slate-500 mb-1.5">医学指标要求 (备注)</label>
-                                               <input type="text" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500" value="视功能指标大于 0.8">
-                                               <p class="text-[10px] text-slate-400 mt-1">需医生在受试者详情页手动点击“裂变”按钮</p>
+                                               <label class="block text-xs font-bold text-slate-500 mb-1.5" id="wiz-trigger-label">医学指标要求 (备注)</label>
+                                               <div class="relative">
+                                                   <input type="text" id="wiz-trigger-input" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500" value="视功能指标大于 0.8">
+                                                   <span id="wiz-trigger-suffix" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">天</span>
+                                               </div>
+                                               <p class="text-[10px] text-slate-400 mt-1" id="wiz-trigger-desc">需医生在受试者详情页手动点击“裂变”按钮</p>
                                            </div>
                                        </div>
 
@@ -2887,24 +3165,11 @@
                                            <label class="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
                                                <i class="ri-node-tree text-brand-500"></i> 裂变子组 (Stage 2)
                                            </label>
-                                           <div class="space-y-3 mb-3">
-                                               <div class="flex items-center gap-2">
-                                                   <span class="text-xs font-bold text-slate-600 w-12">裂变1组</span>
-                                                   <div class="relative flex-1">
-                                                       <input type="number" value="25" class="w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center">
-                                                       <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
-                                                   </div>
-                                               </div>
-                                               <div class="flex items-center gap-2">
-                                                   <span class="text-xs font-bold text-slate-600 w-12">裂变2组</span>
-                                                   <div class="relative flex-1">
-                                                       <input type="number" value="25" class="w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center">
-                                                       <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
-                                                   </div>
-                                               </div>
+                                           <div class="space-y-3 mb-3" id="wiz-subgroups-container">
+                                               <!-- Subgroups will be rendered here by JS -->
                                            </div>
-                                           <button type="button" class="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-bold text-brand-600 hover:bg-brand-50 transition-colors">
-                                               + 增加子组
+                                           <button type="button" onclick="wizAddSubgroup()" id="wiz-btn-add-subgroup" class="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-bold text-brand-600 hover:bg-brand-50 transition-colors">
+                                               + 增加子组 (最多3个)
                                            </button>
                                        </div>
 

@@ -416,21 +416,55 @@ function toggleTextArea(type, show) {
     }
 }
 
-// 切换家族史近视输入框
-function toggleFamilyMyopia(val) {
-    const fatherContainer = document.getElementById('input-father-myopia-container');
-    const motherContainer = document.getElementById('input-mother-myopia-container');
-    
-    // Reset logic
-    fatherContainer.classList.add('hidden');
-    motherContainer.classList.add('hidden');
+/* ================= Fission Modal Logic ================= */
 
-    if (val === 'father') {
-        fatherContainer.classList.remove('hidden');
-    } else if (val === 'mother') {
-        motherContainer.classList.remove('hidden');
-    } else if (val === 'both') {
-        fatherContainer.classList.remove('hidden');
-        motherContainer.classList.remove('hidden');
-    }
+function openFissionModal(id, name) {
+    const modal = document.getElementById('fission-modal');
+    const backdrop = document.getElementById('fission-backdrop');
+    const panel = document.getElementById('fission-panel');
+    
+    // Set user info
+    document.getElementById('fission-user-name').innerText = name;
+    document.getElementById('fission-user-id').innerText = id;
+    
+    // Show Modal
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        backdrop.classList.remove('opacity-0');
+        panel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+    }, 10);
+}
+
+function closeFissionModal() {
+    const modal = document.getElementById('fission-modal');
+    const backdrop = document.getElementById('fission-backdrop');
+    const panel = document.getElementById('fission-panel');
+    
+    backdrop.classList.add('opacity-0');
+    panel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+function confirmFission() {
+    const btn = document.getElementById('btn-confirm-fission');
+    const originalText = btn.innerHTML;
+    
+    // Loading state
+    btn.disabled = true;
+    btn.innerHTML = `<i class="ri-loader-4-line animate-spin mr-1"></i> 分配中...`;
+    
+    setTimeout(() => {
+        // Success state
+        closeFissionModal();
+        alert("裂变成功！\n\n已分配至：强化干预组 (A)\n随机号：R-9902\n药品号：D-112");
+        
+        // Reset button
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        
+        // In a real app, we would refresh the table here
+    }, 1500);
 }

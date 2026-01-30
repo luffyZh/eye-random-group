@@ -138,7 +138,7 @@ function switchTab(tabName) {
   }
 }
 
-function openProjectDetail() {
+function openProjectDetail(isFission = false) {
   hideAllViews();
   document
     .getElementById("view-project-detail")
@@ -149,6 +149,21 @@ function openProjectDetail() {
   
   updateHeader({ title: "项目详情" });
   window.scrollTo(0, 0);
+
+  // Toggle Fission Content
+  const fissionContent = document.querySelectorAll('.fission-content');
+  const normalContent = document.querySelectorAll('.normal-content');
+  const projectTitle = document.querySelector('#view-project-detail h2');
+  
+  if (isFission) {
+      fissionContent.forEach(el => el.classList.remove('hidden'));
+      normalContent.forEach(el => el.classList.add('hidden'));
+      if(projectTitle) projectTitle.innerText = "冠心病介入治疗术后心脏康复分级干预策略的多中心随机对照研究";
+  } else {
+      fissionContent.forEach(el => el.classList.add('hidden'));
+      normalContent.forEach(el => el.classList.remove('hidden'));
+      if(projectTitle) projectTitle.innerText = "光刻微结构近视管理镜片在儿童青少年近视防控中的有效性及佩戴安全舒适性的随机对照临床研究";
+  }
 }
 
 function backToProjects() {

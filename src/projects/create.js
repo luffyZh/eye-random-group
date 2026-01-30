@@ -882,6 +882,19 @@ function wizOpenFissionConfig(groupId, groupName) {
     // Populate Form 
     // Set Balance Strategy
     wizSetBalanceStrategy(rule.strategy || 'simple');
+    // Set Trigger Mode
+    wizSetTriggerMode(rule.trigger || 'manual');
+    
+    // Set Threshold Value after Mode Switch
+    // If it's a new rule and auto, set default 180
+    if (rule.trigger === 'auto' && !rule.threshold) {
+         document.getElementById('wiz-trigger-input').value = 180;
+    } else {
+         document.getElementById('wiz-trigger-input').value = rule.threshold || (rule.trigger === 'auto' ? 180 : '视功能指标大于 0.8');
+    }
+
+    // Render Subgroups
+    wizRenderSubgroups(rule.subgroups);
 
     // Bind Save Button Action
     const form = document.getElementById('wiz-config-form');
@@ -892,6 +905,116 @@ function wizOpenFissionConfig(groupId, groupName) {
     
     // Re-render Flow to highlight selection
     wizRenderFissionFlow();
+}
+
+function wizRenderSubgroups(subgroups) {
+    const container = document.getElementById('wiz-subgroups-container');
+    container.innerHTML = '';
+    
+    subgroups.forEach((sg, idx) => {
+        const div = document.createElement('div');
+        div.className = "flex items-center gap-2 animate-fade-in";
+        div.innerHTML = `
+            <input type="text" value="${sg.name}" class="wiz-subgroup-name w-20 text-xs font-bold text-slate-600 border-slate-200 rounded-lg py-1.5 pl-2 text-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+            <div class="relative flex-1">
+                <input type="number" value="${sg.count}" class="wiz-subgroup-count w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
+            </div>
+            ${subgroups.length > 2 ? `<button onclick="wizRemoveSubgroup(this)" class="text-slate-300 hover:text-red-500"><i class="ri-delete-bin-line"></i></button>` : ''}
+        `;
+        container.appendChild(div);
+    });
+
+    // Update Add Button State
+    const btnAdd = document.getElementById('wiz-btn-add-subgroup');
+    if (subgroups.length >= 3) {
+        btnAdd.classList.add('opacity-50', 'cursor-not-allowed');
+        btnAdd.disabled = true;
+        btnAdd.innerText = "已达上限 (最多3个)";
+    } else {
+        btnAdd.classList.remove('opacity-50', 'cursor-not-allowed');
+        btnAdd.disabled = false;
+        btnAdd.innerText = "+ 增加子组 (最多3个)";
+    }
+}
+
+function wizAddSubgroup() {
+    const container = document.getElementById('wiz-subgroups-container');
+    const currentCount = container.children.length;
+    if (currentCount >= 3) return;
+    
+    // Get current data to re-render
+    const subgroups = wizCollectSubgroupsData();
+    subgroups.push({ name: `裂变${currentCount + 1}组`, count: 0 });
+    
+    wizRenderSubgroups(subgroups);
+}
+
+function wizRemoveSubgroup(btn) {
+    const row = btn.parentElement;
+    row.remove();
+    // Re-render to update UI state (buttons, etc.)
+    const subgroups = wizCollectSubgroupsData();
+    wizRenderSubgroups(subgroups);
+}
+
+function wizCollectSubgroupsData() {
+    const container = document.getElementById('wiz-subgroups-container');
+    const data = [];
+    container.querySelectorAll('.animate-fade-in').forEach(row => {
+        data.push({
+            name: row.querySelector('.wiz-subgroup-name').value,
+            count: parseInt(row.querySelector('.wiz-subgroup-count').value) || 0
+        });
+    });
+    return data;
+}
+
+function wizSetTriggerMode(mode) {
+    const btnManual = document.getElementById('btn-trigger-manual');
+    const btnAuto = document.getElementById('btn-trigger-auto');
+    const hint = document.getElementById('wiz-trigger-hint');
+    const group = document.getElementById('wiz-trigger-group');
+    
+    // Input elements
+    const label = document.getElementById('wiz-trigger-label');
+    const input = document.getElementById('wiz-trigger-input');
+    const desc = document.getElementById('wiz-trigger-desc');
+    const suffix = document.getElementById('wiz-trigger-suffix');
+    
+    // Store mode
+    group.setAttribute('data-value', mode);
+
+    if (mode === 'manual') {
+        btnManual.className = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
+        btnAuto.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
+        
+        hint.innerHTML = '<i class="ri-information-line mr-1"></i> 当受试者符合裂变规则后，由工作人员主动点击裂变。';
+        hint.className = "bg-indigo-50 text-indigo-700 text-xs p-2 rounded border border-indigo-100 leading-relaxed mb-3";
+        
+        // Update Input for Manual
+        label.innerText = "医学指标要求 (备注)";
+        input.value = "视功能指标大于 0.8";
+        input.type = "text";
+        input.classList.remove('pr-12'); // Remove padding for suffix
+        desc.innerText = "需医生在受试者详情页手动点击“裂变”按钮";
+        suffix.classList.add('hidden');
+        
+    } else {
+        btnManual.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
+        btnAuto.className = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
+        
+        hint.innerHTML = '<i class="ri-time-line mr-1"></i> 当受试者入组符合一定时间后，自动触发裂变逻辑。';
+        hint.className = "bg-amber-50 text-amber-700 text-xs p-2 rounded border border-amber-100 leading-relaxed mb-3";
+        
+        // Update Input for Auto
+        label.innerText = "入组时间阈值";
+        input.value = "180";
+        input.type = "number";
+        input.classList.add('pr-12'); // Add padding for suffix
+        desc.innerText = "受试者入组满此天数后，系统将自动执行裂变分组";
+        suffix.classList.remove('hidden');
+    }
 }
 
 function wizSetBalanceStrategy(strategy) {
@@ -915,18 +1038,20 @@ function wizSetBalanceStrategy(strategy) {
 }
 
 function wizSaveFissionRule(groupId, groupName) {
-    // Get Strategy
+    // Get Strategy & Trigger
     const strategy = document.getElementById('wiz-balance-strategy-group').getAttribute('data-value') || 'simple';
+    const trigger = document.getElementById('wiz-trigger-group').getAttribute('data-value') || 'manual';
+    const thresholdVal = document.getElementById('wiz-trigger-input').value;
+    
+    // Get Subgroups Data
+    const subgroups = wizCollectSubgroupsData();
 
     // Mock saving form data
     fissionRules[groupId] = {
-        trigger: 'manual',
-        threshold: '视功能指标大于 0.8',
+        trigger: trigger,
+        threshold: thresholdVal,
         strategy: strategy,
-        subgroups: [
-            { name: '裂变1组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 },
-            { name: '裂变2组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 }
-        ]
+        subgroups: subgroups
     };
     
     wizRenderFissionFlow();
