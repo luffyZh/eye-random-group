@@ -100,6 +100,22 @@ function updateHeader(config) {
 function switchTab(tabName) {
   hideAllViews();
   
+  // Ensure create-project-wizard is hidden when switching tabs
+  if (typeof cancelWizard === 'function') {
+    // Only call if wizard is visible to avoid unnecessary DOM updates
+    const wiz = document.getElementById('create-project-wizard');
+    if (wiz && !wiz.classList.contains('hidden')) {
+        cancelWizard();
+    }
+  } else {
+    // Fallback if cancelWizard is not available (e.g. not loaded yet)
+    const wiz = document.getElementById('create-project-wizard');
+    if (wiz) {
+        wiz.classList.add('hidden');
+        wiz.classList.remove('flex');
+    }
+  }
+
   const config = routeConfig[tabName];
   if (config) {
     updateHeader(config);

@@ -28,7 +28,10 @@ function openNewProjectWizard() {
   // Hide View Projects
   document.getElementById('view-projects').classList.add('hidden');
   // Show Wizard
-  document.getElementById('create-project-wizard').classList.remove('hidden');
+  const wiz = document.getElementById('create-project-wizard');
+  wiz.classList.remove('hidden');
+  // Ensure flex layout is active (in case it was removed)
+  if (!wiz.classList.contains('flex')) wiz.classList.add('flex');
   
   wizReset();
   wizGoToStep(1);
@@ -36,7 +39,11 @@ function openNewProjectWizard() {
 
 function cancelWizard() {
   // Hide Wizard
-  document.getElementById('create-project-wizard').classList.add('hidden');
+  const wiz = document.getElementById('create-project-wizard');
+  wiz.classList.add('hidden');
+  // Remove flex to avoid CSS conflict if 'flex' overrides 'hidden'
+  wiz.classList.remove('flex');
+
   // Show View Projects
   document.getElementById('view-projects').classList.remove('hidden');
 
