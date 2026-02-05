@@ -190,6 +190,7 @@ function toggleSidebar() {
   const versionInfo = document.getElementById('sidebar-version-info');
   const footer = document.getElementById('sidebar-footer');
   const toggleBtnIcon = document.querySelector('#sidebar-toggle-btn i');
+  const refreshContainer = document.getElementById('sidebar-refresh-container');
   
   const isExpanded = sidebar.classList.contains('w-72');
   
@@ -202,6 +203,8 @@ function toggleSidebar() {
     navTexts.forEach(t => t.classList.add('opacity-0', 'w-0'));
     
     versionInfo.classList.add('opacity-0', 'w-0');
+    
+    if (refreshContainer) refreshContainer.classList.add('hidden');
     
     footer.classList.replace('px-6', 'px-2');
     footer.classList.replace('flex-row', 'flex-col'); 
@@ -219,9 +222,11 @@ function toggleSidebar() {
     
     versionInfo.classList.remove('opacity-0', 'w-0');
     
+    if (refreshContainer) refreshContainer.classList.remove('hidden');
+    
     footer.classList.replace('px-2', 'px-6');
     footer.classList.replace('flex-col', 'flex-row');
-    footer.classList.replace('justify-between', 'justify-between');
+    footer.classList.replace('justify-center', 'justify-between');
     footer.classList.remove('gap-4');
 
     toggleBtnIcon.classList.replace('ri-menu-unfold-line', 'ri-menu-fold-line');
