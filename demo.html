@@ -141,10 +141,16 @@
 					}
 				],
 				appointments: [
-					{ id: '101', name: '张伟', phone: '13800138000', sex: '', age: '', diopter: '', status: 'pending_info', doctor: '李医生', time: '10:30' },
-					{ id: '102', name: '王芳', phone: '13912345678', sex: '女', age: '8~10岁', diopter: '-1.50~0.00D', status: 'pending_confirm', doctor: '李医生', time: '09:15' },
-					{ id: '103', name: '李强', phone: '13766668888', sex: '男', age: '4~7岁', diopter: '-1.50~0.00D', status: 'enrolled', doctor: '李医生', time: '昨天', group: 'g1' },
-					{ id: '104', name: '赵敏', phone: '13999990000', sex: '女', age: '8~10岁', diopter: '0.01D~1.50D', status: 'enrolled', doctor: '李医生', time: '昨天', group: 'g2' }
+					{ id: '101', name: '张伟', phone: '13800138000', sex: '', age: '', diopter: '', status: 'pending_info', doctor: '李医生', time: '10:30', group: '', s_no: 'S-001', id_no: '', r_no: '', drug_no: '' },
+					{ id: '102', name: '王芳', phone: '13912345678', sex: '女', age: '8~10岁', diopter: '-1.50~0.00D', status: 'pending_confirm', doctor: '李医生', time: '09:15', group: '', s_no: 'S-002', id_no: '', r_no: '', drug_no: '' },
+					{ id: '103', name: '李强', phone: '13766668888', sex: '男', age: '4~7岁', diopter: '-1.50~0.00D', status: 'enrolled', doctor: '李医生', time: '昨天', group: 'g1', s_no: 'S-003', id_no: 'ID-A01', r_no: 'R-X92', drug_no: 'D-K31' },
+					{ id: '104', name: '赵敏', phone: '13999990000', sex: '女', age: '8~10岁', diopter: '0.01D~1.50D', status: 'enrolled', doctor: '李医生', time: '昨天', group: 'g2', s_no: 'S-004', id_no: 'ID-B05', r_no: 'R-Y88', drug_no: 'D-M55' },
+					{ id: '105', name: '刘洋', phone: '13611112222', sex: '男', age: '11~14岁', diopter: '0.01D~1.50D', status: 'pending_confirm', doctor: '李医生', time: '前天', group: '', s_no: 'S-005', id_no: '', r_no: '', drug_no: '' },
+					{ id: '106', name: '陈晨', phone: '13533334444', sex: '女', age: '4~7岁', diopter: '-1.50~0.00D', status: 'enrolled', doctor: '李医生', time: '前天', group: 'g1', s_no: 'S-006', id_no: 'ID-C09', r_no: 'R-Z11', drug_no: 'D-P77' },
+					{ id: '107', name: '杨光', phone: '13888889999', sex: '男', age: '8~10岁', diopter: '0.01D~1.50D', status: 'closed', doctor: '李医生', time: '3天前', group: '', s_no: 'S-007', id_no: '', r_no: '', drug_no: '' },
+					{ id: '108', name: '周杰', phone: '13900001111', sex: '男', age: '11~14岁', diopter: '-1.50~0.00D', status: 'enrolled', doctor: '李医生', time: '4天前', group: 'g2', s_no: 'S-008', id_no: 'ID-D12', r_no: 'R-Q33', drug_no: 'D-L99' },
+					{ id: '109', name: '吴艳', phone: '13722223333', sex: '女', age: '4~7岁', diopter: '0.01D~1.50D', status: 'pending_info', doctor: '李医生', time: '5天前', group: '', s_no: 'S-009', id_no: '', r_no: '', drug_no: '' },
+					{ id: '110', name: '郑华', phone: '13655556666', sex: '男', age: '8~10岁', diopter: '-1.50~0.00D', status: 'enrolled', doctor: '李医生', time: '一周前', group: 'g1', s_no: 'S-010', id_no: 'ID-E45', r_no: 'R-W66', drug_no: 'D-N22' }
 				], // 预约记录
 				notifications: [], // 医生收到的通知
 				users: {
@@ -398,119 +404,135 @@
 						const subjects = DB.appointments.slice(0, 5); 
 
 						const html = `
-							<div class="fade-in bg-gray-50 min-h-full">
-								<div class="bg-white pt-10 px-3 pb-6 flex items-center cursor-pointer" onclick="app.doctor.renderHome()">
-									<i data-lucide="arrow-left" class="text-gray-500 mr-2" width="20"></i>
-									<h2 class="font-bold text-lg">项目详情</h2>
-								</div>
-
-								<!-- 项目卡片，只显示名称和进度（入组人数/总人数）-->
-								<div class="p-4 space-y-3">
-									<div class="relative bg-white p-4 pt-8 rounded-2xl shadow-sm border border-gray-100 text-center overflow-hidden">
-										<h2 class="text-xl font-bold text-gray-900 mb-1">${DB.project.name}</h2>
-										<div class="absolute top-0 right-0 text-xs bg-blue-600 text-white px-2 py-1 rounded-bl-lg">${DB.project.code}</div>
-										
-										<div class="flex justify-center items-center gap-8 mb-4">
-											<div>
-												<div class="text-2xl font-bold text-blue-600">${DB.project.enrolled}</div>
-												<div class="text-xs text-gray-400">已入组</div>
-											</div>
-											<div class="w-px h-8 bg-gray-100"></div>
-											<div>
-												<div class="text-2xl font-bold text-gray-900">${DB.project.totalTarget}</div>
-												<div class="text-xs text-gray-400">目标人数</div>
-											</div>
-										</div>
-										
-										<div class="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-											<div class="h-full bg-blue-500 rounded-full" style="width: ${Math.round((DB.project.enrolled / DB.project.totalTarget) * 100)}%"></div>
-										</div>
-										<p class="text-xs text-gray-400 mt-2">总体进度 ${Math.round((DB.project.enrolled / DB.project.totalTarget) * 100)}%</p>
+							<div class="fade-in bg-gray-50 h-full flex flex-col">
+								<!-- 固定头部 -->
+								<div class="bg-white pt-10 px-3 pb-4 flex items-center shadow-sm z-10 flex-none relative">
+									<div class="absolute left-3 cursor-pointer p-2 -ml-2" onclick="app.doctor.renderHome()">
+										<i data-lucide="arrow-left" class="text-gray-500" width="20"></i>
 									</div>
+									<h2 class="font-bold text-lg w-full text-center">项目详情</h2>
 								</div>
-
-								<!-- 分组信息 -->
-								<div class="p-4 space-y-3">
-									<div class="flex justify-between items-end px-1">
-										<h3 class="text-sm font-bold text-gray-900">项目分组概览</h3>
-										<span class="text-[10px] text-gray-400">共 ${projectGroups.length} 个分组</span>
-									</div>
-									${projectGroups.map(g => {
-										const remaining = g.target - g.enrolled;
-										const progress = Math.round((g.enrolled / g.target) * 100);
-										return `
-											<div onclick="app.doctor.renderGroupDetail('${g.id}')" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 active:scale-95 transition-transform cursor-pointer group">
-												<div class="flex justify-between items-start mb-3">
-													<div>
-														<h4 class="font-bold text-gray-800 text-base">${g.name}</h4>
-														<p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
-															<i data-lucide="pill" width="12"></i> ${g.drug}
-														</p>
-													</div>
-													<i data-lucide="chevron-right" class="text-gray-300 group-hover:text-blue-500 transition-colors" width="16"></i>
+								
+								<!-- 可滚动内容区域 -->
+								<div class="flex-1 overflow-y-auto no-scrollbar pb-6">
+									<!-- 项目卡片，只显示名称和进度（入组人数/总人数）-->
+									<div class="p-4 space-y-3">
+										<div class="relative bg-white p-4 pt-8 rounded-2xl shadow-sm border border-gray-100 text-center overflow-hidden">
+											<h2 class="text-xl font-bold text-gray-900 mb-1">${DB.project.name}</h2>
+											<div class="absolute top-0 right-0 text-xs bg-blue-600 text-white px-2 py-1 rounded-bl-lg">${DB.project.code}</div>
+											
+											<div class="flex justify-center items-center gap-8 mb-4">
+												<div>
+													<div class="text-2xl font-bold text-blue-600">${DB.project.enrolled}</div>
+													<div class="text-xs text-gray-400">已入组</div>
 												</div>
-												
-												<div class="flex items-center gap-4 text-xs">
-													<div class="flex-1">
-														<div class="flex justify-between mb-1">
-															<span class="text-gray-500">已入组</span>
-															<span class="font-bold text-blue-600">${g.enrolled}</span>
-														</div>
-														<div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-															<div class="h-full bg-blue-500 rounded-full" style="width: ${progress}%"></div>
-														</div>
-													</div>
-													<div class="flex-1 border-l border-gray-100 pl-4">
-														<div class="flex justify-between mb-1">
-															<span class="text-gray-500">剩余名额</span>
-															<span class="font-bold text-gray-900">${remaining}</span>
-														</div>
-														<div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-															<div class="h-full bg-gray-300 rounded-full" style="width: ${100 - progress}%"></div>
-														</div>
-													</div>
+												<div class="w-px h-8 bg-gray-100"></div>
+												<div>
+													<div class="text-2xl font-bold text-gray-900">${DB.project.totalTarget}</div>
+													<div class="text-xs text-gray-400">目标人数</div>
 												</div>
 											</div>
-										`;
-									}).join('')}
-								</div>
+											
+											<div class="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+												<div class="h-full bg-blue-500 rounded-full" style="width: ${Math.round((DB.project.enrolled / DB.project.totalTarget) * 100)}%"></div>
+											</div>
+											<p class="text-xs text-gray-400 mt-2">总体进度 ${Math.round((DB.project.enrolled / DB.project.totalTarget) * 100)}%</p>
+										</div>
+									</div>
 
-								<!-- 受试者表格 -->
-								<div class="p-4">
-									<h3 class="text-sm font-bold text-gray-900 mb-3 px-1">
-										最新受试者动态
-									</h3>
-									<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-										<table class="w-full text-left text-xs">
-											<thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
-												<tr>
-													<th class="p-3 pl-4">姓名/状态</th>
-													<th class="p-3">时间</th>
-													<th class="p-3 pr-4 text-right">操作</th>
-												</tr>
-											</thead>
-											<tbody class="divide-y divide-gray-50">
-												${subjects.length === 0 ? '<tr><td colspan="3" class="p-4 text-center text-gray-400">暂无数据</td></tr>' : subjects.map(s => `
-													<tr class="hover:bg-gray-50/50">
-														<td class="p-3 pl-4">
-															<div class="font-bold text-gray-800">${s.name}</div>
-															${utils.getStatusBadge(s.status)}
-														</td>
-														<td class="p-3 text-gray-400">${s.time}</td>
-														<td class="p-3 pr-4 text-right">
-															<button onclick="alert('详情功能在演示中未实现')" class="text-blue-600 font-bold px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors">查看</button>
-														</td>
+									<!-- 分组信息 -->
+									<div class="p-4 pt-0 space-y-3">
+										<div class="flex justify-between items-end px-1">
+											<h3 class="text-sm font-bold text-gray-900">项目分组概览</h3>
+											<span class="text-[10px] text-gray-400">共 ${projectGroups.length} 个分组</span>
+										</div>
+										${projectGroups.map(g => {
+											const remaining = g.target - g.enrolled;
+											const progress = Math.round((g.enrolled / g.target) * 100);
+											return `
+												<div onclick="app.doctor.renderGroupDetail('${g.id}')" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 active:scale-95 transition-transform cursor-pointer group">
+													<div class="flex justify-between items-start mb-3">
+														<div>
+															<h4 class="font-bold text-gray-800 text-base">${g.name}</h4>
+															<p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
+																<i data-lucide="pill" width="12"></i> ${g.drug}
+															</p>
+														</div>
+														<i data-lucide="chevron-right" class="text-gray-300 group-hover:text-blue-500 transition-colors" width="16"></i>
+													</div>
+													
+													<div class="flex items-center gap-4 text-xs">
+														<div class="flex-1">
+															<div class="flex justify-between mb-1">
+																<span class="text-gray-500">已入组</span>
+																<span class="font-bold text-blue-600">${g.enrolled}</span>
+															</div>
+															<div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+																<div class="h-full bg-blue-500 rounded-full" style="width: ${progress}%"></div>
+															</div>
+														</div>
+														<div class="flex-1 border-l border-gray-100 pl-4">
+															<div class="flex justify-between mb-1">
+																<span class="text-gray-500">剩余名额</span>
+																<span class="font-bold text-gray-900">${remaining}</span>
+															</div>
+															<div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+																<div class="h-full bg-gray-300 rounded-full" style="width: ${100 - progress}%"></div>
+															</div>
+														</div>
+													</div>
+												</div>
+											`;
+										}).join('')}
+									</div>
+
+									<!-- 受试者表格 -->
+									<div class="p-4 pt-0">
+										<h3 class="text-sm font-bold text-gray-900 mb-3 px-1">
+											最新受试者动态
+										</h3>
+										<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+											<table class="w-full text-left text-xs">
+												<thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+													<tr>
+														<th class="p-3 pl-4">姓名/状态</th>
+														<th class="p-3">组别</th>
+														<th class="p-3">时间</th>
+														<th class="p-3 pr-4 text-right">操作</th>
 													</tr>
-												`).join('')}
-											</tbody>
-										</table>
-										${subjects.length > 0 ? `
-											<div class="p-3 text-center text-xs text-gray-400 border-t border-gray-50 cursor-pointer hover:bg-gray-50 transition-colors">
-												查看全部记录 <i data-lucide="arrow-right" class="inline w-3 h-3 align-middle"></i>
-											</div>
-										` : ''}
+												</thead>
+												<tbody class="divide-y divide-gray-50">
+													${subjects.length === 0 ? '<tr><td colspan="4" class="p-4 text-center text-gray-400">暂无数据</td></tr>' : subjects.map(s => {
+														const groupName = s.group ? (DB.groups.find(g => g.id === s.group)?.name || '-') : '-';
+														return `
+														<tr class="hover:bg-gray-50/50">
+															<td class="p-3 pl-4">
+																<div class="font-bold text-gray-800">${s.name}</div>
+																${utils.getStatusBadge(s.status)}
+															</td>
+															<td class="p-3 text-xs">
+																<div class="text-gray-800 font-medium">${groupName}</div>
+															</td>
+															<td class="p-3 text-gray-400 text-xs">${s.time}</td>
+															<td class="p-3 pr-4 text-right">
+																<button onclick="app.doctor.openSubjectDrawer('${s.id}')" class="text-blue-600 font-bold px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors">查看</button>
+															</td>
+														</tr>
+													`;
+													}).join('')}
+												</tbody>
+											</table>
+											${subjects.length > 0 ? `
+												<div class="p-3 text-center text-xs text-gray-400 border-t border-gray-50 cursor-pointer hover:bg-gray-50 transition-colors" onclick="app.doctor.renderSubjectsList()">
+													查看全部记录 <i data-lucide="arrow-right" class="inline w-3 h-3 align-middle"></i>
+												</div>
+											` : ''}
+										</div>
 									</div>
 								</div>
+								
+								<!-- Drawer 容器 -->
+								<div id="subject-drawer-container"></div>
 							</div>
 						`;
 						app.render('doctor-view', html);
@@ -523,13 +545,17 @@
 						const progress = Math.round((group.enrolled / group.target) * 100);
 
 						const html = `
-							<div class="fade-in bg-gray-50 min-h-full flex flex-col">
-								<div class="bg-white pt-10 px-3 pb-6 flex items-center cursor-pointer shadow-sm z-10" onclick="app.doctor.renderProjectDetail()">
-									<i data-lucide="arrow-left" class="text-gray-500 mr-2" width="20"></i>
-									<h2 class="font-bold text-lg">分组详情</h2>
+							<div class="fade-in bg-gray-50 h-full flex flex-col">
+								<!-- 固定头部 -->
+								<div class="bg-white pt-10 px-3 pb-4 flex items-center shadow-sm z-10 flex-none relative">
+									<div class="absolute left-3 cursor-pointer p-2 -ml-2" onclick="app.doctor.renderProjectDetail()">
+										<i data-lucide="arrow-left" class="text-gray-500" width="20"></i>
+									</div>
+									<h2 class="font-bold text-lg w-full text-center">分组详情</h2>
 								</div>
 								
-								<div class="p-5 space-y-5 overflow-y-auto">
+								<!-- 可滚动内容区域 -->
+								<div class="flex-1 overflow-y-auto no-scrollbar p-5 space-y-5">
 									<!-- 顶部概览 -->
 									<div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 text-center">
 										<h2 class="text-xl font-bold text-gray-900 mb-1">${group.name}</h2>
@@ -592,57 +618,226 @@
 						app.render('doctor-view', html);
 					},
 
+					renderSubjectsList: () => {
+						const subjects = DB.appointments;
+						const html = `
+							<div class="fade-in bg-gray-50 h-full flex flex-col relative">
+								<!-- 固定头部 -->
+								<div class="bg-white pt-10 px-3 pb-4 flex items-center shadow-sm z-10 flex-none relative">
+									<div class="absolute left-3 cursor-pointer p-2 -ml-2" onclick="app.doctor.renderProjectDetail()">
+										<i data-lucide="arrow-left" class="text-gray-500" width="20"></i>
+									</div>
+									<h2 class="font-bold text-lg w-full text-center">受试者表格</h2>
+								</div>
+
+								<!-- 列表区域 -->
+								<div class="flex-1 overflow-y-auto no-scrollbar p-4">
+									<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+										<table class="w-full text-left text-xs">
+											<thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+												<tr>
+													<th class="p-3 pl-4">姓名/状态</th>
+													<th class="p-3">组别</th>
+													<th class="p-3">时间</th>
+													<th class="p-3 pr-4 text-right">操作</th>
+												</tr>
+											</thead>
+											<tbody class="divide-y divide-gray-50">
+												${subjects.length === 0 ? '<tr><td colspan="4" class="p-4 text-center text-gray-400">暂无数据</td></tr>' : subjects.map(s => {
+													const groupName = s.group ? (DB.groups.find(g => g.id === s.group)?.name || '-') : '-';
+													return `
+													<tr class="hover:bg-gray-50/50">
+														<td class="p-3 pl-4">
+															<div class="font-bold text-gray-800">${s.name}</div>
+															${utils.getStatusBadge(s.status)}
+														</td>
+														<td class="p-3 text-xs">
+															<div class="text-gray-800 font-medium">${groupName}</div>
+														</td>
+														<td class="p-3 text-gray-400 text-xs">${s.time}</td>
+														<td class="p-3 pr-4 text-right">
+															<button onclick="app.doctor.openSubjectDrawer('${s.id}')" class="text-blue-600 font-bold px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors">查看</button>
+														</td>
+													</tr>
+												`;
+												}).join('')}
+											</tbody>
+										</table>
+									</div>
+								</div>
+								
+								<!-- Drawer 容器 -->
+								<div id="subject-drawer-container"></div>
+							</div>
+						`;
+						app.render('doctor-view', html);
+					},
+
+					openSubjectDrawer: (id) => {
+						const s = DB.appointments.find(a => a.id === id);
+						if (!s) return;
+						const groupName = s.group ? (DB.groups.find(g => g.id === s.group)?.name || '-') : '-';
+						
+						const drawerHtml = `
+							<div class="absolute inset-0 z-50 flex flex-col justify-end">
+								<!-- 遮罩 -->
+								<div class="absolute inset-0 bg-black/50 backdrop-blur-sm fade-in" onclick="document.getElementById('subject-drawer-container').innerHTML = ''"></div>
+								
+								<!-- 内容卡片 -->
+								<div class="bg-white rounded-t-3xl p-6 relative z-10 animate-slide-up shadow-2xl max-h-[80%] overflow-y-auto">
+									<div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
+									
+									<div class="flex justify-between items-start mb-6">
+										<div>
+											<h3 class="text-2xl font-bold text-gray-900 mb-1">${s.name}</h3>
+											<p class="text-gray-500 text-sm flex items-center gap-2">
+												${s.phone}
+												${utils.getStatusBadge(s.status)}
+											</p>
+										</div>
+										<button onclick="document.getElementById('subject-drawer-container').innerHTML = ''" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition">
+											<i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+										</button>
+									</div>
+
+									<div class="space-y-6">
+										<!-- 核心信息 -->
+										<div class="grid grid-cols-2 gap-4">
+											<div class="bg-gray-50 p-3 rounded-xl">
+												<div class="text-xs text-gray-400 mb-1">所属组别</div>
+												<div class="font-bold text-gray-800">${groupName}</div>
+											</div>
+											<div class="bg-gray-50 p-3 rounded-xl">
+												<div class="text-xs text-gray-400 mb-1">推荐医生</div>
+												<div class="font-bold text-gray-800">${s.doctor}</div>
+											</div>
+										</div>
+
+										<!-- 编号信息 -->
+										<div>
+											<h4 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+												<i data-lucide="hash" class="w-4 h-4 text-blue-500"></i>
+												编号信息
+											</h4>
+											<div class="bg-gray-50 rounded-xl p-1 grid grid-cols-2 divide-x divide-gray-200 border border-gray-100">
+												<div class="p-3">
+													<div class="text-xs text-gray-400">筛选号</div>
+													<div class="font-mono font-medium text-gray-800">${s.s_no || '-'}</div>
+												</div>
+												<div class="p-3">
+													<div class="text-xs text-gray-400">受试者编号</div>
+													<div class="font-mono font-medium text-gray-800">${s.id_no || '-'}</div>
+												</div>
+												<div class="p-3 border-t border-gray-200">
+													<div class="text-xs text-gray-400">随机号</div>
+													<div class="font-mono font-medium text-gray-800">${s.r_no || '-'}</div>
+												</div>
+												<div class="p-3 border-t border-gray-200">
+													<div class="text-xs text-gray-400">药品号</div>
+													<div class="font-mono font-medium text-gray-800">${s.drug_no || '-'}</div>
+												</div>
+											</div>
+										</div>
+
+										<!-- 维度信息 -->
+										<div>
+											<h4 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+												<i data-lucide="sliders" class="w-4 h-4 text-purple-500"></i>
+												维度因子
+											</h4>
+											<div class="space-y-2">
+												<div class="flex justify-between items-center p-3 border border-gray-100 rounded-lg">
+													<span class="text-gray-500 text-sm">性别</span>
+													<span class="font-medium text-gray-800">${s.sex || '<span class="text-gray-300">未录入</span>'}</span>
+												</div>
+												<div class="flex justify-between items-center p-3 border border-gray-100 rounded-lg">
+													<span class="text-gray-500 text-sm">年龄段</span>
+													<span class="font-medium text-gray-800">${s.age || '<span class="text-gray-300">未录入</span>'}</span>
+												</div>
+												<div class="flex justify-between items-center p-3 border border-gray-100 rounded-lg">
+													<span class="text-gray-500 text-sm">屈光度</span>
+													<span class="font-medium text-gray-800">${s.diopter || '<span class="text-gray-300">未录入</span>'}</span>
+												</div>
+											</div>
+										</div>
+
+										<!-- 时间信息 -->
+										<div class="text-xs text-gray-400 text-center pt-4 border-t border-gray-100">
+											提交时间：${s.time}
+										</div>
+									</div>
+								</div>
+							</div>
+							<style>
+								.animate-slide-up { animation: slideUp 0.3s ease-out; }
+								@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+							</style>
+						`;
+						
+						const container = document.getElementById('subject-drawer-container');
+						if (container) {
+							container.innerHTML = drawerHtml;
+							lucide.createIcons();
+						}
+					},
+
 					renderAppointmentForm: () => {
 							const html = `
-									<div class="p-4 fade-in bg-white min-h-full">
-											<div class="flex items-center mb-6 cursor-pointer" onclick="app.doctor.renderHome()">
-													<i data-lucide="arrow-left" class="text-gray-500 mr-2" width="20"></i>
-													<h2 class="font-bold text-lg">填写预约信息</h2>
+									<div class="fade-in bg-white h-full flex flex-col">
+											<!-- 固定头部 -->
+											<div class="bg-white pt-10 px-3 pb-4 flex items-center shadow-sm z-10 flex-none relative">
+												<div class="absolute left-3 cursor-pointer p-2 -ml-2" onclick="app.doctor.renderHome()">
+													<i data-lucide="arrow-left" class="text-gray-500" width="20"></i>
+												</div>
+												<h2 class="font-bold text-lg w-full text-center">填写预约信息</h2>
 											</div>
 
-											<form id="appointForm" onsubmit="event.preventDefault(); app.doctor.submitAppointment()">
-													<div class="space-y-4">
-															<div>
-																	<label class="block text-sm font-medium text-gray-700 mb-1">患者姓名 <span class="text-red-500">*</span></label>
-																	<input type="text" name="name" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="请输入姓名" required>
-															</div>
-															<div>
-																	<label class="block text-sm font-medium text-gray-700 mb-1">联系电话 <span class="text-red-500">*</span></label>
-																	<input type="tel" name="phone" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="请输入手机号" required>
-															</div>
+											<!-- 可滚动内容区域 -->
+											<div class="flex-1 overflow-y-auto no-scrollbar p-4">
+												<form id="appointForm" onsubmit="event.preventDefault(); app.doctor.submitAppointment()">
+														<div class="space-y-4">
+																<div>
+																		<label class="block text-sm font-medium text-gray-700 mb-1">患者姓名 <span class="text-red-500">*</span></label>
+																		<input type="text" name="name" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="请输入姓名" required>
+																</div>
+																<div>
+																		<label class="block text-sm font-medium text-gray-700 mb-1">联系电话 <span class="text-red-500">*</span></label>
+																		<input type="tel" name="phone" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="请输入手机号" required>
+																</div>
 
-															<div class="border-t pt-4 mt-4">
-																	<h3 class="text-sm font-bold text-gray-800 mb-3">分层维度信息 (选填)</h3>
-																	<p class="text-xs text-gray-500 mb-3">若不确定，可留空由CRC后续补充。</p>
-																	
-																	<div class="mb-3">
-																			<label class="block text-xs font-medium text-gray-600 mb-1">性别</label>
-																			<select name="sex" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
-																					<option value="">请选择</option>
-																					${DB.project.dimensions.sex.map(o => `<option value="${o}">${o}</option>`).join('')}
-																			</select>
-																	</div>
-																	<div class="mb-3">
-																			<label class="block text-xs font-medium text-gray-600 mb-1">年龄段</label>
-																			<select name="age" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
-																					<option value="">请选择</option>
-																					${DB.project.dimensions.age.map(o => `<option value="${o}">${o}</option>`).join('')}
-																			</select>
-																	</div>
-																	<div class="mb-3">
-																			<label class="block text-xs font-medium text-gray-600 mb-1">屈光度</label>
-																			<select name="diopter" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
-																					<option value="">请选择</option>
-																					${DB.project.dimensions.diopter.map(o => `<option value="${o}">${o}</option>`).join('')}
-																			</select>
-																	</div>
-															</div>
-													</div>
+																<div class="border-t pt-4 mt-4">
+																		<h3 class="text-sm font-bold text-gray-800 mb-3">分层维度信息 (选填)</h3>
+																		<p class="text-xs text-gray-500 mb-3">若不确定，可留空由CRC后续补充。</p>
+																		
+																		<div class="mb-3">
+																				<label class="block text-xs font-medium text-gray-600 mb-1">性别</label>
+																				<select name="sex" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
+																						<option value="">请选择</option>
+																						${DB.project.dimensions.sex.map(o => `<option value="${o}">${o}</option>`).join('')}
+																				</select>
+																		</div>
+																		<div class="mb-3">
+																				<label class="block text-xs font-medium text-gray-600 mb-1">年龄段</label>
+																				<select name="age" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
+																						<option value="">请选择</option>
+																						${DB.project.dimensions.age.map(o => `<option value="${o}">${o}</option>`).join('')}
+																				</select>
+																		</div>
+																		<div class="mb-3">
+																				<label class="block text-xs font-medium text-gray-600 mb-1">屈光度</label>
+																				<select name="diopter" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
+																						<option value="">请选择</option>
+																						${DB.project.dimensions.diopter.map(o => `<option value="${o}">${o}</option>`).join('')}
+																				</select>
+																		</div>
+																</div>
+														</div>
 
-													<button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl mt-8 shadow-lg hover:bg-blue-700 transition">
-															提交预约
-													</button>
-											</form>
+														<button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl mt-8 shadow-lg hover:bg-blue-700 transition">
+																提交预约
+														</button>
+												</form>
+											</div>
 									</div>
 							`;
 							app.render('doctor-view', html);
@@ -673,6 +868,13 @@
 							data.statusText = '待补充信息';
 							data.msg = '维度缺失，已通知CRC联系患者补充。';
 						}
+						
+						// 初始化字段
+						data.group = '';
+						data.s_no = '';
+						data.id_no = '';
+						data.r_no = '';
+						data.drug_no = '';
 
 						DB.appointments.unshift(data);
 						
@@ -681,6 +883,13 @@
 						app.doctor.renderHome();
 						
 						// 触发CRC端更新
+						DB.notifications.unshift({
+							title: '新预约申请',
+							content: `李医生提交了患者 ${data.name} 的预约申请，请及时处理。`,
+							time: utils.formatTime(),
+							type: 'info'
+						});
+						
 						app.crc.refreshBadge();
 						app.crc.renderHome();
 					},
@@ -699,12 +908,16 @@
 							`).join('');
 
 						const html = `
-							<div class="p-4 fade-in bg-gray-50 min-h-full">
-								<div class="flex items-center mb-4 cursor-pointer" onclick="app.doctor.renderHome()">
-									<i data-lucide="arrow-left" class="text-gray-500 mr-2" width="20"></i>
-									<h2 class="font-bold text-lg">消息通知</h2>
+							<div class="fade-in bg-gray-50 h-full flex flex-col">
+								<div class="bg-white pt-10 px-3 pb-4 flex items-center shadow-sm z-10 flex-none relative">
+									<div class="absolute left-3 cursor-pointer p-2 -ml-2" onclick="app.doctor.renderHome()">
+										<i data-lucide="arrow-left" class="text-gray-500" width="20"></i>
+									</div>
+									<h2 class="font-bold text-lg w-full text-center">消息通知</h2>
 								</div>
-								${listHtml}
+								<div class="flex-1 overflow-y-auto no-scrollbar p-4">
+									${listHtml}
+								</div>
 							</div>
 						`;
 						app.render('doctor-view', html);
@@ -797,6 +1010,35 @@
 								app.crc.refreshBadge();
 						},
 
+						showNotifications: () => {
+ 							const listHtml = DB.notifications.length === 0 
+								? `<div class="text-center text-gray-400 mt-10">暂无消息</div>`
+								: DB.notifications.map(n => `
+										<div class="bg-white p-3 rounded-lg shadow-sm border-l-4 ${n.type === 'success' ? 'border-green-500' : 'border-blue-500'} mb-3">
+											<div class="flex justify-between items-start">
+												<div class="font-bold text-gray-800">${n.title}</div>
+												<div class="text-xs text-gray-400">${n.time}</div>
+											</div>
+											<div class="text-sm text-gray-600 mt-1">${n.content}</div>
+										</div>
+								`).join('');
+ 
+ 							const html = `
+ 								<div class="fade-in bg-gray-50 h-full flex flex-col">
+ 									<div class="bg-white pt-10 px-3 pb-4 flex items-center shadow-sm z-10 flex-none relative">
+ 										<div class="absolute left-3 cursor-pointer p-2 -ml-2" onclick="app.crc.renderHome()">
+ 											<i data-lucide="arrow-left" class="text-gray-500" width="20"></i>
+ 										</div>
+ 										<h2 class="font-bold text-lg w-full text-center">消息通知</h2>
+ 									</div>
+ 									<div class="flex-1 overflow-y-auto no-scrollbar p-4">
+ 										${listHtml}
+ 									</div>
+ 								</div>
+ 							`;
+ 							app.render('crc-view', html);
+ 						},
+
 						renderTaskDetail: (id) => {
 								const task = DB.appointments.find(a => a.id === id);
 								if (!task) return;
@@ -805,12 +1047,12 @@
 								
 								const html = `
 										<div class="p-4 fade-in bg-white min-h-full flex flex-col">
-												<div class="flex items-center mb-6 cursor-pointer" onclick="app.crc.renderHome()">
+												<div class="flex flex-none items-center mb-6 cursor-pointer" onclick="app.crc.renderHome()">
 														<i data-lucide="arrow-left" class="text-gray-500 mr-2" width="20"></i>
 														<h2 class="font-bold text-lg">处理预约</h2>
 												</div>
 
-												<div class="flex-1">
+												<div class="flex-1 overflow-y-auto">
 														<div class="bg-gray-50 p-4 rounded-xl mb-6 border border-gray-100">
 																<div class="grid grid-cols-2 gap-4 mb-2">
 																		<div>
@@ -884,29 +1126,79 @@
 								// 更新数据
 								const taskIndex = DB.appointments.findIndex(a => a.id === id);
 								if(taskIndex > -1) {
-										DB.appointments[taskIndex].status = 'confirmed';
-										DB.appointments[taskIndex].sex = sex;
-										DB.appointments[taskIndex].age = age;
-										DB.appointments[taskIndex].diopter = diopter;
+										const task = DB.appointments[taskIndex];
+										// 模拟生成各种编号
+										const s_no = 'S-' + Math.random().toString(36).substr(2, 5).toUpperCase(); // 筛选号
+										
+										task.status = 'confirmed';
+										task.sex = sex;
+										task.age = age;
+										task.diopter = diopter;
+										task.s_no = s_no;
 										
 										// 通知医生
 										DB.notifications.unshift({
 												title: '预约确认成功',
-												content: `患者 ${DB.appointments[taskIndex].name} 的预约已被CRC确认。维度已核实。`,
+												content: `患者 ${task.name} 的预约已被CRC确认。筛选号：${s_no}。`,
 												time: utils.formatTime(),
 												type: 'success'
 										});
 										
-										alert("已确认预约！医生将收到通知。");
+										alert(`已确认预约！\n筛选号：${s_no}\n医生将收到通知。`);
 										app.crc.renderHome();
 										app.doctor.refreshBadge(); // 医生端亮红点
 								}
 						},
 						
 						oneClickEnroll: (id) => {
-									// 简单模拟，逻辑同确认
-									app.crc.confirmTask(id);
-									// 实际项目中这里会跳转到CRF录入页
+							// 获取CRC修改后的数据（虽然是一键，但也需要表单数据）
+							const sex = document.getElementById('crc-sex').value;
+							const age = document.getElementById('crc-age').value;
+							const diopter = document.getElementById('crc-diopter').value;
+							
+							if (!sex || !age || !diopter) {
+								alert("请先补全所有维度信息才能转入组！");
+								return;
+							}
+							
+							const taskIndex = DB.appointments.findIndex(a => a.id === id);
+							if (taskIndex > -1) {
+								const task = DB.appointments[taskIndex];
+								
+								// 随机分配组别
+								const group = Math.random() > 0.5 ? DB.groups[0] : DB.groups[1];
+								
+								// 生成编号
+								const s_no = 'S-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+								const id_no = 'ID-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+								const r_no = 'R-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+								const drug_no = 'D-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+								
+								task.status = 'enrolled';
+								task.sex = sex;
+								task.age = age;
+								task.diopter = diopter;
+								task.group = group.id;
+								task.s_no = s_no;
+								task.id_no = id_no;
+								task.r_no = r_no;
+								task.drug_no = drug_no;
+								
+								// 更新分组统计
+								group.enrolled++;
+								
+								// 通知医生
+								DB.notifications.unshift({
+									title: '患者成功入组',
+									content: `患者 ${task.name} 已成功入组 ${group.name}。\n筛选号:${s_no}\n受试者编号:${id_no}\n随机号:${r_no}\n药品号:${drug_no}`,
+									time: utils.formatTime(),
+									type: 'success'
+								});
+								
+								alert(`入组成功！\n分配组别：${group.name}\n筛选号：${s_no}\n受试者编号：${id_no}\n随机号：${r_no}\n药品号：${drug_no}`);
+								app.crc.renderHome();
+								app.doctor.refreshBadge();
+							}
 						}
 				}
 		};
