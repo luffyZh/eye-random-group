@@ -759,7 +759,68 @@ function wizUpdateProjectTotal() {
 /* ================= Fission (Multi-stage) Logic ================= */
 
 function wizToggleFissionMode() {
-    isFissionMode = document.getElementById('wiz-fission-toggle').checked;
+    const toggle = document.getElementById('wiz-fission-toggle');
+    const isChecked = toggle.checked;
+    
+    if (isChecked) {
+        // Prepare data for modal
+        const mode = document.querySelector('input[name="wizMatchMode"]:checked').value;
+        const modeText = (mode === 'random') ? '均匀分组 (Uniform)' : '自由分组 (Free)';
+        document.getElementById('wiz-confirm-mode-display').innerText = modeText;
+        
+        const list = document.getElementById('wiz-confirm-group-list');
+        list.innerHTML = '';
+        
+        // Collect groups
+        const groups = [];
+        document.querySelectorAll('.wiz-group-card').forEach(card => {
+             const nameInput = card.querySelector('input[type="text"]'); 
+             const drugInput = card.querySelector('.wiz-group-drug-input');
+             const countInput = card.querySelector('.wiz-group-total-input');
+             if (nameInput) {
+                 groups.push({
+                     name: nameInput.value,
+                     medicine: drugInput ? drugInput.value : '',
+                     count: countInput ? countInput.value : 0
+                 });
+             }
+        });
+        
+        groups.forEach(g => {
+            const div = document.createElement('div');
+            div.className = "flex justify-between items-center text-xs p-2 bg-white rounded border border-slate-100";
+            div.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-slate-700">${g.name}</span>
+                    <span class="text-[10px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">${g.medicine || '无药品'}</span>
+                </div>
+                <span class="font-bold text-slate-600">${g.count}人</span>
+            `;
+            list.appendChild(div);
+        });
+
+        // Show Modal
+        document.getElementById('wiz-fission-confirm-modal').classList.remove('hidden');
+    } else {
+        _performFissionSwitch(false);
+    }
+}
+
+function wizConfirmFissionMode() {
+    document.getElementById('wiz-fission-confirm-modal').classList.add('hidden');
+    _performFissionSwitch(true);
+}
+
+function wizCancelFissionMode() {
+    document.getElementById('wiz-fission-confirm-modal').classList.add('hidden');
+    document.getElementById('wiz-fission-toggle').checked = false;
+    _performFissionSwitch(false);
+}
+
+function _performFissionSwitch(enable) {
+    isFissionMode = enable;
+    document.getElementById('wiz-fission-toggle').checked = enable;
+
     const simpleContainer = document.getElementById('wiz-mode-simple');
     const fissionContainer = document.getElementById('wiz-mode-fission');
 
@@ -928,14 +989,22 @@ function wizRenderSubgroups(subgroups) {
     
     subgroups.forEach((sg, idx) => {
         const div = document.createElement('div');
-        div.className = "flex items-center gap-2 animate-fade-in";
+        div.className = "flex items-start gap-2 animate-fade-in border-b border-slate-50 pb-3 mb-3 last:border-0 last:mb-0 last:pb-0";
         div.innerHTML = `
-            <input type="text" value="${sg.name}" class="wiz-subgroup-name w-20 text-xs font-bold text-slate-600 border-slate-200 rounded-lg py-1.5 pl-2 text-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
-            <div class="relative flex-1">
-                <input type="number" value="${sg.count}" class="wiz-subgroup-count w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
-                <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
+            <div class="flex flex-col gap-2 flex-1">
+                <input type="text" value="${sg.name}" class="wiz-subgroup-name w-full text-xs font-bold text-slate-600 border-slate-200 rounded-lg py-1.5 pl-2 focus:border-brand-500 focus:ring-1 focus:ring-brand-500" placeholder="子组名称">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] text-slate-400 whitespace-nowrap"><i class="ri-capsule-fill mr-1"></i>药品</span>
+                    <input type="text" value="${sg.medicine || ''}" class="wiz-subgroup-medicine flex-1 text-xs text-slate-600 border-slate-200 rounded-lg py-1.5 pl-2 focus:border-brand-500 focus:ring-1 focus:ring-brand-500" placeholder="药品名称">
+                </div>
             </div>
-            ${subgroups.length > 2 ? `<button onclick="wizRemoveSubgroup(this)" class="text-slate-300 hover:text-red-500"><i class="ri-delete-bin-line"></i></button>` : ''}
+            <div class="flex items-center gap-1 mt-0.5">
+                <div class="relative w-20">
+                    <input type="number" value="${sg.count}" class="wiz-subgroup-count w-full pl-2 pr-6 py-1.5 text-sm border-slate-200 rounded-lg text-center focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                    <span class="absolute right-2 top-1.5 text-xs text-slate-400">人</span>
+                </div>
+                ${subgroups.length > 2 ? `<button onclick="wizRemoveSubgroup(this)" class="text-slate-300 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded hover:bg-red-50 transition-colors"><i class="ri-delete-bin-line"></i></button>` : `<div class="w-8"></div>`}
+            </div>
         `;
         container.appendChild(div);
     });
@@ -960,13 +1029,13 @@ function wizAddSubgroup() {
     
     // Get current data to re-render
     const subgroups = wizCollectSubgroupsData();
-    subgroups.push({ name: `裂变${currentCount + 1}组`, count: 0 });
+    subgroups.push({ name: `裂变${currentCount + 1}组`, medicine: '', count: 0 });
     
     wizRenderSubgroups(subgroups);
 }
 
 function wizRemoveSubgroup(btn) {
-    const row = btn.parentElement;
+    const row = btn.closest('.animate-fade-in');
     row.remove();
     // Re-render to update UI state (buttons, etc.)
     const subgroups = wizCollectSubgroupsData();
@@ -979,6 +1048,7 @@ function wizCollectSubgroupsData() {
     container.querySelectorAll('.animate-fade-in').forEach(row => {
         data.push({
             name: row.querySelector('.wiz-subgroup-name').value,
+            medicine: row.querySelector('.wiz-subgroup-medicine').value,
             count: parseInt(row.querySelector('.wiz-subgroup-count').value) || 0
         });
     });
