@@ -263,3 +263,149 @@ function closeNotificationDrawer() {
     drawer.classList.add('hidden');
   }, 300);
 }
+
+// ================= Settings Drawer Logic =================
+
+function toggleSettingsDrawer() {
+  const drawer = document.getElementById('settings-drawer');
+  const backdrop = document.getElementById('settings-backdrop');
+  const panel = document.getElementById('settings-panel');
+  
+  if (drawer.classList.contains('hidden')) {
+    drawer.classList.remove('hidden');
+    // Trigger reflow
+    void drawer.offsetWidth;
+    
+    backdrop.classList.remove('opacity-0');
+    panel.classList.remove('translate-x-full');
+  } else {
+    closeSettingsDrawer();
+  }
+}
+
+function closeSettingsDrawer() {
+  const drawer = document.getElementById('settings-drawer');
+  const backdrop = document.getElementById('settings-backdrop');
+  const panel = document.getElementById('settings-panel');
+  
+  backdrop.classList.add('opacity-0');
+  panel.classList.add('translate-x-full');
+  
+  setTimeout(() => {
+    drawer.classList.add('hidden');
+  }, 300);
+}
+
+// 1. Theme
+function setTheme(theme) {
+    // Only light mode fully supported now, update UI selection
+    const btnLight = document.getElementById('theme-light');
+    const btnDark = document.getElementById('theme-dark');
+    
+    if (theme === 'light') {
+        btnLight.classList.add('border-brand-500', 'bg-slate-50');
+        btnLight.classList.remove('border-transparent', 'hover:border-slate-300');
+        btnLight.querySelector('div.absolute').classList.remove('hidden');
+        
+        btnDark.classList.remove('border-brand-500');
+        btnDark.classList.add('border-transparent', 'hover:border-slate-300');
+        // Mocking dark mode disabled or "coming soon"
+    } else {
+        // Just for demo interaction
+        // btnDark.classList.add('border-brand-500');
+        // btnLight.classList.remove('border-brand-500');
+        alert('暗黑模式正在开发中，敬请期待！');
+    }
+}
+
+// 2. Layout
+function setLayoutMode(mode) {
+    const btnSidebar = document.getElementById('layout-sidebar');
+    const btnTop = document.getElementById('layout-top');
+    const checkIcon = '<div class="absolute top-2 right-2 w-4 h-4 bg-brand-500 rounded-full flex items-center justify-center text-white text-[10px] shadow-sm"><i class="ri-check-line"></i></div>';
+    
+    // Remove checks
+    const existingCheck = btnSidebar.querySelector('.absolute.top-2.right-2') || btnTop.querySelector('.absolute.top-2.right-2');
+    if(existingCheck) existingCheck.remove();
+
+    if (mode === 'sidebar') {
+        btnSidebar.classList.add('border-brand-500', 'bg-slate-50');
+        btnSidebar.classList.remove('border-transparent', 'hover:border-slate-300', 'bg-white');
+        btnSidebar.insertAdjacentHTML('beforeend', checkIcon);
+        
+        btnTop.classList.remove('border-brand-500', 'bg-slate-50');
+        btnTop.classList.add('border-transparent', 'hover:border-slate-300', 'bg-white');
+        
+        // Logic to switch layout (Mock)
+        // document.getElementById('app-container').classList.remove('flex-col');
+        // document.getElementById('sidebar').classList.remove('hidden');
+    } else {
+        btnTop.classList.add('border-brand-500', 'bg-slate-50');
+        btnTop.classList.remove('border-transparent', 'hover:border-slate-300', 'bg-white');
+        btnTop.insertAdjacentHTML('beforeend', checkIcon);
+        
+        btnSidebar.classList.remove('border-brand-500', 'bg-slate-50');
+        btnSidebar.classList.add('border-transparent', 'hover:border-slate-300', 'bg-white');
+        
+        // Logic to switch layout (Mock)
+        alert('上下布局模式需要调整整体DOM结构，当前为演示效果。');
+    }
+}
+
+// 3. Content Width
+function setContentWidth(width) {
+    const btnFluid = document.getElementById('width-fluid');
+    const btnFixed = document.getElementById('width-fixed');
+    const mainContent = document.querySelector('main > div'); // Adjust selector based on actual structure
+
+    if (width === 'fluid') {
+        btnFluid.className = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
+        btnFixed.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
+        
+        if(mainContent) mainContent.classList.remove('max-w-7xl', 'mx-auto');
+    } else {
+        btnFluid.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
+        btnFixed.className = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
+        
+        if(mainContent) mainContent.classList.add('max-w-7xl', 'mx-auto');
+    }
+}
+
+// 4. Font Size
+function setFontSize(size) {
+    const html = document.documentElement;
+    const display = document.getElementById('font-size-display');
+    
+    // Reset base classes
+    html.classList.remove('text-xs', 'text-sm', 'text-base', 'text-lg');
+    
+    let label = '标准 (14px)';
+    if (size == 12) {
+        html.style.fontSize = '14px'; // Tailwind base is usually 16px, setting root font size scales rem
+        // But tailwind uses rem. 
+        // Let's just update the display for demo, real implementation might involve scaling rem or specific classes
+        label = '小 (12px)';
+        // document.body.style.zoom = 0.9; 
+    } else if (size == 14) {
+        // document.body.style.zoom = 1;
+        label = '标准 (14px)';
+    } else if (size == 16) {
+        // document.body.style.zoom = 1.1;
+        label = '大 (16px)';
+    } else {
+        label = `自定义 (${size}px)`;
+    }
+    
+    display.innerText = label;
+}
+
+// 5. Reset
+function resetSettings() {
+    setTheme('light');
+    setLayoutMode('sidebar');
+    setContentWidth('fluid');
+    document.getElementById('font-size-slider').value = 14;
+    setFontSize(14);
+    
+    alert('已恢复默认设置');
+}

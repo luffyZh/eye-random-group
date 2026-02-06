@@ -161,7 +161,7 @@
           <i class="ri-notification-3-line"></i>
           <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
         </button>
-        <button
+        <button onclick="toggleSettingsDrawer()"
           class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
           <i class="ri-settings-3-line"></i>
         </button>
@@ -3608,6 +3608,110 @@
         <!-- JS generated content -->
       </div>
     </div>
+  </div>
+
+  <!-- 系统设置抽屉 -->
+  <div id="settings-drawer" class="fixed inset-0 z-[80] hidden">
+      <div id="settings-backdrop" class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="toggleSettingsDrawer()"></div>
+      <div id="settings-panel" class="absolute top-0 right-0 h-full w-80 bg-white shadow-2xl transition-transform duration-300 translate-x-full flex flex-col">
+          <!-- Header -->
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+              <div>
+                  <h3 class="text-lg font-bold text-slate-800">系统设置</h3>
+                  <p class="text-xs text-slate-500 mt-0.5">个性化您的工作界面</p>
+              </div>
+              <button onclick="toggleSettingsDrawer()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+                  <i class="ri-close-line text-xl"></i>
+              </button>
+          </div>
+
+          <!-- Content -->
+          <div class="flex-1 overflow-y-auto p-6 space-y-8">
+              
+              <!-- 1. 主题风格 -->
+              <div class="space-y-3">
+                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">主题风格</h4>
+                  <div class="grid grid-cols-2 gap-3">
+                      <button onclick="setTheme('light')" id="theme-light" class="relative group p-2 rounded-xl border-2 border-brand-500 bg-slate-50 transition-all hover:shadow-md">
+                          <div class="h-20 bg-white rounded-lg border border-slate-200 mb-2 overflow-hidden relative">
+                              <div class="absolute top-0 left-0 right-0 h-4 bg-slate-100 border-b border-slate-100"></div>
+                              <div class="absolute top-6 left-2 right-2 h-2 bg-slate-100 rounded"></div>
+                              <div class="absolute top-10 left-2 w-1/2 h-2 bg-slate-100 rounded"></div>
+                          </div>
+                          <span class="text-xs font-bold text-slate-700 block text-center">明亮 (默认)</span>
+                          <div class="absolute top-2 right-2 w-4 h-4 bg-brand-500 rounded-full flex items-center justify-center text-white text-[10px] shadow-sm"><i class="ri-check-line"></i></div>
+                      </button>
+                      <button onclick="setTheme('dark')" id="theme-dark" class="relative group p-2 rounded-xl border-2 border-transparent hover:border-slate-300 bg-slate-900 transition-all hover:shadow-md">
+                           <div class="h-20 bg-slate-800 rounded-lg border border-slate-700 mb-2 overflow-hidden relative">
+                              <div class="absolute top-0 left-0 right-0 h-4 bg-slate-700 border-b border-slate-600"></div>
+                              <div class="absolute top-6 left-2 right-2 h-2 bg-slate-700 rounded"></div>
+                              <div class="absolute top-10 left-2 w-1/2 h-2 bg-slate-700 rounded"></div>
+                           </div>
+                           <span class="text-xs font-bold text-slate-400 block text-center">暗黑 (即将推出)</span>
+                      </button>
+                  </div>
+              </div>
+
+              <!-- 2. 布局模式 -->
+              <div class="space-y-3">
+                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">布局模式</h4>
+                  <div class="grid grid-cols-2 gap-3">
+                      <button onclick="setLayoutMode('sidebar')" id="layout-sidebar" class="relative group p-2 rounded-xl border-2 border-brand-500 bg-slate-50 transition-all hover:shadow-md">
+                           <div class="h-16 bg-white rounded-lg border border-slate-200 flex overflow-hidden">
+                               <div class="w-1/4 bg-slate-100 border-r border-slate-100 h-full"></div>
+                               <div class="flex-1 p-1">
+                                   <div class="w-full h-1 bg-slate-100 rounded mb-1"></div>
+                                   <div class="w-2/3 h-1 bg-slate-100 rounded"></div>
+                               </div>
+                           </div>
+                           <span class="text-xs font-bold text-slate-700 block text-center mt-2">左右布局</span>
+                           <div class="absolute top-2 right-2 w-4 h-4 bg-brand-500 rounded-full flex items-center justify-center text-white text-[10px] shadow-sm"><i class="ri-check-line"></i></div>
+                      </button>
+                      <button onclick="setLayoutMode('top')" id="layout-top" class="relative group p-2 rounded-xl border-2 border-transparent hover:border-slate-300 bg-white transition-all hover:shadow-md">
+                           <div class="h-16 bg-white rounded-lg border border-slate-200 flex flex-col overflow-hidden">
+                               <div class="w-full h-3 bg-slate-100 border-b border-slate-100"></div>
+                               <div class="flex-1 p-1">
+                                   <div class="w-full h-1 bg-slate-100 rounded mb-1"></div>
+                                   <div class="w-2/3 h-1 bg-slate-100 rounded"></div>
+                               </div>
+                           </div>
+                           <span class="text-xs font-bold text-slate-500 block text-center mt-2">上下布局</span>
+                      </button>
+                  </div>
+              </div>
+
+              <!-- 3. 内容宽度 -->
+              <div class="space-y-3">
+                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">内容宽度</h4>
+                  <div class="flex bg-slate-100 p-1 rounded-lg">
+                      <button onclick="setContentWidth('fluid')" id="width-fluid" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all">撑满 (Fluid)</button>
+                      <button onclick="setContentWidth('fixed')" id="width-fixed" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all">固定 (Fixed)</button>
+                  </div>
+              </div>
+
+               <!-- 4. 字体大小 -->
+               <div class="space-y-3">
+                  <div class="flex justify-between items-center">
+                      <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">界面字号</h4>
+                      <span class="text-xs font-bold text-brand-600" id="font-size-display">标准 (14px)</span>
+                  </div>
+                  <input type="range" min="12" max="16" step="1" value="14" id="font-size-slider" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="setFontSize(this.value)">
+                  <div class="flex justify-between text-[10px] text-slate-400 font-bold px-1">
+                      <span>小</span>
+                      <span>标准</span>
+                      <span>大</span>
+                  </div>
+              </div>
+
+              <!-- 5. 系统重置 -->
+              <div class="pt-4 border-t border-slate-100">
+                  <button onclick="resetSettings()" class="w-full py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors flex justify-center items-center gap-2">
+                      <i class="ri-refresh-line"></i> 恢复默认设置
+                  </button>
+              </div>
+
+          </div>
+      </div>
   </div>
 
   <!-- 新增用户抽屉 -->

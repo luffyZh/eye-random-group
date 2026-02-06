@@ -1145,9 +1145,20 @@ function wizSaveFissionRule(groupId, groupName) {
     const btn = document.querySelector('#wiz-config-form button.bg-brand-600');
     const originalText = btn.innerText;
     btn.innerText = "已保存";
+    btn.classList.remove('bg-brand-600');
     btn.classList.add('bg-emerald-600');
+    
     setTimeout(() => {
+        // Restore button state
         btn.innerText = originalText;
         btn.classList.remove('bg-emerald-600');
-    }, 1000);
+        btn.classList.add('bg-brand-600');
+        
+        // Hide config panel, show placeholder
+        document.getElementById('wiz-config-content').classList.add('hidden');
+        document.getElementById('wiz-config-placeholder').classList.remove('hidden');
+        
+        // Clear active selection in flow
+        wizRenderFissionFlow();
+    }, 500);
 }
