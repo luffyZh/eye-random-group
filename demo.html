@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中央随机化系统 - 双端交互演示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 隐藏滚动条但保持滚动功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* 手机外壳模拟 */
+        .phone-frame {
+            width: 360px;
+            height: 700px;
+            border-radius: 30px;
+            border: 12px solid #1f2937;
+            overflow: hidden;
+            position: relative;
+            background-color: #f3f4f6;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background-color: #1f2937;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 50;
+        }
+
+        .app-header {
+            padding-top: 35px;
+        }
+        
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col items-center justify-center font-sans">
+
+    <div class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-gray-800">中央随机化系统交互原型</h1>
+        <p class="text-gray-500 text-sm mt-2">场景：眼科儿童近视项目 | 左侧：医生端 | 右侧：CRC端</p>
+    </div>
+
+    <div class="flex flex-wrap gap-10 justify-center items-center w-full max-w-7xl">
+        
+        <!-- ================= 医生端手机 ================= -->
+        <div class="phone-frame flex flex-col">
+            <div class="notch"></div>
+            
+            <!-- 医生端 Header -->
+            <div class="app-header bg-blue-600 text-white px-4 pb-4 shadow-md flex justify-between items-center">
+                <div>
+                    <div class="text-xs opacity-80">当前角色</div>
+                    <div class="font-bold text-lg">李医生 (眼科)</div>
+                </div>
+                <div class="relative cursor-pointer" onclick="app.doctor.showNotifications()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span id="doc-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </div>
+            </div>
+
+            <!-- 医生端 Content -->
+            <div id="doctor-view" class="flex-1 overflow-y-auto no-scrollbar relative">
+                <!-- 动态内容渲染区域 -->
+            </div>
+
+            <!-- 医生端 Tabbar -->
+            <div class="bg-white border-t p-3 flex justify-around text-xs text-gray-500">
+                <div class="flex flex-col items-center text-blue-600 cursor-pointer" onclick="app.doctor.renderHome()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    首页
+                </div>
+                <div class="flex flex-col items-center cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    项目
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= CRC端手机 ================= -->
+        <div class="phone-frame flex flex-col">
+            <div class="notch"></div>
+            
+            <!-- CRC端 Header -->
+            <div class="app-header bg-emerald-600 text-white px-4 pb-4 shadow-md flex justify-between items-center">
+                <div>
+                    <div class="text-xs opacity-80">当前角色</div>
+                    <div class="font-bold text-lg">王CRC (录入员)</div>
+                </div>
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <span id="crc-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </div>
+            </div>
+
+            <!-- CRC端 Content -->
+            <div id="crc-view" class="flex-1 overflow-y-auto no-scrollbar bg-gray-50">
+                 <!-- 动态内容渲染区域 -->
+            </div>
+
+            <!-- CRC端 Tabbar -->
+            <div class="bg-white border-t p-3 flex justify-around text-xs text-gray-500">
+                <div class="flex flex-col items-center text-emerald-600 cursor-pointer" onclick="app.crc.renderHome()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    工作台
+                </div>
+                <div class="flex flex-col items-center cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    受试者
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 模拟数据库和逻辑 -->
+    <script>
+        // ================= 模拟数据存储 =================
+        const DB = {
+            project: {
+                name: "青少年近视防控临床研究",
+                code: "MYOPIA-2024-001",
+                totalTarget: 150,
+                enrolled: 42,
+                dimensions: {
+                    sex: ["男", "女"],
+                    age: ["4~7岁", "8~10岁", "11~14岁"],
+                    diopter: ["-1.50~0.00D", "0.01D~1.50D"]
+                }
+            },
+            appointments: [], // 预约记录
+            notifications: [] // 医生收到的通知
+        };
+
+        // ================= 工具函数 =================
+        const utils = {
+            generateId: () => Math.random().toString(36).substr(2, 9),
+            formatTime: () => new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'}),
+            
+            // 检查维度是否齐全
+            isDimensionsComplete: (data) => {
+                return data.sex && data.age && data.diopter;
+            }
+        };
+
+        // ================= 应用逻辑 =================
+        const app = {
+            init: () => {
+                app.doctor.renderHome();
+                app.crc.renderHome();
+            },
+
+            // --- 医生端逻辑 ---
+            doctor: {
+                renderHome: () => {
+                    const view = document.getElementById('doctor-view');
+                    view.innerHTML = `
+                        <div class="p-4 fade-in">
+                            <!-- 数据看板 -->
+                            <div class="bg-white p-4 rounded-xl shadow-sm mb-4">
+                                <h3 class="font-bold text-gray-700 mb-2">我的数据</h3>
+                                <div class="flex justify-between text-center">
+                                    <div>
+                                        <div class="text-2xl font-bold text-blue-600">12</div>
+                                        <div class="text-xs text-gray-500">已推荐</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-bold text-green-600">8</div>
+                                        <div class="text-xs text-gray-500">成功入组</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-bold text-red-500">1</div>
+                                        <div class="text-xs text-gray-500">筛选失败</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 项目列表 -->
+                            <h3 class="font-bold text-gray-700 mb-2 px-1">进行中的项目</h3>
+                            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                                <div class="p-4 border-b border-gray-100">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-bold text-gray-800">${DB.project.name}</h4>
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">招募中</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 30%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-500">
+                                        <span>进度: ${DB.project.enrolled}/${DB.project.totalTarget}</span>
+                                        <span>剩余名额: ${DB.project.totalTarget - DB.project.enrolled}</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 p-3 flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">因子匹配详情 ></span>
+                                    <button onclick="app.doctor.renderAppointmentForm()" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+                                        预约患者
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                },
+
+                renderAppointmentForm: () => {
+                    const view = document.getElementById('doctor-view');
+                    view.innerHTML = `
+                        <div class="p-4 fade-in bg-white min-h-full">
+                            <div class="flex items-center mb-6 cursor-pointer" onclick="app.doctor.renderHome()">
+                                <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                <h2 class="font-bold text-lg">填写预约信息</h2>
+                            </div>
+
+                            <form id="appointForm" onsubmit="event.preventDefault(); app.doctor.submitAppointment()">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">患者姓名 <span class="text-red-500">*</span></label>
+                                        <input type="text" name="name" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="请输入姓名" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">联系电话 <span class="text-red-500">*</span></label>
+                                        <input type="tel" name="phone" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="请输入手机号" required>
+                                    </div>
+
+                                    <div class="border-t pt-4 mt-4">
+                                        <h3 class="text-sm font-bold text-gray-800 mb-3">分层维度信息 (选填)</h3>
+                                        <p class="text-xs text-gray-500 mb-3">若不确定，可留空由CRC后续补充。</p>
+                                        
+                                        <div class="mb-3">
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">性别</label>
+                                            <select name="sex" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
+                                                <option value="">请选择</option>
+                                                ${DB.project.dimensions.sex.map(o => `<option value="${o}">${o}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">年龄段</label>
+                                            <select name="age" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
+                                                <option value="">请选择</option>
+                                                ${DB.project.dimensions.age.map(o => `<option value="${o}">${o}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">屈光度</label>
+                                            <select name="diopter" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
+                                                <option value="">请选择</option>
+                                                ${DB.project.dimensions.diopter.map(o => `<option value="${o}">${o}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl mt-8 shadow-lg hover:bg-blue-700 transition">
+                                    提交预约
+                                </button>
+                            </form>
+                        </div>
+                    `;
+                },
+
+                submitAppointment: () => {
+                    const form = document.getElementById('appointForm');
+                    const formData = new FormData(form);
+                    const data = {
+                        id: utils.generateId(),
+                        name: formData.get('name'),
+                        phone: formData.get('phone'),
+                        sex: formData.get('sex'),
+                        age: formData.get('age'),
+                        diopter: formData.get('diopter'),
+                        doctor: "李医生",
+                        time: utils.formatTime(),
+                        status: 'pending' // pending_confirm (全) or pending_info (缺)
+                    };
+
+                    // 逻辑判断
+                    if (utils.isDimensionsComplete(data)) {
+                        data.status = 'pending_confirm';
+                        data.statusText = '待CRC确认';
+                        data.msg = '维度齐全，已锁定名额，等待CRC确认。';
+                    } else {
+                        data.status = 'pending_info';
+                        data.statusText = '待补充信息';
+                        data.msg = '维度缺失，已通知CRC联系患者补充。';
+                    }
+
+                    DB.appointments.unshift(data);
+                    
+                    // 模拟提交成功
+                    alert(`提交成功！\n状态：${data.statusText}\n${data.msg}`);
+                    app.doctor.renderHome();
+                    
+                    // 触发CRC端更新
+                    app.crc.refreshBadge();
+                    app.crc.renderHome();
+                },
+
+                showNotifications: () => {
+                    const view = document.getElementById('doctor-view');
+                    const listHtml = DB.notifications.length === 0 
+                        ? `<div class="text-center text-gray-400 mt-10">暂无消息</div>`
+                        : DB.notifications.map(n => `
+                            <div class="bg-white p-3 rounded-lg shadow-sm border-l-4 ${n.type === 'success' ? 'border-green-500' : 'border-red-500'} mb-3">
+                                <div class="flex justify-between items-start">
+                                    <div class="font-bold text-gray-800">${n.title}</div>
+                                    <div class="text-xs text-gray-400">${n.time}</div>
+                                </div>
+                                <div class="text-sm text-gray-600 mt-1">${n.content}</div>
+                            </div>
+                        `).join('');
+
+                    view.innerHTML = `
+                        <div class="p-4 fade-in bg-gray-50 min-h-full">
+                            <div class="flex items-center mb-4 cursor-pointer" onclick="app.doctor.renderHome()">
+                                <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                <h2 class="font-bold text-lg">消息通知</h2>
+                            </div>
+                            ${listHtml}
+                        </div>
+                    `;
+                    
+                    // 清除红点
+                    document.getElementById('doc-badge').classList.add('hidden');
+                },
+                
+                refreshBadge: () => {
+                     const badge = document.getElementById('doc-badge');
+                     badge.innerText = "N";
+                     badge.classList.remove('hidden');
+                }
+            },
+
+            // --- CRC端逻辑 ---
+            crc: {
+                refreshBadge: () => {
+                    const pendingCount = DB.appointments.filter(a => a.status.startsWith('pending')).length;
+                    const badge = document.getElementById('crc-badge');
+                    if(pendingCount > 0) {
+                        badge.innerText = pendingCount;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                },
+
+                renderHome: () => {
+                    const pendingTasks = DB.appointments.filter(a => a.status.startsWith('pending'));
+                    
+                    const taskListHtml = pendingTasks.length === 0 
+                        ? `<div class="text-center py-10 text-gray-400 flex flex-col items-center">
+                            <svg class="w-12 h-12 mb-2 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            暂无待处理任务
+                           </div>` 
+                        : pendingTasks.map(task => `
+                            <div onclick="app.crc.renderTaskDetail('${task.id}')" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-3 cursor-pointer hover:bg-gray-50 transition relative">
+                                ${task.status === 'pending_info' 
+                                    ? `<span class="absolute top-3 right-3 bg-orange-100 text-orange-600 text-xs px-2 py-0.5 rounded">待补全</span>` 
+                                    : `<span class="absolute top-3 right-3 bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded">待确认</span>`
+                                }
+                                <div class="font-bold text-gray-800 text-lg">${task.name}</div>
+                                <div class="text-sm text-gray-500 mb-2">${task.phone}</div>
+                                <div class="text-xs text-gray-400 flex items-center">
+                                    <span class="mr-2">来自: ${task.doctor}</span>
+                                    <span>${task.time}</span>
+                                </div>
+                            </div>
+                        `).join('');
+
+                    const view = document.getElementById('crc-view');
+                    view.innerHTML = `
+                        <div class="p-4 fade-in">
+                            <!-- 统计卡片 -->
+                            <div class="grid grid-cols-2 gap-3 mb-6">
+                                <div class="bg-white p-3 rounded-xl shadow-sm">
+                                    <div class="text-gray-500 text-xs">待处理预约</div>
+                                    <div class="text-2xl font-bold text-emerald-600">${pendingTasks.length}</div>
+                                </div>
+                                <div class="bg-white p-3 rounded-xl shadow-sm">
+                                    <div class="text-gray-500 text-xs">今日已入组</div>
+                                    <div class="text-2xl font-bold text-gray-800">3</div>
+                                </div>
+                            </div>
+
+                            <h3 class="font-bold text-gray-700 mb-3 flex justify-between items-center">
+                                待办任务
+                                <span class="text-xs font-normal text-gray-400 bg-gray-200 px-2 py-0.5 rounded-full">${pendingTasks.length}</span>
+                            </h3>
+                            <div class="space-y-2">
+                                ${taskListHtml}
+                            </div>
+                        </div>
+                    `;
+                    app.crc.refreshBadge();
+                },
+
+                renderTaskDetail: (id) => {
+                    const task = DB.appointments.find(a => a.id === id);
+                    if (!task) return;
+
+                    const isInfoMissing = task.status === 'pending_info';
+                    
+                    const view = document.getElementById('crc-view');
+                    view.innerHTML = `
+                        <div class="p-4 fade-in bg-white min-h-full flex flex-col">
+                            <div class="flex items-center mb-6 cursor-pointer" onclick="app.crc.renderHome()">
+                                <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                <h2 class="font-bold text-lg">处理预约</h2>
+                            </div>
+
+                            <div class="flex-1">
+                                <div class="bg-gray-50 p-4 rounded-xl mb-6 border border-gray-100">
+                                    <div class="grid grid-cols-2 gap-4 mb-2">
+                                        <div>
+                                            <label class="text-xs text-gray-500">患者姓名</label>
+                                            <div class="font-medium">${task.name}</div>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs text-gray-500">联系电话</label>
+                                            <div class="font-medium text-blue-600">${task.phone}</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-500">推荐医生</label>
+                                        <div class="font-medium">${task.doctor}</div>
+                                    </div>
+                                </div>
+
+                                <h3 class="font-bold text-gray-800 mb-3">维度核查</h3>
+                                <form id="crcActionForm">
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">性别 ${isInfoMissing ? '<span class="text-orange-500">(需补充)</span>' : ''}</label>
+                                            <select id="crc-sex" class="w-full bg-white border ${isInfoMissing && !task.sex ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2 text-sm">
+                                                <option value="">请选择</option>
+                                                ${DB.project.dimensions.sex.map(o => `<option value="${o}" ${task.sex === o ? 'selected' : ''}>${o}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">年龄段 ${isInfoMissing ? '<span class="text-orange-500">(需补充)</span>' : ''}</label>
+                                            <select id="crc-age" class="w-full bg-white border ${isInfoMissing && !task.age ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2 text-sm">
+                                                <option value="">请选择</option>
+                                                ${DB.project.dimensions.age.map(o => `<option value="${o}" ${task.age === o ? 'selected' : ''}>${o}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">屈光度 ${isInfoMissing ? '<span class="text-orange-500">(需补充)</span>' : ''}</label>
+                                            <select id="crc-diopter" class="w-full bg-white border ${isInfoMissing && !task.diopter ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2 text-sm">
+                                                <option value="">请选择</option>
+                                                ${DB.project.dimensions.diopter.map(o => `<option value="${o}" ${task.diopter === o ? 'selected' : ''}>${o}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="mt-6 space-y-3">
+                                <button onclick="app.crc.confirmTask('${task.id}')" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-emerald-700 transition flex justify-center items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    确认预约 & 锁定名额
+                                </button>
+                                <button onclick="app.crc.oneClickEnroll('${task.id}')" class="w-full bg-blue-50 text-blue-600 font-bold py-3 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
+                                    一键转入组 (快捷转化)
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                },
+
+                confirmTask: (id) => {
+                    // 获取CRC修改后的数据
+                    const sex = document.getElementById('crc-sex').value;
+                    const age = document.getElementById('crc-age').value;
+                    const diopter = document.getElementById('crc-diopter').value;
+
+                    if (!sex || !age || !diopter) {
+                        alert("请先补全所有维度信息才能确认预约！");
+                        return;
+                    }
+
+                    // 更新数据
+                    const taskIndex = DB.appointments.findIndex(a => a.id === id);
+                    if(taskIndex > -1) {
+                        DB.appointments[taskIndex].status = 'confirmed';
+                        DB.appointments[taskIndex].sex = sex;
+                        DB.appointments[taskIndex].age = age;
+                        DB.appointments[taskIndex].diopter = diopter;
+                        
+                        // 通知医生
+                        DB.notifications.unshift({
+                            title: '预约确认成功',
+                            content: `患者 ${DB.appointments[taskIndex].name} 的预约已被CRC确认。维度已核实。`,
+                            time: utils.formatTime(),
+                            type: 'success'
+                        });
+                        
+                        alert("已确认预约！医生将收到通知。");
+                        app.crc.renderHome();
+                        app.doctor.refreshBadge(); // 医生端亮红点
+                    }
+                },
+                
+                oneClickEnroll: (id) => {
+                     // 简单模拟，逻辑同确认
+                     app.crc.confirmTask(id);
+                     // 实际项目中这里会跳转到CRF录入页
+                }
+            }
+        };
+
+        // 启动应用
+        app.init();
+    </script>
+</body>
+</html>
