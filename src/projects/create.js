@@ -1,3 +1,4 @@
+
 // src/projects/create.js
 
 // Wizard State
@@ -5,6 +6,41 @@ let currentWizStep = 1;
 let WIZ_FACTORS = [];
 let isFissionMode = false;
 let fissionRules = {}; // { groupId: { trigger: 'manual', threshold: 180, strategy: 'simple', subgroups: [{name:'B1', ratio:50}, {name:'B2', ratio:50}] } }
+
+// Blind Config Data
+const BLIND_CONFIG_DATA = [
+    {
+        title: "项目简介",
+        items: [
+            { id: "blind-code", label: "项目码", checked: false },
+            { id: "blind-leader", label: "负责人", checked: false },
+            { id: "blind-doctors", label: "协作医生", checked: false },
+            { id: "blind-crc", label: "CRC和关联中心", checked: false },
+            { id: "blind-criteria", label: "纳入标准和排除标准", checked: false }
+        ]
+    },
+    {
+        title: "分组与维度概览",
+        items: [
+            { id: "blind-group-info", label: "组别信息", checked: true, disabled: true }, // 默认选中且不可取消
+            { id: "blind-enroll-count", label: "入组人数", checked: false },
+            { id: "blind-dimension-info", label: "维度信息", checked: false },
+            { id: "blind-factor-detail", label: "因子详情", checked: false }
+        ]
+    },
+    {
+        title: "受试者详细名录",
+        items: [
+            { id: "blind-screen-id", label: "筛选号", checked: true, disabled: false }, // 默认选中
+            { id: "blind-subject-id", label: "受试者编号", checked: true, disabled: false }, // 默认选中
+            { id: "blind-random-id", label: "随机号", checked: false },
+            { id: "blind-indicator", label: "维度指标", checked: false },
+            { id: "blind-subject-group", label: "分组", checked: true, disabled: true }, // 默认选中且不可取消
+            { id: "blind-tags", label: "维度标签", checked: false },
+            { id: "blind-stage", label: "阶段", checked: false }
+        ]
+    }
+];
 
 // Entry Point
 function openNewProjectWizard() {
@@ -75,6 +111,10 @@ function wizReset() {
   document.getElementById('wiz-np-share-switch').checked = true;
   wizToggleShareSwitch();
   
+  // Reset Blind Switch
+  document.getElementById('wiz-np-blind-switch').checked = false;
+  wizToggleBlindSwitch();
+
   // Default Criteria
   document.getElementById('wiz-inclusion-list').innerHTML = `
     <div class="flex items-center gap-2 animate-fade-in">
@@ -259,16 +299,102 @@ function wizToggleShareSwitch() {
 function wizToggleBlindSwitch() {
     const isChecked = document.getElementById('wiz-np-blind-switch').checked;
     const label = document.getElementById('wiz-np-blind-label');
+    const configBtn = document.getElementById('wiz-blind-config-btn');
     
     if (isChecked) {
         label.innerText = '开启';
         label.classList.remove('text-slate-500');
         label.classList.add('text-brand-600');
+        configBtn.classList.remove('hidden');
     } else {
         label.innerText = '不开启';
         label.classList.remove('text-brand-600');
         label.classList.add('text-slate-500');
+        configBtn.classList.add('hidden');
     }
+}
+
+/* ================= Blind Config Drawer Logic ================= */
+
+function wizOpenBlindConfig() {
+    const drawer = document.getElementById('wiz-blind-drawer');
+    const panel = document.getElementById('wiz-blind-panel');
+    
+    drawer.classList.remove('hidden');
+    wizRenderBlindConfig();
+    
+    setTimeout(() => {
+        panel.classList.remove('translate-x-full');
+    }, 10);
+}
+
+function wizCloseBlindConfig() {
+    const drawer = document.getElementById('wiz-blind-drawer');
+    const panel = document.getElementById('wiz-blind-panel');
+    
+    panel.classList.add('translate-x-full');
+    
+    setTimeout(() => {
+        drawer.classList.add('hidden');
+    }, 300);
+}
+
+function wizRenderBlindConfig() {
+    const container = document.getElementById('wiz-blind-config-list');
+    container.innerHTML = '';
+    
+    BLIND_CONFIG_DATA.forEach(category => {
+        const catDiv = document.createElement('div');
+        catDiv.className = "space-y-3";
+        
+        let itemsHtml = '';
+        category.items.forEach(item => {
+            const isChecked = item.checked ? 'checked' : '';
+            const isDisabled = item.disabled ? 'disabled' : '';
+            const opacity = item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-50';
+            const badge = item.disabled ? '<span class="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-bold ml-2">必选</span>' : '';
+            
+            itemsHtml += `
+                <label class="flex items-center justify-between p-3 border border-slate-200 rounded-lg ${opacity}">
+                    <div class="flex items-center">
+                        <span class="text-sm text-slate-700 font-medium">${item.label}</span>
+                        ${badge}
+                    </div>
+                    <input type="checkbox" data-id="${item.id}" ${isChecked} ${isDisabled} class="rounded text-brand-600 border-slate-300 focus:ring-brand-500 w-5 h-5 transition-colors">
+                </label>
+            `;
+        });
+        
+        catDiv.innerHTML = `
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">${category.title}</h4>
+            <div class="space-y-2">
+                ${itemsHtml}
+            </div>
+        `;
+        
+        container.appendChild(catDiv);
+    });
+}
+
+function wizSaveBlindConfig() {
+    // In a real app, we would collect the checked states and save them
+    // For now, we just close the drawer and show a success message
+    // We can update the BLIND_CONFIG_DATA based on user input for persistence within session
+    
+    BLIND_CONFIG_DATA.forEach(category => {
+        category.items.forEach(item => {
+            // Skip disabled items as they are fixed
+            if (!item.disabled) {
+                const checkbox = document.querySelector(`input[data-id="${item.id}"]`);
+                if (checkbox) {
+                    item.checked = checkbox.checked;
+                }
+            }
+        });
+    });
+    
+    alert("盲态隐藏配置已保存");
+    wizCloseBlindConfig();
 }
 
 function wizToggleCenterSelect() {

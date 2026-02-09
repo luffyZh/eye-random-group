@@ -2823,8 +2823,8 @@
            <!-- Step 1 Content: Basic Info -->
           <div id="wiz-step-content-1" class="space-y-6 animate-fade-in">
               <!-- Row 1: Name, Code, Share -->
-              <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
-                  <div class="md:col-span-3 relative">
+              <div class="grid grid-cols-1 md:grid-cols-8 gap-6">
+                  <div class="md:col-span-4 relative">
                       <label class="block text-sm font-bold text-slate-700 mb-2">项目名称 <span class="text-red-500">*</span></label>
                       <input id="wiz-np-name" type="text" class="w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="例如：儿童近视防控临床研究">
                   </div>
@@ -2845,13 +2845,18 @@
                       <input type="radio" name="wiz-np-share" value="no" class="hidden" checked>
                       <input type="radio" name="wiz-np-share" value="yes" class="hidden">
                   </div>
-                  <div class="md:col-span-1 relative">
-                      <label class="block text-sm font-bold text-slate-700 mb-2">是否双盲</label>
-                      <label class="relative inline-flex items-center cursor-pointer mt-1.5">
-                          <input type="checkbox" id="wiz-np-blind-switch" class="sr-only peer" onchange="wizToggleBlindSwitch()">
-                          <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
-                          <span id="wiz-np-blind-label" class="ml-3 text-sm font-medium text-slate-500">不开启</span>
-                      </label>
+                  <div class="md:col-span-2 relative flex items-end gap-4">
+                      <div>
+                          <label class="block text-sm font-bold text-slate-700 mb-2">是否双盲</label>
+                          <label class="relative inline-flex items-center cursor-pointer mt-1.5">
+                              <input type="checkbox" id="wiz-np-blind-switch" class="sr-only peer" onchange="wizToggleBlindSwitch()">
+                              <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                              <span id="wiz-np-blind-label" class="ml-3 text-sm font-medium text-slate-500">不开启</span>
+                          </label>
+                      </div>
+                      <button id="wiz-blind-config-btn" type="button" onclick="wizOpenBlindConfig()" class="hidden px-3 py-1.5 text-xs font-bold text-brand-600 bg-brand-50 border border-brand-200 rounded-lg hover:bg-brand-100 transition-colors mb-0.5">
+                          <i class="ri-settings-3-line mr-1"></i> 配置盲态隐藏内容
+                      </button>
                   </div>
               </div>
 
@@ -3620,6 +3625,35 @@
            </button>
         </div>
      </div>
+  </div>
+
+  <!-- Blind Config Drawer -->
+  <div id="wiz-blind-drawer" class="fixed inset-0 z-[80] hidden">
+      <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity duration-300" onclick="wizCloseBlindConfig()"></div>
+      <div class="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transition-transform duration-300 translate-x-full flex flex-col transform" id="wiz-blind-panel">
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+              <div>
+                  <h3 class="text-lg font-bold text-slate-800">盲态隐藏配置</h3>
+                  <p class="text-xs text-slate-500 mt-0.5">勾选需要在双盲状态下隐藏的字段</p>
+              </div>
+              <button onclick="wizCloseBlindConfig()" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+                  <i class="ri-close-line text-xl"></i>
+              </button>
+          </div>
+          
+          <div class="flex-1 overflow-y-auto p-6 space-y-6" id="wiz-blind-config-list">
+              <!-- Content rendered by JS -->
+          </div>
+
+          <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+              <button onclick="wizCloseBlindConfig()" class="px-4 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                  取消
+              </button>
+              <button onclick="wizSaveBlindConfig()" class="px-6 py-2 text-sm font-bold text-white bg-brand-600 rounded-lg shadow-lg shadow-brand-500/30 hover:bg-brand-700 transition-colors">
+                  保存配置
+              </button>
+          </div>
+      </div>
   </div>
 
   <script>
