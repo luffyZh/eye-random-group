@@ -1,6 +1,252 @@
 
 // src/projects/detail.js
 
+// Mock Data for Project 1 (Normal)
+const project1Data = [
+  {
+    id: '0001',
+    screenId: 'CHILD_ELESCREEN_0001',
+    randomId: 'R-1001',
+    drugId: 'D-A001',
+    name: '张小明',
+    age: '8岁',
+    indicator: '-1.50D',
+    group: '实验组',
+    groupClass: 'bg-indigo-50 text-indigo-700',
+    tags: ['男', '7-10岁'],
+    status: 'enrolled'
+  },
+  {
+    id: '0002',
+    screenId: '--',
+    randomId: '--',
+    drugId: '--',
+    name: '李雅',
+    age: '6岁',
+    indicator: '-0.50D',
+    group: '未入组',
+    groupClass: 'text-slate-400 bg-slate-100',
+    tags: [],
+    status: 'failed'
+  },
+  {
+    id: '0003',
+    screenId: 'CHILD_ELESCREEN_0003',
+    randomId: 'R-1002',
+    drugId: 'D-A002',
+    name: '王强',
+    age: '11岁',
+    indicator: '-2.75D',
+    group: '实验组',
+    groupClass: 'bg-indigo-50 text-indigo-700',
+    tags: ['男', '10-14岁'],
+    status: 'enrolled'
+  }
+];
+
+// Mock Data for Project 2 (Fission)
+const project2Data = [
+  {
+    id: '0001',
+    screenId: 'CARDIO_0001',
+    randomId: 'R-87766',
+    drugId: 'D-f68823',
+    name: '刘建国',
+    age: '65岁',
+    indicator: 'EF 45%',
+    group: '实验组',
+    groupClass: 'bg-indigo-50 text-indigo-700',
+    tags: ['男', '>60岁'],
+    status: 'enrolled',
+    stage: 'Wait' // Waiting for fission
+  },
+  {
+    id: '0002',
+    screenId: 'CARDIO_0002',
+    randomId: 'R-9902',
+    drugId: 'D-112',
+    name: '王淑芬',
+    age: '58岁',
+    indicator: 'EF 52%',
+    group: '对照组',
+    subGroup: '对照组：裂变子组1',
+    groupClass: 'bg-emerald-50 text-emerald-600',
+    tags: ['女', '50-60岁'],
+    status: 'enrolled',
+    stage: 'Stage 2',
+    isFissioned: true
+  },
+  {
+    id: '0003',
+    screenId: 'CARDIO_0005',
+    randomId: 'R-9908',
+    drugId: 'D-118',
+    name: '赵铁柱',
+    age: '62岁',
+    indicator: 'EF 48%',
+    group: '对照组',
+    subGroup: '对照组：裂变子组1',
+    groupClass: 'bg-emerald-50 text-emerald-600',
+    tags: ['男', '>60岁'],
+    status: 'enrolled',
+    stage: 'Stage 2',
+    isFissioned: true
+  },
+  {
+    id: '0004',
+    screenId: 'CARDIO_0008',
+    randomId: 'R-8897',
+    drugId: 'D-77823',
+    name: '钱大爷',
+    age: '70岁',
+    indicator: 'EF 42%',
+    group: '对照组',
+    groupClass: 'bg-emerald-50 text-emerald-700',
+    tags: ['男', '>60岁'],
+    status: 'enrolled',
+    stage: 'Stage 1'
+  },
+  {
+     id: '0005',
+     screenId: '--',
+     randomId: '--',
+     drugId: '--',
+     name: '孙大妈',
+     age: '68岁',
+     indicator: 'EF 50%',
+     group: '未入组',
+     groupClass: 'text-slate-400 bg-slate-100',
+     tags: [],
+     status: 'failed',
+     stage: '--'
+  }
+];
+
+// Current Project Type State
+let currentProjectType = 'NORMAL'; // 'NORMAL' or 'FISSION'
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    renderTable();
+});
+
+// Function to switch project type (for testing/demo purposes)
+function switchProjectType(type) {
+    currentProjectType = type;
+    renderTable();
+}
+
+function renderTable() {
+    const tableContainer = document.querySelector('#data-table-wrapper table');
+    if (!tableContainer) return;
+
+    const data = currentProjectType === 'NORMAL' ? project1Data : project2Data;
+    const isFission = currentProjectType === 'FISSION';
+
+    // Build Thead
+    let theadHtml = `
+        <thead>
+            <tr class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider">
+                <th class="px-6 py-4 font-semibold">受试者编号</th>
+                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">筛选号</th>
+                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">随机号</th>
+                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">药品号</th>
+                <th class="px-6 py-4 font-semibold">姓名</th>
+                <th class="px-6 py-4 font-semibold">年龄</th>
+                <th class="px-6 py-4 font-semibold">指标</th>
+                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">分组</th>
+                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">维度标签</th>
+                ${isFission ? '<th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">裂变状态</th>' : ''}
+                <th class="px-6 py-4 font-semibold text-right">操作</th>
+            </tr>
+        </thead>
+    `;
+
+    // Build Tbody
+    let tbodyHtml = '<tbody class="divide-y divide-slate-100 text-sm">';
+    
+    data.forEach(row => {
+        let actionButtons = '';
+        
+        if (row.status === 'failed') {
+             actionButtons = `<button class="text-slate-400 hover:text-brand-600 font-medium text-sm">查看详情</button>`;
+        } else if (isFission) {
+            if (row.isFissioned) {
+                actionButtons = `
+                    <div class="flex items-center justify-end gap-3">
+                        <button class="text-slate-300 cursor-not-allowed font-medium text-xs flex items-center gap-1 px-2 py-1" disabled>
+                            <i class="ri-check-line"></i> 已裂变
+                        </button>
+                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
+                    </div>
+                `;
+            } else if (row.stage === 'Stage 1' && row.group === '对照组') {
+                 // Example logic: only control group in stage 1 can fission
+                 actionButtons = `
+                    <div class="flex items-center justify-end gap-3">
+                        <button onclick="openFissionModal('${row.id}', '${row.name}')" class="text-indigo-600 hover:text-indigo-700 font-bold text-xs flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 hover:bg-indigo-100 transition-colors">
+                            <i class="ri-flashlight-fill"></i> 裂变
+                        </button>
+                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
+                    </div>
+                `;
+            } else {
+                 actionButtons = `<button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>`;
+            }
+        } else {
+            actionButtons = `<button class="text-slate-400 hover:text-brand-600 font-medium text-sm">查看详情</button>`;
+        }
+
+        let groupContent = `
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.groupClass}">${row.group}</span>
+        `;
+        if (row.subGroup) {
+             groupContent = `
+                <div class="flex flex-col items-start gap-1">
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 opacity-70 decoration-slate-400">${row.group}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">
+                        <i class="ri-arrow-return-right-line mr-1"></i>${row.subGroup}
+                    </span>
+                </div>
+             `;
+        }
+
+        let tagsContent = row.tags.map(tag => `<span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">${tag}</span>`).join('');
+        
+        let fissionStatusCell = '';
+        if (isFission) {
+            let stageBadge = '--';
+            if (row.stage && row.stage !== '--') {
+                stageBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">${row.stage}</span>`;
+            } else {
+                 stageBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">--</span>`;
+            }
+             fissionStatusCell = `<td class="px-6 py-4 group-[.blind-mode-active]:hidden">${stageBadge}</td>`;
+        }
+
+        tbodyHtml += `
+            <tr class="hover:bg-slate-50/80 transition-colors">
+                <td class="px-6 py-4 font-mono font-medium text-slate-600">${row.id}</td>
+                <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">${row.screenId}</td>
+                <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${row.randomId}</td>
+                <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${row.drugId}</td>
+                <td class="px-6 py-4 font-semibold text-slate-800">${row.name}</td>
+                <td class="px-6 py-4 text-slate-600">${row.age}</td>
+                <td class="px-6 py-4 text-slate-600">${row.indicator}</td>
+                <td class="px-6 py-4 group-[.blind-mode-active]:hidden">${groupContent}</td>
+                <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
+                    <div class="flex gap-1 flex-wrap">${tagsContent || '--'}</div>
+                </td>
+                ${fissionStatusCell}
+                <td class="px-6 py-4 text-right">${actionButtons}</td>
+            </tr>
+        `;
+    });
+
+    tbodyHtml += '</tbody>';
+
+    tableContainer.innerHTML = theadHtml + tbodyHtml;
+}
 
 // 同步排除开关 UI
 document.addEventListener('change', function(e){

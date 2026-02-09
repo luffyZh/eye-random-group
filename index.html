@@ -83,7 +83,7 @@
         <img src="logo.svg" alt="logo" class="w-8 h-8" />
       </div>
       <div class="flex flex-col gap-2 transition-all duration-300 origin-left" id="sidebar-header-content">
-        <h1 class="font-bold text-lg tracking-wide text-slate-800">中央随机化系统</h1>
+        <h1 class="font-bold text-lg tracking-wide text-slate-800">惟翎 · 中央随机化系统</h1>
       </div>
     </div>
 
@@ -556,11 +556,6 @@
                     class="flex justify-center items-center gap-2 px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded border border-emerald-200">
                     进行中
                   </span>
-                  
-                  <!-- 裂变状态 Tag (默认隐藏) -->
-                  <span class="fission-content hidden flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 text-amber-600 text-xs font-bold rounded border border-amber-100">
-                      <i class="ri-flashlight-fill"></i> 裂变阶段: Stage 1
-                  </span>
                 </div>
                 <span
                   class="px-2.5 py-1 bg-brand-50 text-brand-600 text-xs font-bold rounded-md border border-brand-100 tracking-wider">项目码:
@@ -697,9 +692,6 @@
 
             <section class="flex gap-2 items-center">
               <div class="flex gap-2 ml-4">
-                <button onclick="openRandomMedDrawer('random')" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:border-indigo-600 transition-colors h-[40px]">
-                    <i class="ri-list-ordered"></i> 随机号列表
-                </button>
                 <button onclick="openRandomMedDrawer('med')" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:border-indigo-600 transition-colors h-[40px]">
                     <i class="ri-capsule-line"></i> 药品号列表
                 </button>
@@ -1275,321 +1267,7 @@
           </div>
           <div id="data-table-wrapper" class="overflow-x-auto group">
             <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider">
-                  <th class="px-6 py-4 font-semibold">受试者编号</th>
-                  <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">筛选号</th>
-                  <!-- 裂变列前置 -->
-                  <th class="px-6 py-4 font-semibold fission-content hidden group-[.blind-mode-active]:hidden">随机号</th>
-                  <th class="px-6 py-4 font-semibold fission-content hidden">药品号</th>
-                  
-                  <th class="px-6 py-4 font-semibold">姓名</th>
-                  <th class="px-6 py-4 font-semibold">年龄</th>
-                  <th class="px-6 py-4 font-semibold">近视度数</th>
-                  <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">分组</th>
-                  <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">维度标签</th>
-                  <th class="px-6 py-4 font-semibold fission-content hidden group-[.blind-mode-active]:hidden">裂变状态</th>
-                  <th class="px-6 py-4 font-semibold text-right">操作</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 text-sm">
-                <!-- Row 1 (Normal) -->
-                <tr class="hover:bg-slate-50/80 transition-colors normal-content">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0001</td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">CHILD_ELESCREEN_0001</td>
-                  <td class="px-6 py-4 font-semibold text-slate-800">张小明</td>
-                  <td class="px-6 py-4 text-slate-600">8岁</td>
-                  <td class="px-6 py-4 text-slate-600">-1.50D</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">实验组</span>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">男</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">7-10岁</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">查看详情</button>
-                  </td>
-                </tr>
-
-                <!-- Fission Row 1: Stage 1 (Waiting) -->
-                <tr class="hover:bg-slate-50/80 transition-colors fission-content hidden">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0001</td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">CARDIO_0001</td>
-                  <!-- Fission Columns -->
-                  <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">R-87766</td>
-                  <td class="px-6 py-4 font-mono text-slate-600">D-f68823</td>
-                  
-                  <td class="px-6 py-4 font-semibold text-slate-800">刘建国</td>
-                  <td class="px-6 py-4 text-slate-600">65岁</td>
-                  <td class="px-6 py-4 text-slate-600">EF 45%</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">实验组</span>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">男</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">>60岁</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">
-                        --
-                      </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex items-center justify-end gap-3">
-                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- Fission Row 2: Stage 2 (Fissioned -> 强化干预组) -->
-                <tr class="hover:bg-slate-50/80 transition-colors fission-content hidden">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0002</td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">CARDIO_0002</td>
-                  <!-- Fission Columns -->
-                  <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">R-9902</td>
-                  <td class="px-6 py-4 font-mono text-slate-600">D-112</td>
-
-                  <td class="px-6 py-4 font-semibold text-slate-800">王淑芬</td>
-                  <td class="px-6 py-4 text-slate-600">58岁</td>
-                  <td class="px-6 py-4 text-slate-600">EF 52%</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex flex-col items-start gap-1">
-                        <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 opacity-70 decoration-slate-400">对照组</span>
-                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">
-                            <i class="ri-arrow-return-right-line mr-1"></i>对照组：裂变子组1
-                        </span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">女</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">50-60岁</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">
-                        Stage 2
-                      </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex items-center justify-end gap-3">
-                        <button class="text-slate-300 cursor-not-allowed font-medium text-xs flex items-center gap-1 px-2 py-1" disabled>
-                            <i class="ri-check-line"></i> 已裂变
-                        </button>
-                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- Fission Row 3: Stage 2 (Fissioned -> 常规随访组) -->
-                <tr class="hover:bg-slate-50/80 transition-colors fission-content hidden">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0003</td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">CARDIO_0005</td>
-                  <!-- Fission Columns -->
-                  <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">R-9908</td>
-                  <td class="px-6 py-4 font-mono text-slate-600">D-118</td>
-                  
-                  <td class="px-6 py-4 font-semibold text-slate-800">赵铁柱</td>
-                  <td class="px-6 py-4 text-slate-600">62岁</td>
-                  <td class="px-6 py-4 text-slate-600">EF 48%</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex flex-col items-start gap-1">
-                        <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 opacity-70 decoration-slate-400">对照组</span>
-                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 border border-emerald-600">
-                            <i class="ri-arrow-return-right-line mr-1"></i>对照组：裂变子组1
-                        </span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">男</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">>60岁</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">
-                        Stage 2
-                      </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex items-center justify-end gap-3">
-                        <button class="text-slate-300 cursor-not-allowed font-medium text-xs flex items-center gap-1 px-2 py-1" disabled>
-                            <i class="ri-check-line"></i> 已裂变
-                        </button>
-                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- Row 2 (Normal) -->
-                <tr class="hover:bg-slate-50/80 transition-colors normal-content">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0002</td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">--</td>
-                  <td class="px-6 py-4 font-semibold text-slate-800">李雅</td>
-                  <td class="px-6 py-4 text-slate-600">6岁</td>
-                  <td class="px-6 py-4 text-slate-600">-0.50D</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-slate-400 bg-slate-100">未入组</span>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">--</div>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">查看详情</button>
-                  </td>
-                </tr>
-
-                <!-- Fission Row 4: Stage 1 (Waiting - New Example) -->
-                <tr class="hover:bg-slate-50/80 transition-colors fission-content hidden">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0004</td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">CARDIO_0008</td>
-                  <!-- Fission Columns -->
-                  <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">R-8897</td>
-                  <td class="px-6 py-4 font-mono text-slate-600">D-77823</td>
-                  
-                  <td class="px-6 py-4 font-semibold text-slate-800">钱大爷</td>
-                  <td class="px-6 py-4 text-slate-600">70岁</td>
-                  <td class="px-6 py-4 text-slate-600">EF 42%</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700">对照组</span>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">男</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">>60岁</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">
-                        Stage 1
-                      </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex items-center justify-end gap-3">
-                        <button onclick="openFissionModal('0004', '钱大爷')" class="text-indigo-600 hover:text-indigo-700 font-bold text-xs flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 hover:bg-indigo-100 transition-colors">
-                            <i class="ri-flashlight-fill"></i> 裂变
-                        </button>
-                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- Fission Row 5: Stage 2 (Fissioned - New Example) -->
-                <tr class="hover:bg-slate-50/80 transition-colors fission-content hidden">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">0005</td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">CARDIO_0012</td>
-                  <!-- Fission Columns -->
-                  <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">R-9915</td>
-                  <td class="px-6 py-4 font-mono text-slate-600">D-125</td>
-                  
-                  <td class="px-6 py-4 font-semibold text-slate-800">孙大妈</td>
-                  <td class="px-6 py-4 text-slate-600">68岁</td>
-                  <td class="px-6 py-4 text-slate-600">EF 50%</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex flex-col items-start gap-1">
-                        <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 opacity-70 decoration-slate-400">对照组</span>
-                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">
-                            <i class="ri-arrow-return-right-line mr-1"></i>对照组：裂变子组2
-                        </span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">女</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">>60岁</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">
-                        Stage 2
-                      </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex items-center justify-end gap-3">
-                        <button class="text-slate-300 cursor-not-allowed font-medium text-xs flex items-center gap-1 px-2 py-1" disabled>
-                            <i class="ri-check-line"></i> 已裂变
-                        </button>
-                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
-                    </div>
-                  </td>
-                </tr>
-                <!-- Row 3 -->
-                <tr class="hover:bg-slate-50/80 transition-colors">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    0003
-                  </td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">
-                    CARDIO_0002
-                  </td>
-                  <!-- Fission Columns -->
-                  <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">R-8897</td>
-                  <td class="px-6 py-4 font-mono text-slate-600">D-77823</td>
-                  <td class="px-6 py-4 font-semibold text-slate-800">王强</td>
-                  <td class="px-6 py-4 text-slate-600">11岁</td>
-                  <td class="px-6 py-4 text-slate-600">-2.75D</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <span
-                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">实验组</span>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">男</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">10-14岁</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <span
-                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-50 text-slate-700">--</span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex items-center justify-end gap-3">
-                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
-                    </div>
-                  </td>
-                </tr>
-                <!-- Row 4 -->
-                <tr class="hover:bg-slate-50/80 transition-colors">
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600">
-                    0004
-                  </td>
-                  <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">
-                    CARDIO_0003
-                  </td>
-                  <!-- Fission Columns -->
-                  <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">R-8897</td>
-                  <td class="px-6 py-4 font-mono text-slate-600">D-77823</td>
-                  <td class="px-6 py-4 font-semibold text-slate-800">王芳</td>
-                  <td class="px-6 py-4 text-slate-600">9岁</td>
-                  <td class="px-6 py-4 text-slate-600">-1.25D</td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <span
-                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700">对照组</span>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">男</span>
-                      <span class="px-1.5 py-0.5 rounded border border-slate-200 text-xs text-slate-500">10-14岁</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <span
-                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-50 text-slate-700">Stage 1</span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex items-center justify-end gap-3">
-                        <button onclick="openFissionModal('R-8879', '王芳')" class="text-indigo-600 hover:text-indigo-700 font-bold text-xs flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 hover:bg-indigo-100 transition-colors">
-                            <i class="ri-flashlight-fill"></i> 裂变
-                        </button>
-                        <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
+              <!-- JS Rendered -->
             </table>
             <div class="px-6 py-4 border-t border-slate-100 flex justify-center">
               <button class="text-sm text-slate-500 hover:text-brand-600">
@@ -2813,7 +2491,6 @@
                           </div>
                           <textarea id="desc-history" rows="2" class="hidden w-full rounded-lg border-slate-300 border px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500" placeholder="如有哮喘病史，至今依然存在。"></textarea>
                         </div>
-
                         <!-- 过敏史 -->
                         <div>
                           <label class="block text-sm font-medium text-slate-700 mb-2">过敏史</label>
