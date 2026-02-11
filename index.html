@@ -525,11 +525,17 @@
             class="flex items-center text-sm text-slate-500 hover:text-brand-600 transition-colors mb-2">
             <i class="ri-arrow-left-line mr-1"></i> 返回项目列表
           </button>
-           <!-- 点击触发 openEnrollDrawer() 打开抽屉 -->
-          <button onclick="openEnrollDrawer()"
-            class="flex px-4 py-2 text-xs justify-center font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-lg shadow-brand-500/30 flex items-center transition-all transform hover:-translate-y-0.5 active:translate-y-0">
-            <i class="ri-user-add-line mr-1.5 text-base"></i> 录入受试者
-          </button>
+          <section class="flex gap-2">
+            <!-- 点击触发 openEnrollDrawer() 打开抽屉 -->
+            <button onclick="toggleBlindMode()" id="blind-toggle-btn" class="flex items-center text-xs text-indigo-600 bg-white border border-indigo-600 rounded-lg px-2 py-1">
+              <i class="ri-eye-line text-lg mr-1"></i>
+              <span>盲态切换</span>
+            </button>
+            <button onclick="openEnrollDrawer()"
+              class="flex px-4 py-2 text-xs justify-center font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-lg shadow-brand-500/30 flex items-center transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+              <i class="ri-user-add-line mr-1.5 text-base"></i> 录入受试者
+            </button>
+          </section>
         </div>
         <!-- 顶部：基本信息卡片 -->
         <div
@@ -644,8 +650,8 @@
                                  <i class="ri-flashlight-line"></i>
                              </span>
                              <div>
-                                 <p class="text-sm font-bold text-slate-700">自动触发</p>
-                                 <p class="text-xs text-slate-500">条件: 随访周期满 3 个月 且 心功能指标 < 正常值</p>
+                                 <p class="text-sm font-bold text-slate-700">主动触发</p>
+                                 <p class="text-xs text-slate-500">条件: 入组周期≥90天; 心功能指标 < 正常值</p>
                              </div>
                          </div>
                      </div>
@@ -712,7 +718,7 @@
                   <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
                     <i class="ri-flask-line text-xl"></i>
                   </div>
-                  <div>
+                  <div id="exp-group-info">
                     <h4 class="font-bold text-slate-800">实验组 (高频)</h4>
                     <p class="text-xs text-slate-500">0.04%阿托品滴眼液</p>
                   </div>
@@ -823,7 +829,7 @@
                   <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
                     <i class="ri-shield-check-line text-xl"></i>
                   </div>
-                  <div>
+                  <div id="ctrl-group-info">
                     <h4 class="font-bold text-slate-800">对照组 (中频)</h4>
                     <p class="text-xs text-slate-500">0.02%阿托品滴眼液</p>
                   </div>
@@ -1255,10 +1261,6 @@
           <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
             <h3 class="text-lg font-bold text-slate-800">受试者详细名录</h3>
             <div class="flex gap-2 items-center">
-              <button onclick="toggleBlindMode()" id="blind-toggle-btn" class="flex items-center text-xs text-slate-500 hover:text-indigo-600 transition-colors mr-2">
-                <i class="ri-eye-line text-lg mr-1"></i>
-                <span>盲态切换</span>
-              </button>
               <button
                 class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">
                 <i class="ri-download-line mr-1"></i> 导出数据
@@ -3124,18 +3126,27 @@
                                            </label>
                                            <div class="bg-slate-100 p-1 rounded-lg flex mb-3" id="wiz-trigger-group">
                                                <button type="button" onclick="wizSetTriggerMode('manual')" id="btn-trigger-manual" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all">主动触发</button>
-                                               <button type="button" onclick="wizSetTriggerMode('auto')" id="btn-trigger-auto" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all">自动触发</button>
+                                               <button type="button" onclick="alert('暂不支持');" id="btn-trigger-auto" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all disabled:bg-slate-200 disabled:text-slate-400">自动触发</button>
+                                               <!-- <button type="button" onclick="wizSetTriggerMode('auto')" id="btn-trigger-auto" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all disabled:bg-slate-200 disabled:text-slate-400">自动触发</button> -->
                                            </div>
                                            <div id="wiz-trigger-hint" class="bg-indigo-50 text-indigo-700 text-xs p-2 rounded border border-indigo-100 leading-relaxed mb-3">
-                                               <i class="ri-information-line mr-1"></i> 当受试者符合裂变规则后，由工作人员主动点击裂变。
+                                               <i class="ri-information-line mr-1"></i> 受试者符合裂变规则后，由工作人员主动点击裂变。
                                            </div>
                                            <div>
+                                               <label class="block text-xs font-bold text-slate-500 mb-1.5">
+                                                入组时间阈值（满足入组天数才允许裂变）
+                                              </label>
+                                               <div class="relative">
+                                                   <input type="number" id="wiz-trigger-days-input" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pr-12" value="0">
+                                                   <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">天</span>
+                                               </div>
+                                           </div>
+                                           <div id="wiz-trigger-manual-container">
                                                <label class="block text-xs font-bold text-slate-500 mb-1.5" id="wiz-trigger-label">医学指标要求 (备注)</label>
                                                <div class="relative">
                                                    <input type="text" id="wiz-trigger-input" class="w-full text-sm border-slate-200 rounded-lg focus:border-brand-500 focus:ring-1 focus:ring-brand-500" value="视功能指标大于 0.8">
                                                    <span id="wiz-trigger-suffix" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">天</span>
                                                </div>
-                                               <p class="text-[10px] text-slate-400 mt-1" id="wiz-trigger-desc">需医生在受试者详情页手动点击“裂变”按钮</p>
                                            </div>
                                        </div>
 
@@ -3148,6 +3159,7 @@
                                            <div class="bg-slate-100 p-1 rounded-lg flex mb-3" id="wiz-balance-strategy-group">
                                                <button type="button" onclick="wizSetBalanceStrategy('simple')" id="btn-balance-simple" class="flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all">简单随机</button>
                                                <button type="button" onclick="wizSetBalanceStrategy('inherit')" id="btn-balance-inherit" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all">维度平衡</button>
+                                               <button type="button" onclick="wizSetBalanceStrategy('manual')" id="btn-balance-manual" class="flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all">主动分配</button>
                                            </div>
                                            
                                            <div id="wiz-balance-hint" class="bg-blue-50 text-blue-700 text-xs p-2 rounded border border-blue-100 leading-relaxed">

@@ -4,8 +4,8 @@
 // Mock Data for Project 1 (Normal)
 const project1Data = [
   {
-    id: '0001',
-    screenId: 'CHILD_ELESCREEN_0001',
+    id: 'CHILD_ELESCREEN_0001',
+    screenId: '0001',
     randomId: 'R-1001',
     drugId: 'D-A001',
     name: '张小明',
@@ -17,8 +17,8 @@ const project1Data = [
     status: 'enrolled'
   },
   {
-    id: '0002',
-    screenId: '--',
+    id: '--',
+    screenId: '0002',
     randomId: '--',
     drugId: '--',
     name: '李雅',
@@ -30,8 +30,8 @@ const project1Data = [
     status: 'failed'
   },
   {
-    id: '0003',
-    screenId: 'CHILD_ELESCREEN_0003',
+    id: 'CHILD_ELESCREEN_0003',
+    screenId: '0003',
     randomId: 'R-1002',
     drugId: 'D-A002',
     name: '王强',
@@ -47,8 +47,8 @@ const project1Data = [
 // Mock Data for Project 2 (Fission)
 const project2Data = [
   {
-    id: '0001',
-    screenId: 'CARDIO_0001',
+    id: 'CARDIO_0001',
+    screenId: '0001',
     randomId: 'R-87766',
     drugId: 'D-f68823',
     name: '刘建国',
@@ -61,8 +61,8 @@ const project2Data = [
     stage: 'Wait' // Waiting for fission
   },
   {
-    id: '0002',
-    screenId: 'CARDIO_0002',
+    id: 'CARDIO_0002',
+    screenId: '0002',
     randomId: 'R-9902',
     drugId: 'D-112',
     name: '王淑芬',
@@ -77,8 +77,8 @@ const project2Data = [
     isFissioned: true
   },
   {
-    id: '0003',
-    screenId: 'CARDIO_0005',
+    id: 'CARDIO_0005',
+    screenId: '0003',
     randomId: 'R-9908',
     drugId: 'D-118',
     name: '赵铁柱',
@@ -93,8 +93,8 @@ const project2Data = [
     isFissioned: true
   },
   {
-    id: '0004',
-    screenId: 'CARDIO_0008',
+    id: 'CARDIO_0008',
+    screenId: '0004',
     randomId: 'R-8897',
     drugId: 'D-77823',
     name: '钱大爷',
@@ -107,8 +107,8 @@ const project2Data = [
     stage: 'Stage 1'
   },
   {
-     id: '0005',
-     screenId: '--',
+     id: '--',
+     screenId: '0005',
      randomId: '--',
      drugId: '--',
      name: '孙大妈',
@@ -147,17 +147,17 @@ function renderTable() {
     let theadHtml = `
         <thead>
             <tr class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider">
-                <th class="px-6 py-4 font-semibold">受试者编号</th>
-                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">筛选号</th>
-                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">随机号</th>
-                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">药品号</th>
-                <th class="px-6 py-4 font-semibold">姓名</th>
-                <th class="px-6 py-4 font-semibold">年龄</th>
-                <th class="px-6 py-4 font-semibold">指标</th>
-                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">分组</th>
-                <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">维度标签</th>
-                ${isFission ? '<th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">裂变状态</th>' : ''}
-                <th class="px-6 py-4 font-semibold text-right">操作</th>
+              <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">筛选号</th>
+              <th class="px-6 py-4 font-semibold">受试者编号</th>
+              <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">随机号</th>
+              <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">药品号</th>
+              <th class="px-6 py-4 font-semibold">姓名</th>
+              <th class="px-6 py-4 font-semibold">年龄</th>
+              <th class="px-6 py-4 font-semibold">指标</th>
+              <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">分组</th>
+              <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">维度标签</th>
+              ${isFission ? '<th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">裂变状态</th>' : ''}
+              <th class="px-6 py-4 font-semibold text-right">操作</th>
             </tr>
         </thead>
     `;
@@ -226,19 +226,19 @@ function renderTable() {
 
         tbodyHtml += `
             <tr class="hover:bg-slate-50/80 transition-colors">
-                <td class="px-6 py-4 font-mono font-medium text-slate-600">${row.id}</td>
-                <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">${row.screenId}</td>
-                <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${row.randomId}</td>
-                <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${row.drugId}</td>
-                <td class="px-6 py-4 font-semibold text-slate-800">${row.name}</td>
-                <td class="px-6 py-4 text-slate-600">${row.age}</td>
-                <td class="px-6 py-4 text-slate-600">${row.indicator}</td>
-                <td class="px-6 py-4 group-[.blind-mode-active]:hidden">${groupContent}</td>
-                <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
-                    <div class="flex gap-1 flex-wrap">${tagsContent || '--'}</div>
-                </td>
-                ${fissionStatusCell}
-                <td class="px-6 py-4 text-right">${actionButtons}</td>
+              <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">${row.screenId}</td>
+              <td class="px-6 py-4 font-mono font-medium text-slate-600">${row.id}</td>
+              <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${row.randomId}</td>
+              <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${row.drugId}</td>
+              <td class="px-6 py-4 font-semibold text-slate-800">${row.name}</td>
+              <td class="px-6 py-4 text-slate-600">${row.age}</td>
+              <td class="px-6 py-4 text-slate-600">${row.indicator}</td>
+              <td class="px-6 py-4 group-[.blind-mode-active]:hidden">${groupContent}</td>
+              <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
+                  <div class="flex gap-1 flex-wrap">${tagsContent || '--'}</div>
+              </td>
+              ${fissionStatusCell}
+              <td class="px-6 py-4 text-right">${actionButtons}</td>
             </tr>
         `;
     });
@@ -799,17 +799,67 @@ function toggleBlindMode() {
     const btnIcon = document.querySelector('#blind-toggle-btn i');
     const btnText = document.querySelector('#blind-toggle-btn span');
     
+    // Toggle Group/Drug Info in Overview Panel
+    const overviewContainer = document.querySelector('#view-project-detail .bg-white.rounded-2xl.px-10.py-12'); // Select the top card
+    
+    // Toggle Group Info in Group Grid
+    const expInfo = document.getElementById('exp-group-info');
+    const ctrlInfo = document.getElementById('ctrl-group-info');
+
     if (isBlindMode) {
-        // Enable Blind Mode (Hide columns)
+        // Enable Blind Mode
+        
+        // 1. Table Columns
         wrapper.classList.add('blind-mode-active');
+        
+        // 2. Button State
         btnIcon.classList.remove('ri-eye-line');
         btnIcon.classList.add('ri-eye-off-line');
         btnText.innerText = "退出盲态";
+
+        // 3. Hide Info in Overview
+        if (overviewContainer) {
+            overviewContainer.classList.add('blind-mode-active');
+        }
+
+        // 4. Mask Group Info
+        if (expInfo) {
+            expInfo.setAttribute('data-original', expInfo.innerHTML);
+            expInfo.innerHTML = `
+                <h4 class="font-bold text-slate-800">***</h4>
+                <p class="text-xs text-slate-500">***</p>
+            `;
+        }
+        if (ctrlInfo) {
+            ctrlInfo.setAttribute('data-original', ctrlInfo.innerHTML);
+            ctrlInfo.innerHTML = `
+                <h4 class="font-bold text-slate-800">***</h4>
+                <p class="text-xs text-slate-500">***</p>
+            `;
+        }
+
     } else {
-        // Disable Blind Mode (Show columns)
+        // Disable Blind Mode
+        
+        // 1. Table Columns
         wrapper.classList.remove('blind-mode-active');
+        
+        // 2. Button State
         btnIcon.classList.remove('ri-eye-off-line');
         btnIcon.classList.add('ri-eye-line');
         btnText.innerText = "盲态切换";
+
+        // 3. Show Info in Overview
+        if (overviewContainer) {
+            overviewContainer.classList.remove('blind-mode-active');
+        }
+
+        // 4. Restore Group Info
+        if (expInfo && expInfo.hasAttribute('data-original')) {
+            expInfo.innerHTML = expInfo.getAttribute('data-original');
+        }
+        if (ctrlInfo && ctrlInfo.hasAttribute('data-original')) {
+            ctrlInfo.innerHTML = ctrlInfo.getAttribute('data-original');
+        }
     }
 }

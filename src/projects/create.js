@@ -1074,6 +1074,7 @@ function wizOpenFissionConfig(groupId, groupName) {
     const rule = fissionRules[groupId] || {
         trigger: 'manual',
         threshold: '视功能指标大于 0.8',
+        days: 180, // Default days
         strategy: 'simple',
         subgroups: [
             { name: '裂变1组', count: Math.floor(parseInt(document.getElementById('wiz-total-count').value) / 4) || 25 },
@@ -1081,19 +1082,21 @@ function wizOpenFissionConfig(groupId, groupName) {
         ]
     };
 
+    // Data Migration for old structure where threshold was used for days in auto mode
+    if (rule.trigger === 'auto' && !rule.days && !isNaN(rule.threshold)) {
+        rule.days = rule.threshold;
+        rule.threshold = ''; // Clear threshold as it was used for days
+    }
+
     // Populate Form 
     // Set Balance Strategy
     wizSetBalanceStrategy(rule.strategy || 'simple');
-    // Set Trigger Mode
+    // Set Trigger Mode (this will toggle UI elements)
     wizSetTriggerMode(rule.trigger || 'manual');
     
-    // Set Threshold Value after Mode Switch
-    // If it's a new rule and auto, set default 180
-    if (rule.trigger === 'auto' && !rule.threshold) {
-         document.getElementById('wiz-trigger-input').value = 180;
-    } else {
-         document.getElementById('wiz-trigger-input').value = rule.threshold || (rule.trigger === 'auto' ? 180 : '视功能指标大于 0.8');
-    }
+    // Set Values
+    document.getElementById('wiz-trigger-days-input').value = rule.days || 0;
+    document.getElementById('wiz-trigger-input').value = rule.threshold || '视功能指标大于 0.8';
 
     // Render Subgroups
     wizRenderSubgroups(rule.subgroups);
@@ -1187,11 +1190,9 @@ function wizSetTriggerMode(mode) {
     const hint = document.getElementById('wiz-trigger-hint');
     const group = document.getElementById('wiz-trigger-group');
     
-    // Input elements
-    const label = document.getElementById('wiz-trigger-label');
-    const input = document.getElementById('wiz-trigger-input');
-    const desc = document.getElementById('wiz-trigger-desc');
-    const suffix = document.getElementById('wiz-trigger-suffix');
+    // UI Containers
+    const manualContainer = document.getElementById('wiz-trigger-manual-container');
+    const daysDesc = document.getElementById('wiz-trigger-days-desc');
     
     // Store mode
     group.setAttribute('data-value', mode);
@@ -1203,13 +1204,9 @@ function wizSetTriggerMode(mode) {
         hint.innerHTML = '<i class="ri-information-line mr-1"></i> 当受试者符合裂变规则后，由工作人员主动点击裂变。';
         hint.className = "bg-indigo-50 text-indigo-700 text-xs p-2 rounded border border-indigo-100 leading-relaxed mb-3";
         
-        // Update Input for Manual
-        label.innerText = "医学指标要求 (备注)";
-        input.value = "视功能指标大于 0.8";
-        input.type = "text";
-        input.classList.remove('pr-12'); // Remove padding for suffix
-        desc.innerText = "需医生在受试者详情页手动点击“裂变”按钮";
-        suffix.classList.add('hidden');
+        // Manual Mode: Show both Days and Manual Description
+        manualContainer.classList.remove('hidden');
+        daysDesc.innerText = "受试者入组满此天数后，才允许进行裂变";
         
     } else {
         btnManual.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
@@ -1218,33 +1215,39 @@ function wizSetTriggerMode(mode) {
         hint.innerHTML = '<i class="ri-time-line mr-1"></i> 当受试者入组符合一定时间后，自动触发裂变逻辑。';
         hint.className = "bg-amber-50 text-amber-700 text-xs p-2 rounded border border-amber-100 leading-relaxed mb-3";
         
-        // Update Input for Auto
-        label.innerText = "入组时间阈值";
-        input.value = "180";
-        input.type = "number";
-        input.classList.add('pr-12'); // Add padding for suffix
-        desc.innerText = "受试者入组满此天数后，系统将自动执行裂变分组";
-        suffix.classList.remove('hidden');
+        // Auto Mode: Show Days only (Hide Manual Description)
+        manualContainer.classList.add('hidden');
+        daysDesc.innerText = "受试者入组满此天数后，系统将自动执行裂变分组";
     }
 }
 
 function wizSetBalanceStrategy(strategy) {
     const btnSimple = document.getElementById('btn-balance-simple');
     const btnInherit = document.getElementById('btn-balance-inherit');
+    const btnManual = document.getElementById('btn-balance-manual');
     const hint = document.getElementById('wiz-balance-hint');
     
     // Store current strategy in a data attribute on the container for save logic
     const container = document.getElementById('wiz-balance-strategy-group');
     container.setAttribute('data-value', strategy);
 
+    // Reset all buttons to inactive state
+    const inactiveClass = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
+    const activeClass = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
+    
+    btnSimple.className = inactiveClass;
+    btnInherit.className = inactiveClass;
+    btnManual.className = inactiveClass;
+
     if (strategy === 'simple') {
-        btnSimple.className = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
-        btnInherit.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
-        hint.innerHTML = '<i class="ri-information-line mr-1"></i> 进行简单随机算法分配，不保证原组维度的平衡。';
-    } else {
-        btnSimple.className = "flex-1 py-1.5 text-xs font-bold rounded text-slate-500 hover:text-slate-700 transition-all";
-        btnInherit.className = "flex-1 py-1.5 text-xs font-bold rounded shadow-sm bg-white text-slate-800 transition-all";
+        btnSimple.className = activeClass;
+        hint.innerHTML = '<i class="ri-information-line mr-1"></i> 简单随机算法分配，不保证原组维度的平衡。';
+    } else if (strategy === 'inherit') {
+        btnInherit.className = activeClass;
         hint.innerHTML = '<i class="ri-information-line mr-1"></i> 系统将在裂变子组间自动平衡原组的维度。';
+    } else if (strategy === 'manual') {
+        btnManual.className = activeClass;
+        hint.innerHTML = '<i class="ri-information-line mr-1"></i> 由工作人员主动进行组别分配。';
     }
 }
 
@@ -1253,6 +1256,7 @@ function wizSaveFissionRule(groupId, groupName) {
     const strategy = document.getElementById('wiz-balance-strategy-group').getAttribute('data-value') || 'simple';
     const trigger = document.getElementById('wiz-trigger-group').getAttribute('data-value') || 'manual';
     const thresholdVal = document.getElementById('wiz-trigger-input').value;
+    const daysVal = document.getElementById('wiz-trigger-days-input').value;
     
     // Get Subgroups Data
     const subgroups = wizCollectSubgroupsData();
@@ -1261,6 +1265,7 @@ function wizSaveFissionRule(groupId, groupName) {
     fissionRules[groupId] = {
         trigger: trigger,
         threshold: thresholdVal,
+        days: daysVal,
         strategy: strategy,
         subgroups: subgroups
     };
