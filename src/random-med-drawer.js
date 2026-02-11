@@ -1,6 +1,8 @@
 
 /* ================= 随机号/药品号清单 Drawer Logic ================= */
 
+let currentMedStage = 1;
+
 function openRandomMedDrawer(type) {
   const drawer = document.getElementById('random-med-drawer');
   const backdrop = document.getElementById('random-med-backdrop');
@@ -10,6 +12,33 @@ function openRandomMedDrawer(type) {
 
   // Update Title
   title.innerText = type === 'random' ? '随机号清单' : '药品号清单';
+  
+  // Check Project Type for Fission features
+  const isFission = (typeof window.currentProjectType !== 'undefined' && window.currentProjectType === 'FISSION');
+  
+  // Inject Toggle if Fission Project and Type is Med
+  const headerContainer = title.parentElement;
+  let toggleContainer = document.getElementById('med-stage-toggle');
+  
+  if (type === 'med' && isFission) {
+      if (!toggleContainer) {
+          toggleContainer = document.createElement('div');
+          toggleContainer.id = 'med-stage-toggle';
+          toggleContainer.className = "mt-2 flex bg-slate-100 p-1 rounded-lg w-fit";
+          toggleContainer.innerHTML = `
+            <button onclick="switchMedStage(1)" id="btn-med-stage-1" class="px-3 py-1 text-xs font-bold rounded-md shadow-sm bg-white text-indigo-600 transition-all">裂变前 (Stage 1)</button>
+            <button onclick="switchMedStage(2)" id="btn-med-stage-2" class="px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all">裂变后 (Stage 2)</button>
+          `;
+          headerContainer.appendChild(toggleContainer);
+      } else {
+          toggleContainer.classList.remove('hidden');
+      }
+      // Reset to Stage 1
+      switchMedStage(1); 
+  } else {
+      if (toggleContainer) toggleContainer.classList.add('hidden');
+      currentMedStage = 1; // Default
+  }
 
   // Generate and Render Content
   renderRandomMedList(type, content);
@@ -20,6 +49,26 @@ function openRandomMedDrawer(type) {
     backdrop.classList.remove('opacity-0');
     panel.classList.remove('translate-x-full');
   }, 10);
+}
+
+function switchMedStage(stage) {
+    currentMedStage = stage;
+    
+    // Update UI
+    const btn1 = document.getElementById('btn-med-stage-1');
+    const btn2 = document.getElementById('btn-med-stage-2');
+    
+    if (stage === 1) {
+        btn1.className = "px-3 py-1 text-xs font-bold rounded-md shadow-sm bg-white text-indigo-600 transition-all";
+        btn2.className = "px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all";
+    } else {
+        btn1.className = "px-3 py-1 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all";
+        btn2.className = "px-3 py-1 text-xs font-bold rounded-md shadow-sm bg-white text-indigo-600 transition-all";
+    }
+    
+    // Re-render list
+    const content = document.getElementById('random-med-content');
+    renderRandomMedList('med', content);
 }
 
 function closeRandomMedDrawer() {
@@ -40,6 +89,8 @@ function renderRandomMedList(type, container) {
   // Assuming 2 Groups: Experiment (24/50 used), Control (26/50 used)
   // Total 100 items pre-generated
 
+  const isStage2 = (type === 'med' && currentMedStage === 2);
+  
   const groups = [
     {
       id: 'exp',
@@ -47,21 +98,42 @@ function renderRandomMedList(type, container) {
       color: 'indigo',
       total: 50,
       used: 24,
-      prefix: type === 'random' ? 'R-' : 'D-', // R for Random, D for Drug
-      start: 1001
+      prefix: type === 'random' ? 'R-' : (isStage2 ? 'D-S2-' : 'D-'), // R for Random, D for Drug
+      start: isStage2 ? 8001 : 1001 // Different range for Stage 2
     },
-    {
-      id: 'ctrl',
-      name: '对照组 (低频)',
-      color: 'emerald',
-      total: 50,
-      used: 26,
-      prefix: type === 'random' ? 'R-' : 'D-',
-      start: 2001
-    }
+    ...(isStage2 ? [
+        {
+          id: 'ctrl_f1',
+          name: '对照组裂变1组',
+          color: 'emerald',
+          total: 25,
+          used: 10,
+          prefix: type === 'random' ? 'R-' : 'D-S2-',
+          start: 9001
+        },
+        {
+          id: 'ctrl_f2',
+          name: '对照组裂变2组',
+          color: 'emerald',
+          total: 25,
+          used: 16,
+          prefix: type === 'random' ? 'R-' : 'D-S2-',
+          start: 9026
+        }
+    ] : [
+        {
+          id: 'ctrl',
+          name: '对照组 (低频)',
+          color: 'emerald',
+          total: 50,
+          used: 26,
+          prefix: type === 'random' ? 'R-' : 'D-',
+          start: 2001
+        }
+    ])
   ];
 
-  let html = `<div class="space-y-8">`;
+  let html = `<div class="space-y-8 animate-fade-in">`;
 
   groups.forEach(g => {
     // Generate items for this group
@@ -107,6 +179,7 @@ function exportListToCSV() {
   const title = document.getElementById('random-med-title').innerText;
   const isRandom = title.includes('随机号');
   const type = isRandom ? 'random' : 'med';
+  const isStage2 = (type === 'med' && currentMedStage === 2);
   
   // Reuse generation logic or get from DOM? 
   // Better to reuse generation logic for cleaner data.
@@ -116,16 +189,33 @@ function exportListToCSV() {
       id: 'exp',
       name: '实验组 (高频)',
       total: 50,
-      prefix: type === 'random' ? 'R-' : 'D-',
-      start: 1001
+      prefix: type === 'random' ? 'R-' : (isStage2 ? 'D-S2-' : 'D-'),
+      start: isStage2 ? 8001 : 1001
     },
-    {
-      id: 'ctrl',
-      name: '对照组 (低频)',
-      total: 50,
-      prefix: type === 'random' ? 'R-' : 'D-',
-      start: 2001
-    }
+    ...(isStage2 ? [
+        {
+          id: 'ctrl_f1',
+          name: '对照组裂变1组',
+          total: 25,
+          prefix: type === 'random' ? 'R-' : 'D-S2-C1-',
+          start: 9001
+        },
+        {
+          id: 'ctrl_f2',
+          name: '对照组裂变2组',
+          total: 25,
+          prefix: type === 'random' ? 'R-' : 'D-S2-C2-',
+          start: 9026
+        }
+    ] : [
+        {
+          id: 'ctrl',
+          name: '对照组 (低频)',
+          total: 50,
+          prefix: type === 'random' ? 'R-' : 'D-',
+          start: 2001
+        }
+    ])
   ];
 
   let csvContent = "data:text/csv;charset=utf-8,";
@@ -144,7 +234,10 @@ function exportListToCSV() {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  const filename = isRandom ? "随机号清单.csv" : "药品号清单.csv";
+  const stageSuffix = (type === 'med' && typeof window.currentProjectType !== 'undefined' && window.currentProjectType === 'FISSION') 
+        ? (currentMedStage === 1 ? '_Stage1' : '_Stage2') 
+        : '';
+  const filename = isRandom ? "随机号清单.csv" : `药品号清单${stageSuffix}.csv`;
   link.setAttribute("download", filename);
   document.body.appendChild(link); // Required for FF
   

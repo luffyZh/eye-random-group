@@ -50,7 +50,9 @@ const project2Data = [
     id: 'CARDIO_0001',
     screenId: '0001',
     randomId: 'R-87766',
-    drugId: 'D-f68823',
+    drugId: 'D-f68823', // Stage 1
+    drugId_stage1: 'D-f68823',
+    drugId_stage2: 'D-S2-EXP-8001',
     name: '刘建国',
     age: '65岁',
     indicator: 'EF 45%',
@@ -58,13 +60,16 @@ const project2Data = [
     groupClass: 'bg-indigo-50 text-indigo-700',
     tags: ['男', '>60岁'],
     status: 'enrolled',
-    stage: 'Wait' // Waiting for fission
+    stage: 'Stage 1',
+    isFissioned: false
   },
   {
     id: 'CARDIO_0002',
     screenId: '0002',
     randomId: 'R-9902',
-    drugId: 'D-112',
+    drugId: 'D-S2-112',
+    drugId_stage1: 'D-112',
+    drugId_stage2: 'D-S2-112',
     name: '王淑芬',
     age: '58岁',
     indicator: 'EF 52%',
@@ -80,7 +85,9 @@ const project2Data = [
     id: 'CARDIO_0005',
     screenId: '0003',
     randomId: 'R-9908',
-    drugId: 'D-118',
+    drugId: 'D-S2-118',
+    drugId_stage1: 'D-118',
+    drugId_stage2: 'D-S2-118',
     name: '赵铁柱',
     age: '62岁',
     indicator: 'EF 48%',
@@ -97,6 +104,8 @@ const project2Data = [
     screenId: '0004',
     randomId: 'R-8897',
     drugId: 'D-77823',
+    drugId_stage1: 'D-77823',
+    drugId_stage2: 'D-S2-77823',
     name: '钱大爷',
     age: '70岁',
     indicator: 'EF 42%',
@@ -104,7 +113,8 @@ const project2Data = [
     groupClass: 'bg-emerald-50 text-emerald-700',
     tags: ['男', '>60岁'],
     status: 'enrolled',
-    stage: 'Stage 1'
+    stage: 'Stage 1',
+    isFissioned: false
   },
   {
      id: '--',
@@ -123,7 +133,7 @@ const project2Data = [
 ];
 
 // Current Project Type State
-let currentProjectType = 'NORMAL'; // 'NORMAL' or 'FISSION'
+window.currentProjectType = 'NORMAL'; // 'NORMAL' or 'FISSION'
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -132,7 +142,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Function to switch project type (for testing/demo purposes)
 function switchProjectType(type) {
-    currentProjectType = type;
+    window.currentProjectType = type;
+    
+    // Toggle Fission Alert Button
+    const alertBtn = document.getElementById('fission-due-alert-btn');
+    if (type === 'FISSION' && alertBtn) {
+        alertBtn.classList.remove('hidden');
+    } else if (alertBtn) {
+        alertBtn.classList.add('hidden');
+    }
+
     renderTable();
 }
 
@@ -140,8 +159,8 @@ function renderTable() {
     const tableContainer = document.querySelector('#data-table-wrapper table');
     if (!tableContainer) return;
 
-    const data = currentProjectType === 'NORMAL' ? project1Data : project2Data;
-    const isFission = currentProjectType === 'FISSION';
+    const data = window.currentProjectType === 'NORMAL' ? project1Data : project2Data;
+    const isFission = window.currentProjectType === 'FISSION';
 
     // Build Thead
     let theadHtml = `
@@ -180,8 +199,8 @@ function renderTable() {
                         <button class="text-slate-400 hover:text-brand-600 font-medium text-sm">详情</button>
                     </div>
                 `;
-            } else if (row.stage === 'Stage 1' && row.group === '对照组') {
-                 // Example logic: only control group in stage 1 can fission
+            } else if (row.stage === 'Stage 1') {
+                 // Logic Update: Everyone in Stage 1 can "Fission" (change drug)
                  actionButtons = `
                     <div class="flex items-center justify-end gap-3">
                         <button onclick="openFissionModal('${row.id}', '${row.name}')" class="text-indigo-600 hover:text-indigo-700 font-bold text-xs flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 hover:bg-indigo-100 transition-colors">
@@ -217,11 +236,18 @@ function renderTable() {
         if (isFission) {
             let stageBadge = '--';
             if (row.stage && row.stage !== '--') {
-                stageBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">${row.stage}</span>`;
+                const color = row.stage === 'Stage 2' ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-amber-100 text-amber-700 border-amber-200';
+                stageBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${color} border">${row.stage}</span>`;
             } else {
                  stageBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">--</span>`;
             }
              fissionStatusCell = `<td class="px-6 py-4 group-[.blind-mode-active]:hidden">${stageBadge}</td>`;
+        }
+
+        // Drug ID Display Logic
+        let drugIdDisplay = row.drugId;
+        if (isFission && row.isFissioned && row.drugId_stage1) {
+            drugIdDisplay = `<span class="text-slate-400 line-through mr-1">${row.drugId_stage1}</span> <i class="ri-arrow-right-line text-xs text-slate-300"></i> <span class="text-brand-600 font-bold">${row.drugId_stage2}</span>`;
         }
 
         tbodyHtml += `
@@ -229,7 +255,7 @@ function renderTable() {
               <td class="px-6 py-4 font-mono font-medium text-slate-600 group-[.blind-mode-active]:hidden">${row.screenId}</td>
               <td class="px-6 py-4 font-mono font-medium text-slate-600">${row.id}</td>
               <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${row.randomId}</td>
-              <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${row.drugId}</td>
+              <td class="px-6 py-4 font-mono text-slate-600 group-[.blind-mode-active]:hidden">${drugIdDisplay}</td>
               <td class="px-6 py-4 font-semibold text-slate-800">${row.name}</td>
               <td class="px-6 py-4 text-slate-600">${row.age}</td>
               <td class="px-6 py-4 text-slate-600">${row.indicator}</td>
@@ -718,7 +744,10 @@ function toggleTextArea(type, show) {
 
 /* ================= Fission Modal Logic ================= */
 
+let currentFissionId = null;
+
 function openFissionModal(id, name) {
+    currentFissionId = id;
     const modal = document.getElementById('fission-modal');
     const backdrop = document.getElementById('fission-backdrop');
     const panel = document.getElementById('fission-panel');
@@ -728,10 +757,17 @@ function openFissionModal(id, name) {
     document.getElementById('fission-user-id').innerText = id;
 
     // Reset UI State
-    document.getElementById('fission-status-initial').classList.remove('hidden');
-    document.getElementById('fission-status-loading').classList.add('hidden');
-    document.getElementById('fission-status-result').classList.add('hidden');
+    document.getElementById('fission-msg-warning').classList.remove('hidden');
+    document.getElementById('fission-msg-success').classList.add('hidden');
     
+    // Reset Group Display
+    const groupDisplay = document.getElementById('fission-group-display');
+    const row = project2Data.find(r => r.id === id);
+    if (row) {
+        groupDisplay.innerText = row.group;
+        groupDisplay.className = "text-sm font-bold text-emerald-600 transition-colors";
+    }
+
     const btn = document.getElementById('btn-confirm-fission');
     btn.disabled = false;
     btn.innerText = "确认并执行裂变";
@@ -762,20 +798,45 @@ function closeFissionModal() {
 
 function confirmFission() {
     const btn = document.getElementById('btn-confirm-fission');
-    const originalText = btn.innerHTML;
     
     // 1. Button Loading State
     btn.disabled = true;
     btn.innerHTML = `<i class="ri-loader-4-line animate-spin mr-1"></i> 分配中...`;
 
-    // 2. Status Area Loading State
-    document.getElementById('fission-status-initial').classList.add('hidden');
-    document.getElementById('fission-status-loading').classList.remove('hidden');
+    // 2. No other status area to hide/show, just wait
     
     setTimeout(() => {
-        // 3. Show Result
-        document.getElementById('fission-status-loading').classList.add('hidden');
-        document.getElementById('fission-status-result').classList.remove('hidden');
+        // Update Data (Mock)
+        const row = project2Data.find(r => r.id === currentFissionId);
+        if (row) {
+            row.isFissioned = true;
+            row.stage = 'Stage 2';
+            row.drugId = row.drugId_stage2; // Update displayed ID
+            
+            // Determine New Group Name
+            let newGroupName = row.group;
+            if (row.group === '对照组') {
+                newGroupName = '对照组：裂变子组1';
+                row.subGroup = newGroupName;
+            } else {
+                newGroupName = row.group + ' (Stage 2)';
+            }
+
+            // 3. Update UI to Success State
+            // Update Group Display
+            const groupDisplay = document.getElementById('fission-group-display');
+            groupDisplay.innerText = newGroupName;
+            groupDisplay.className = "text-sm font-bold text-indigo-600 transition-colors";
+
+            // Hide Warning, Show Success Msg
+            document.getElementById('fission-msg-warning').classList.add('hidden');
+            const successMsg = document.getElementById('fission-msg-success');
+            successMsg.classList.remove('hidden');
+            
+            // Set Drug IDs
+            document.getElementById('fission-drug-old').innerText = row.drugId_stage1 || 'Old';
+            document.getElementById('fission-drug-new').innerText = row.drugId_stage2;
+        }
 
         // 4. Update Button to "Complete" state
         btn.disabled = false;
@@ -783,10 +844,12 @@ function confirmFission() {
         btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
         btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
         
-        // Change button action to close
-        btn.onclick = closeFissionModal;
+        // Change button action to close and refresh
+        btn.onclick = () => {
+            closeFissionModal();
+            renderTable();
+        };
         
-        // In a real app, we would refresh the table here
     }, 1500);
 }
 
