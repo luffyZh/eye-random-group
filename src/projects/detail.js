@@ -759,12 +759,17 @@ function openFissionModal(id, name) {
     // Reset UI State
     document.getElementById('fission-msg-warning').classList.remove('hidden');
     document.getElementById('fission-msg-success').classList.add('hidden');
+    document.getElementById('fission-group-label').innerText = "当前分组";
     
     // Reset Group Display
     const groupDisplay = document.getElementById('fission-group-display');
     const row = project2Data.find(r => r.id === id);
     if (row) {
-        groupDisplay.innerText = row.group;
+        if (isBlindMode) {
+            groupDisplay.innerText = "***";
+        } else {
+            groupDisplay.innerText = row.group;
+        }
         groupDisplay.className = "text-sm font-bold text-emerald-600 transition-colors";
     }
 
@@ -825,7 +830,14 @@ function confirmFission() {
             // 3. Update UI to Success State
             // Update Group Display
             const groupDisplay = document.getElementById('fission-group-display');
-            groupDisplay.innerText = newGroupName;
+            document.getElementById('fission-group-label').innerText = "当前分组";
+            
+            if (isBlindMode) {
+                groupDisplay.innerText = "***";
+            } else {
+                groupDisplay.innerText = newGroupName;
+            }
+            
             groupDisplay.className = "text-sm font-bold text-indigo-600 transition-colors";
 
             // Hide Warning, Show Success Msg
