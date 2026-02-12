@@ -955,16 +955,35 @@
 												暂无待处理任务
 												</div>` 
 										: pendingTasks.map(task => `
-												<div onclick="app.crc.renderTaskDetail('${task.id}')" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-3 cursor-pointer hover:bg-gray-50 transition relative">
-														${task.status === 'pending_info' 
-																? `<span class="absolute top-3 right-3 bg-orange-100 text-orange-600 text-xs px-2 py-0.5 rounded">待补全</span>` 
-																: `<span class="absolute top-3 right-3 bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded">待确认</span>`
-														}
-														<div class="font-bold text-gray-800 text-lg">${task.name}</div>
-														<div class="text-sm text-gray-500 mb-2">${task.phone}</div>
-														<div class="text-xs text-gray-400 flex items-center">
-																<span class="mr-2">来自: ${task.doctor}</span>
-																<span>${task.time}</span>
+												<div onclick="app.crc.renderTaskDetail('${task.id}')" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-3 cursor-pointer hover:bg-gray-50 transition group">
+														<!-- Row 1: Project Info & Status -->
+														<div class="flex justify-between items-start mb-3">
+																<div class="font-bold text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md truncate max-w-[70%]">
+																		${DB.project.name}
+																</div>
+																${task.status === 'pending_info' 
+																		? `<span class="bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded whitespace-nowrap">待补全</span>` 
+																		: `<span class="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded whitespace-nowrap">待确认</span>`
+																}
+														</div>
+
+														<!-- Row 2: Person Info -->
+														<div class="mb-3">
+																<div class="flex items-baseline gap-2">
+																		<span class="font-bold text-gray-900 text-lg">${task.name}</span>
+																		<span class="text-sm text-gray-500">${task.phone}</span>
+																</div>
+														</div>
+
+														<!-- Row 3: Bottom Bar (Doctor & Button) -->
+														<div class="flex justify-between items-center border-t border-gray-50 pt-3">
+																<div class="text-xs text-gray-400">
+																		<span class="mr-1">来自: ${task.doctor}</span>
+																		<span>${task.time}</span>
+																</div>
+																<button class="text-xs font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+																		查看详情 <i data-lucide="arrow-right" width="12"></i>
+																</button>
 														</div>
 												</div>
 										`).join('');
@@ -1046,18 +1065,22 @@
 								const isInfoMissing = task.status === 'pending_info';
 								
 								const html = `
-										<div class="p-4 fade-in bg-white min-h-full flex flex-col">
-												<div class="flex flex-none items-center mb-6 cursor-pointer" onclick="app.crc.renderHome()">
-														<i data-lucide="arrow-left" class="text-gray-500 mr-2" width="20"></i>
-														<h2 class="font-bold text-lg">处理预约</h2>
+										<div class="fade-in bg-gray-50 h-full flex flex-col">
+												<!-- 固定头部 -->
+												<div class="bg-white pt-10 px-3 pb-4 flex items-center shadow-sm z-10 flex-none relative">
+													<div class="absolute left-3 cursor-pointer p-2 -ml-2" onclick="app.crc.renderHome()">
+														<i data-lucide="arrow-left" class="text-gray-500" width="20"></i>
+													</div>
+													<h2 class="font-bold text-lg w-full text-center">处理预约</h2>
 												</div>
 
-												<div class="flex-1 overflow-y-auto">
-														<div class="bg-gray-50 p-4 rounded-xl mb-6 border border-gray-100">
+												<!-- 可滚动内容区域 -->
+												<div class="flex-1 overflow-y-auto no-scrollbar p-4">
+														<div class="bg-white p-4 rounded-xl mb-6 shadow-sm border border-gray-100">
 																<div class="grid grid-cols-2 gap-4 mb-2">
 																		<div>
 																				<label class="text-xs text-gray-500">患者姓名</label>
-																				<div class="font-medium">${task.name}</div>
+																				<div class="font-medium text-gray-900">${task.name}</div>
 																		</div>
 																		<div>
 																				<label class="text-xs text-gray-500">联系电话</label>
@@ -1066,46 +1089,46 @@
 																</div>
 																<div>
 																		<label class="text-xs text-gray-500">推荐医生</label>
-																		<div class="font-medium">${task.doctor}</div>
+																		<div class="font-medium text-gray-900">${task.doctor}</div>
 																</div>
 														</div>
 
-														<h3 class="font-bold text-gray-800 mb-3">维度核查</h3>
-														<form id="crcActionForm">
-																<div class="space-y-3">
+														<h3 class="font-bold text-gray-800 mb-3 px-1">维度核查</h3>
+														<form id="crcActionForm" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+																<div class="space-y-4">
 																		<div>
 																				<label class="block text-xs font-medium text-gray-600 mb-1">性别 ${isInfoMissing ? '<span class="text-orange-500">(需补充)</span>' : ''}</label>
-																				<select id="crc-sex" class="w-full bg-white border ${isInfoMissing && !task.sex ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2 text-sm">
+																				<select id="crc-sex" class="w-full bg-gray-50 border ${isInfoMissing && !task.sex ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
 																						<option value="">请选择</option>
 																						${DB.project.dimensions.sex.map(o => `<option value="${o}" ${task.sex === o ? 'selected' : ''}>${o}</option>`).join('')}
 																				</select>
 																		</div>
 																		<div>
 																				<label class="block text-xs font-medium text-gray-600 mb-1">年龄段 ${isInfoMissing ? '<span class="text-orange-500">(需补充)</span>' : ''}</label>
-																				<select id="crc-age" class="w-full bg-white border ${isInfoMissing && !task.age ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2 text-sm">
+																				<select id="crc-age" class="w-full bg-gray-50 border ${isInfoMissing && !task.age ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
 																						<option value="">请选择</option>
 																						${DB.project.dimensions.age.map(o => `<option value="${o}" ${task.age === o ? 'selected' : ''}>${o}</option>`).join('')}
 																				</select>
 																		</div>
 																		<div>
 																				<label class="block text-xs font-medium text-gray-600 mb-1">屈光度 ${isInfoMissing ? '<span class="text-orange-500">(需补充)</span>' : ''}</label>
-																				<select id="crc-diopter" class="w-full bg-white border ${isInfoMissing && !task.diopter ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2 text-sm">
+																				<select id="crc-diopter" class="w-full bg-gray-50 border ${isInfoMissing && !task.diopter ? 'border-orange-300 bg-orange-50' : 'border-gray-300'} rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
 																						<option value="">请选择</option>
 																						${DB.project.dimensions.diopter.map(o => `<option value="${o}" ${task.diopter === o ? 'selected' : ''}>${o}</option>`).join('')}
 																				</select>
 																		</div>
 																</div>
 														</form>
-												</div>
-
-												<div class="mt-6 space-y-3">
-														<button onclick="app.crc.confirmTask('${task.id}')" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-emerald-700 transition flex justify-center items-center gap-2">
-																<i data-lucide="check-circle" width="18"></i>
-																确认预约 & 锁定名额
-														</button>
-														<button onclick="app.crc.oneClickEnroll('${task.id}')" class="w-full bg-blue-50 text-blue-600 font-bold py-3 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
-																一键转入组 (快捷转化)
-														</button>
+												
+														<div class="space-y-3 pb-6">
+																<button onclick="app.crc.confirmTask('${task.id}')" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-emerald-700 transition flex justify-center items-center gap-2">
+																		<i data-lucide="check-circle" width="18"></i>
+																		确认预约 & 锁定名额
+																</button>
+																<button onclick="app.crc.oneClickEnroll('${task.id}')" class="w-full bg-white text-emerald-600 font-bold py-3 rounded-xl border border-emerald-100 hover:bg-emerald-50 transition">
+																		一键转入组 (快捷转化)
+																</button>
+														</div>
 												</div>
 										</div>
 								`;
