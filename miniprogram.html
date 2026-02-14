@@ -1185,7 +1185,8 @@
 					
 					refreshBadge: () => {
 						const badge = document.getElementById('doc-badge');
-						badge.innerText = "N";
+						const currentCount = parseInt(badge.innerText) || 0;
+						badge.innerText = isNaN(currentCount) ? 1 : currentCount + 1;
 						badge.classList.remove('hidden');
 					}
 				},
@@ -1437,6 +1438,8 @@
 						},
 
 						renderTaskDetail: (id) => {
+								const task = DB.appointments.find(a => a.id === id);
+								if (!task) return;
 
 								const isInfoMissing = task.status === 'pending_info';
 								
@@ -1507,21 +1510,64 @@
 														</div>
 												</div>
 										</div>
+										<div id="crc-modal-container"></div>
 								`;
 								app.render('crc-view', html);
 						},
 
-						confirmTask: (id) => {
-								// 获取CRC修改后的数据
-								const sex = document.getElementById('crc-sex').value;
-								const age = document.getElementById('crc-age').value;
-								const diopter = document.getElementById('crc-diopter').value;
+				showModal: (title, content, onConfirm) => {
+					const modalHtml = `
+						<div class="absolute inset-0 z-50 flex items-center justify-center p-4">
+							<div class="absolute inset-0 bg-black/50 backdrop-blur-sm fade-in" onclick="document.getElementById('crc-modal-container').innerHTML = ''"></div>
+							<div class="bg-white rounded-2xl w-full max-w-sm relative z-10 animate-scale-up shadow-2xl overflow-hidden">
+								<div class="p-6">
+									<h3 class="text-lg font-bold text-gray-900 mb-2">${title}</h3>
+									<div class="text-sm text-gray-600 space-y-2">${content}</div>
+								</div>
+								<div class="bg-gray-50 p-4 flex gap-3">
+									<button onclick="document.getElementById('crc-modal-container').innerHTML = ''" class="flex-1 py-2.5 text-gray-600 font-bold bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition">取消</button>
+									<button id="modal-confirm-btn" class="flex-1 py-2.5 text-white font-bold bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition">确认执行</button>
+								</div>
+							</div>
+						</div>
+						<style>
+							.animate-scale-up { animation: scaleUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+							@keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+						</style>
+					`;
+					
+					const container = document.getElementById('crc-modal-container');
+					if (container) {
+						container.innerHTML = modalHtml;
+						document.getElementById('modal-confirm-btn').onclick = () => {
+							onConfirm();
+							container.innerHTML = '';
+						};
+					}
+				},
 
-								if (!sex || !age || !diopter) {
-										alert("请先补全所有维度信息才能确认预约！");
-										return;
-								}
+				confirmTask: (id) => {
+						// 获取CRC修改后的数据
+						const sex = document.getElementById('crc-sex').value;
+						const age = document.getElementById('crc-age').value;
+						const diopter = document.getElementById('crc-diopter').value;
 
+						if (!sex || !age || !diopter) {
+								alert("请先补全所有维度信息才能确认预约！");
+								return;
+						}
+
+						app.crc.showModal(
+							'确认预约 & 锁定名额',
+							`
+								<p>该操作表示患者已通过初筛，系统将为其<span class="font-bold text-emerald-600">预留名额</span>。</p>
+								<ul class="list-disc pl-4 mt-2 text-gray-500 text-xs">
+									<li>生成唯一的<span class="font-bold">筛选号</span></li>
+									<li>状态变更为"预约成功"</li>
+									<li><span class="text-orange-500">注意：尚未分配具体组别和药品</span></li>
+								</ul>
+							`,
+							() => {
 								// 更新数据
 								const taskIndex = DB.appointments.findIndex(a => a.id === id);
 								if(taskIndex > -1) {
@@ -1547,19 +1593,33 @@
 										app.crc.renderHome();
 										app.doctor.refreshBadge(); // 医生端亮红点
 								}
-						},
-						
-						oneClickEnroll: (id) => {
-							// 获取CRC修改后的数据（虽然是一键，但也需要表单数据）
-							const sex = document.getElementById('crc-sex').value;
-							const age = document.getElementById('crc-age').value;
-							const diopter = document.getElementById('crc-diopter').value;
-							
-							if (!sex || !age || !diopter) {
-								alert("请先补全所有维度信息才能转入组！");
-								return;
 							}
-							
+						);
+				},
+				
+				oneClickEnroll: (id) => {
+					// 获取CRC修改后的数据（虽然是一键，但也需要表单数据）
+					const sex = document.getElementById('crc-sex').value;
+					const age = document.getElementById('crc-age').value;
+					const diopter = document.getElementById('crc-diopter').value;
+					
+					if (!sex || !age || !diopter) {
+						alert("请先补全所有维度信息才能转入组！");
+						return;
+					}
+
+					app.crc.showModal(
+						'一键转入组 (正式入组)',
+						`
+							<p>该操作表示患者正式进入临床试验，系统将立即执行<span class="font-bold text-emerald-600">随机化分组</span>。</p>
+							<ul class="list-disc pl-4 mt-2 text-gray-500 text-xs">
+								<li>生成<span class="font-bold">筛选号、受试者编号、随机号</span></li>
+								<li>自动分配<span class="font-bold">药品号</span></li>
+								<li>更新项目入组进度</li>
+								<li><span class="text-red-500">此操作不可撤销</span></li>
+							</ul>
+						`,
+						() => {
 							const taskIndex = DB.appointments.findIndex(a => a.id === id);
 							if (taskIndex > -1) {
 								const task = DB.appointments[taskIndex];
@@ -1599,6 +1659,8 @@
 								app.doctor.refreshBadge();
 							}
 						}
+					);
+				}
 				}
 		};
 
