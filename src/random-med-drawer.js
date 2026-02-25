@@ -1,5 +1,5 @@
 
-/* ================= 随机号/药品号清单 Drawer Logic ================= */
+/* ================= 随机号/产品号清单 Drawer Logic ================= */
 
 let currentMedStage = 1;
 
@@ -11,7 +11,7 @@ function openRandomMedDrawer(type) {
   const content = document.getElementById('random-med-content');
 
   // Update Title
-  title.innerText = type === 'random' ? '随机号清单' : '药品号清单';
+  title.innerText = type === 'random' ? '随机号清单' : '产品号清单';
   
   // Check Project Type for Fission features
   const isFission = (typeof window.currentProjectType !== 'undefined' && window.currentProjectType === 'FISSION');
@@ -237,7 +237,7 @@ function exportListToCSV() {
   const stageSuffix = (type === 'med' && typeof window.currentProjectType !== 'undefined' && window.currentProjectType === 'FISSION') 
         ? (currentMedStage === 1 ? '_Stage1' : '_Stage2') 
         : '';
-  const filename = isRandom ? "随机号清单.csv" : `药品号清单${stageSuffix}.csv`;
+  const filename = isRandom ? "随机号清单.csv" : `产品号清单${stageSuffix}.csv`;
   link.setAttribute("download", filename);
   document.body.appendChild(link); // Required for FF
   

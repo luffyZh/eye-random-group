@@ -169,7 +169,7 @@ function renderTable() {
               <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">筛选号</th>
               <th class="px-6 py-4 font-semibold">受试者编号</th>
               <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">随机号</th>
-              <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">药品号</th>
+              <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">产品号</th>
               <th class="px-6 py-4 font-semibold">姓名</th>
               <th class="px-6 py-4 font-semibold">年龄</th>
               <th class="px-6 py-4 font-semibold">指标</th>

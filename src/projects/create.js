@@ -717,7 +717,7 @@ function wizCreateGroupCard(name, icon, colorTheme, initialCount) {
                 <div class="flex flex-col gap-1.5 flex-1 w-full">
                      <input type="text" value="${name}" class="bg-transparent border-0 border-b border-transparent hover:border-slate-300 focus:border-brand-500 focus:ring-0 text-slate-800 font-bold text-base w-full transition-colors px-0 py-0.5 placeholder-slate-400" placeholder="分组名称">
                      <div class="flex items-center gap-2 w-full">
-                        <span class="text-xs font-bold text-slate-500 whitespace-nowrap">药品:</span>
+                        <span class="text-xs font-bold text-slate-500 whitespace-nowrap">产品:</span>
                         <input type="text" class="wiz-group-drug-input bg-white/50 rounded border border-slate-200 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs text-slate-700 w-2/3 px-2 py-1 transition-colors placeholder-slate-400" placeholder="0.02%阿托品滴眼液">
                     </div>
                 </div>
@@ -918,7 +918,7 @@ function wizToggleFissionMode() {
             div.innerHTML = `
                 <div class="flex items-center gap-2">
                     <span class="font-bold text-slate-700">${g.name}</span>
-                    <span class="text-[10px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">${g.medicine || '无药品'}</span>
+                    <span class="text-[10px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">${g.medicine || '无产品'}</span>
                 </div>
                 <span class="font-bold text-slate-600">${g.count}人</span>
             `;
@@ -1123,8 +1123,8 @@ function wizRenderSubgroups(subgroups) {
             <div class="flex flex-col gap-2 flex-1">
                 <input type="text" value="${sg.name}" class="wiz-subgroup-name w-full text-xs font-bold text-slate-600 border-slate-200 rounded-lg py-1.5 pl-2 focus:border-brand-500 focus:ring-1 focus:ring-brand-500" placeholder="子组名称">
                 <div class="flex items-center gap-2">
-                    <span class="text-[10px] text-slate-400 whitespace-nowrap"><i class="ri-capsule-fill mr-1"></i>药品</span>
-                    <input type="text" value="${sg.medicine || ''}" class="wiz-subgroup-medicine flex-1 text-xs text-slate-600 border-slate-200 rounded-lg py-1.5 pl-2 focus:border-brand-500 focus:ring-1 focus:ring-brand-500" placeholder="药品名称">
+                    <span class="text-[10px] text-slate-400 whitespace-nowrap"><i class="ri-capsule-fill mr-1"></i>产品</span>
+                    <input type="text" value="${sg.medicine || ''}" class="wiz-subgroup-medicine flex-1 text-xs text-slate-600 border-slate-200 rounded-lg py-1.5 pl-2 focus:border-brand-500 focus:ring-1 focus:ring-brand-500" placeholder="产品名称">
                 </div>
             </div>
             <div class="flex items-center gap-1 mt-0.5">

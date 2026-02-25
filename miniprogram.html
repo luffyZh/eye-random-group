@@ -990,7 +990,7 @@
 													<div class="font-mono font-medium text-gray-800">${s.r_no || '-'}</div>
 												</div>
 												<div class="p-3 border-t border-gray-200">
-													<div class="text-xs text-gray-400">药品号</div>
+													<div class="text-xs text-gray-400">产品号</div>
 													<div class="font-mono font-medium text-gray-800">${s.drug_no || '-'}</div>
 												</div>
 											</div>
@@ -1427,12 +1427,12 @@
 							// 通知医生
 							DB.notifications.unshift({
 								title: 'CRC直接录入入组',
-								content: `CRC直接录入患者 ${data.name} 并入组 ${group.name}。\n筛选号:${s_no}\n受试者编号:${id_no}\n随机号:${r_no}\n药品号:${drug_no}`,
+								content: `CRC直接录入患者 ${data.name} 并入组 ${group.name}。\n筛选号:${s_no}\n受试者编号:${id_no}\n随机号:${r_no}\n产品号:${drug_no}`,
 								time: utils.formatTime(),
 								type: 'success'
 							});
 							
-							alert(`录入成功！\n分配组别：${group.name}\n筛选号：${s_no}\n受试者编号：${id_no}\n随机号：${r_no}\n药品号：${drug_no}`);
+							alert(`录入成功！\n分配组别：${group.name}\n筛选号：${s_no}\n受试者编号：${id_no}\n随机号：${r_no}\n产品号：${drug_no}`);
 							app.renderProjectDetail('crc');
 							app.doctor.refreshBadge();
 						},
@@ -1564,7 +1564,7 @@
 								<ul class="list-disc pl-4 mt-2 text-gray-500 text-xs">
 									<li>生成唯一的<span class="font-bold">筛选号</span></li>
 									<li>状态变更为"预约成功"</li>
-									<li><span class="text-orange-500">注意：尚未分配具体组别和药品</span></li>
+									<li><span class="text-orange-500">注意：尚未分配具体组别和产品</span></li>
 								</ul>
 							`,
 							() => {
@@ -1614,7 +1614,7 @@
 							<p>该操作表示患者正式进入临床试验，系统将立即执行<span class="font-bold text-emerald-600">随机化分组</span>。</p>
 							<ul class="list-disc pl-4 mt-2 text-gray-500 text-xs">
 								<li>生成<span class="font-bold">筛选号、受试者编号、随机号</span></li>
-								<li>自动分配<span class="font-bold">药品号</span></li>
+								<li>自动分配<span class="font-bold">产品号</span></li>
 								<li>更新项目入组进度</li>
 								<li><span class="text-red-500">此操作不可撤销</span></li>
 							</ul>
@@ -1649,12 +1649,12 @@
 								// 通知医生
 								DB.notifications.unshift({
 									title: '患者成功入组',
-									content: `患者 ${task.name} 已成功入组 ${group.name}。\n筛选号:${s_no}\n受试者编号:${id_no}\n随机号:${r_no}\n药品号:${drug_no}`,
+									content: `患者 ${task.name} 已成功入组 ${group.name}。\n筛选号:${s_no}\n受试者编号:${id_no}\n随机号:${r_no}\n产品号:${drug_no}`,
 									time: utils.formatTime(),
 									type: 'success'
 								});
 								
-								alert(`入组成功！\n分配组别：${group.name}\n筛选号：${s_no}\n受试者编号：${id_no}\n随机号：${r_no}\n药品号：${drug_no}`);
+								alert(`入组成功！\n分配组别：${group.name}\n筛选号：${s_no}\n受试者编号：${id_no}\n随机号：${r_no}\n产品号：${drug_no}`);
 								app.crc.renderHome();
 								app.doctor.refreshBadge();
 							}
