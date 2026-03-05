@@ -41,6 +41,97 @@ const project1Data = [
     groupClass: 'bg-indigo-50 text-indigo-700',
     tags: ['男', '10-14岁'],
     status: 'enrolled'
+  },
+  {
+    id: 'CHILD_ELESCREEN_0004',
+    screenId: '0004',
+    randomId: 'R-1003',
+    drugId: 'D-B001',
+    name: '陈静',
+    age: '9岁',
+    indicator: '-1.25D',
+    group: '对照组',
+    groupClass: 'bg-emerald-50 text-emerald-600',
+    tags: ['女', '7-10岁'],
+    status: 'enrolled'
+  },
+  {
+    id: 'CHILD_ELESCREEN_0005',
+    screenId: '0005',
+    randomId: 'R-1004',
+    drugId: 'D-A003',
+    name: '赵雷',
+    age: '12岁',
+    indicator: '-3.00D',
+    group: '实验组',
+    groupClass: 'bg-indigo-50 text-indigo-700',
+    tags: ['男', '10-14岁'],
+    status: 'enrolled'
+  },
+  {
+    id: '--',
+    screenId: '0006',
+    randomId: '--',
+    drugId: '--',
+    name: '孙美丽',
+    age: '7岁',
+    indicator: '-0.75D',
+    group: '未入组',
+    groupClass: 'text-slate-400 bg-slate-100',
+    tags: [],
+    status: 'failed'
+  },
+  {
+    id: 'CHILD_ELESCREEN_0007',
+    screenId: '0007',
+    randomId: 'R-1005',
+    drugId: 'D-B002',
+    name: '周杰',
+    age: '10岁',
+    indicator: '-2.00D',
+    group: '对照组',
+    groupClass: 'bg-emerald-50 text-emerald-600',
+    tags: ['男', '7-10岁'],
+    status: 'enrolled'
+  },
+  {
+    id: 'CHILD_ELESCREEN_0008',
+    screenId: '0008',
+    randomId: 'R-1006',
+    drugId: 'D-A004',
+    name: '吴芳',
+    age: '8岁',
+    indicator: '-1.75D',
+    group: '实验组',
+    groupClass: 'bg-indigo-50 text-indigo-700',
+    tags: ['女', '7-10岁'],
+    status: 'enrolled'
+  },
+  {
+    id: 'CHILD_ELESCREEN_0009',
+    screenId: '0009',
+    randomId: 'R-1007',
+    drugId: 'D-B003',
+    name: '郑强',
+    age: '13岁',
+    indicator: '-3.50D',
+    group: '对照组',
+    groupClass: 'bg-emerald-50 text-emerald-600',
+    tags: ['男', '10-14岁'],
+    status: 'enrolled'
+  },
+  {
+    id: 'CHILD_ELESCREEN_0010',
+    screenId: '0010',
+    randomId: 'R-1008',
+    drugId: 'D-A005',
+    name: '冯婷婷',
+    age: '11岁',
+    indicator: '-2.25D',
+    group: '实验组',
+    groupClass: 'bg-indigo-50 text-indigo-700',
+    tags: ['女', '10-14岁'],
+    status: 'enrolled'
   }
 ];
 
@@ -140,6 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTable();
 });
 
+// Filter Function
+window.applyFilter = function() {
+    renderTable();
+}
+
 // Function to switch project type (for testing/demo purposes)
 function switchProjectType(type) {
     window.currentProjectType = type;
@@ -159,8 +255,23 @@ function renderTable() {
     const tableContainer = document.querySelector('#data-table-wrapper table');
     if (!tableContainer) return;
 
-    const data = window.currentProjectType === 'NORMAL' ? project1Data : project2Data;
+    let data = window.currentProjectType === 'NORMAL' ? project1Data : project2Data;
     const isFission = window.currentProjectType === 'FISSION';
+
+    // Apply Filter
+    const filterEl = document.getElementById('filter-status');
+    const filterValue = filterEl ? filterEl.value : 'participated';
+
+    if (filterValue === 'participated') {
+        data = data.filter(row => row.status === 'enrolled');
+    } else if (filterValue === 'not_participated') {
+        data = data.filter(row => row.status !== 'enrolled');
+    } else if (filterValue === 'match_success') {
+        data = data.filter(row => row.status === 'enrolled');
+    } else if (filterValue === 'match_failed') {
+        data = data.filter(row => row.status === 'failed');
+    }
+    // 'all' shows everything
 
     // Build Thead
     let theadHtml = `

@@ -18,7 +18,8 @@
         { id: 'dev', name: '开发者', desc: '系统维护与开发人员', perms: 'all' },
         { id: 'center_admin', name: '中心管理员', desc: '负责管理分中心事务与人员', perms: { "项目管理": ["查看", "新增"], "中心管理": ["查看", "编辑"], "用户管理": ["查看", "新增"] } },
         { id: 'pi', name: '主要研究者 (PI)', desc: '负责项目临床研究执行与管理', perms: { "项目管理": ["查看", "编辑"], "维度管理": ["查看"], "用户管理": ["查看"] } },
-        { id: 'crc', name: 'CRC 协调员', desc: '协助研究者进行非医学性事务', perms: { "项目管理": ["查看"], "用户管理": ["查看"] } }
+        { id: 'crc', name: 'CRC 协调员', desc: '协助研究者进行非医学性事务', perms: { "项目管理": ["查看"], "用户管理": ["查看"] } },
+        { id: 'manufacturer', name: '厂家', desc: '配置厂家角色的账号不能登录 Web Admin 系统，只能登录小程序，小程序拥有厂家面板。', perms: 'mobile_only' }
     ];
 
     let currentRoleId = 'admin';
@@ -34,6 +35,7 @@
                 <div class="flex items-center justify-between mb-1">
                     <span class="font-bold text-sm ${role.id === currentRoleId ? 'text-brand-700' : 'text-slate-700'}">${role.name}</span>
                     ${role.perms === 'all' ? '<i class="ri-shield-star-line text-amber-500"></i>' : ''}
+                    ${role.perms === 'mobile_only' ? '<i class="ri-smartphone-line text-indigo-500"></i>' : ''}
                 </div>
                 <p class="text-xs text-slate-400 truncate">${role.desc}</p>
             </div>
@@ -103,6 +105,20 @@
             return;
         }
 
+        if (role.perms === 'mobile_only') {
+            container.innerHTML = `
+                <div class="p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                    <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ri-smartphone-line text-3xl text-indigo-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">仅限移动端登录</h3>
+                    <p class="text-slate-500 text-sm">此角色专用于厂家在小程序端查看数据。</p>
+                    <p class="text-slate-400 text-xs mt-2">Web 管理后台无访问权限。</p>
+                </div>
+            `;
+            return;
+        }
+
         let html = '';
         for (const [module, actions] of Object.entries(PERMISSION_CONFIG)) {
             const userPerms = role.perms[module] || [];
@@ -151,7 +167,7 @@
 
     function updateRolePerm(module, action, checked) {
         const role = ROLES.find(r => r.id === currentRoleId);
-        if (role.perms === 'all') return;
+        if (role.perms === 'all' || role.perms === 'mobile_only') return;
         
         if (!role.perms[module]) role.perms[module] = [];
         
