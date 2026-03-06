@@ -583,12 +583,15 @@
 										
 										<div class="flex justify-center items-center gap-8 mb-4">
 											<div>
-												<div class="text-2xl font-bold text-blue-600">${DB.project.enrolled}</div>
-												<div class="text-xs text-gray-400">已入组</div>
+												<div class="text-2xl font-normal text-blue-600 flex items-end justify-center gap-1">
+													${DB.project.enrolled}
+													${role === 'doc' ? `<span class="text-xs font-bold text-blue-400 mb-1">(${DB.appointments.filter(a => a.status === 'enrolled').length})</span>` : ''}
+												</div>
+												<div class="text-xs text-gray-400">${role === 'doc' ? '已入组 (我推荐)' : '已入组'}</div>
 											</div>
 											<div class="w-px h-8 bg-gray-100"></div>
 											<div>
-												<div class="text-2xl font-bold text-gray-900">${DB.project.totalTarget}</div>
+												<div class="text-2xl font-normal text-gray-900">${DB.project.totalTarget}</div>
 												<div class="text-xs text-gray-400">目标人数</div>
 											</div>
 										</div>

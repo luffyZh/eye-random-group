@@ -1038,10 +1038,10 @@ function confirmFission() {
     }, 1500);
 }
 
-/* ================= Process Enroll Drawer Logic ================= */
+/* ================= Process Enroll Modal Logic ================= */
 
 function openProcessEnrollDrawer(name, doctor, age, indicator) {
-    const drawer = document.getElementById('process-enroll-drawer');
+    const modal = document.getElementById('process-enroll-modal');
     const backdrop = document.getElementById('process-enroll-backdrop');
     const panel = document.getElementById('process-enroll-panel');
     
@@ -1058,29 +1058,29 @@ function openProcessEnrollDrawer(name, doctor, age, indicator) {
     const rejectText = document.getElementById('reject-reason-text');
     if (rejectText) rejectText.value = '';
     
-    // Show Drawer
-    drawer.classList.remove('hidden');
+    // Show Modal
+    modal.classList.remove('hidden');
     setTimeout(() => {
         backdrop.classList.remove('opacity-0');
-        panel.classList.remove('translate-x-full');
+        panel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
     }, 10);
 }
 
 function closeProcessEnrollDrawer() {
-    const drawer = document.getElementById('process-enroll-drawer');
+    const modal = document.getElementById('process-enroll-modal');
     const backdrop = document.getElementById('process-enroll-backdrop');
     const panel = document.getElementById('process-enroll-panel');
     
     backdrop.classList.add('opacity-0');
-    panel.classList.add('translate-x-full');
+    panel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
     
     setTimeout(() => {
-        drawer.classList.add('hidden');
+        modal.classList.add('hidden');
     }, 300);
 }
 
 function confirmProcessEnroll() {
-    alert("已确认预约并锁定名额！");
+    alert("已确认预约并锁定名额，分配筛选号！");
     closeProcessEnrollDrawer();
 }
 
@@ -1121,7 +1121,7 @@ function submitRejectProcess() {
         return;
     }
     
-    alert(`已拒绝入组。\n原因：${reason}\n已通知医生。`);
+    alert(`已拒绝入组。\n原因：${reason}\n已通知推荐医生，分配筛选号。`);
     closeProcessEnrollDrawer();
 }
 
