@@ -1267,12 +1267,20 @@
           <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
             <h3 class="text-lg font-bold text-slate-800">受试者详细名录</h3>
             <div class="flex gap-2 items-center">
+              <div class="relative">
+                <input type="text" id="search-input" placeholder="搜索姓名..." class="pl-8 pr-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-32 transition-all focus:w-48">
+                <i class="ri-search-line absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <button onclick="applyFilter()" class="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded text-slate-400 hover:text-indigo-600 transition-colors">
+                  <i class="ri-arrow-right-s-line"></i>
+                </button>
+              </div>
               <select id="filter-status" onchange="applyFilter()" class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="participated" selected>已参与</option>
+                <option value="participated">已参与</option>
                 <option value="not_participated">未参与</option>
+                <option value="pending">预约待处理</option>
                 <option value="match_success">匹配成功</option>
                 <option value="match_failed">匹配失败</option>
-                <option value="all">全部</option>
+                <option value="all" selected>全部</option>
               </select>
               <button
                 class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">
@@ -2319,6 +2327,100 @@
         </div>
       </div>
     </div>
+    <!-- ================== 处理预约抽屉 (Process Enroll Drawer) ================== -->
+    <div id="process-enroll-drawer" class="relative z-50 hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+      <!-- 背景遮罩 (Backdrop) -->
+      <div id="process-enroll-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" onclick="closeProcessEnrollDrawer()"></div>
+
+      <div class="fixed inset-0 overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <!-- 抽屉面板 -->
+            <div id="process-enroll-panel" class="pointer-events-auto w-screen max-w-md transform translate-x-full transition-transform duration-300 ease-in-out sm:duration-500">
+              <div class="flex h-full flex-col bg-white shadow-2xl">
+
+                <!-- 1. 抽屉头部 -->
+                <div class="px-6 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                  <div>
+                    <h2 class="text-lg font-bold text-slate-800">预约处理</h2>
+                    <p class="text-xs text-slate-500 mt-1">处理来自医生的患者预约申请</p>
+                  </div>
+                  <button type="button" class="rounded-md text-slate-400 hover:text-slate-500 focus:outline-none" onclick="closeProcessEnrollDrawer()">
+                    <span class="sr-only">Close panel</span>
+                    <i class="ri-close-line text-2xl"></i>
+                  </button>
+                </div>
+
+                <!-- 2. 抽屉主体内容区 -->
+                <div class="relative flex-1 overflow-y-auto px-6 py-6 bg-slate-50/30">
+                  <!-- 患者基本信息卡片 -->
+                  <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm mb-6">
+                    <div class="flex items-center gap-3 mb-4 border-b border-slate-50 pb-3">
+                       <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg" id="pe-avatar">王</div>
+                       <div>
+                          <h3 class="font-bold text-slate-800 text-base" id="pe-name">王芳</h3>
+                          <p class="text-xs text-slate-400 mt-0.5">推荐医生：<span class="text-indigo-600 font-medium" id="pe-doctor">李医生</span></p>
+                       </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                       <div class="bg-slate-50 p-3 rounded-lg">
+                          <span class="text-xs text-slate-400 block mb-1">年龄</span>
+                          <span class="text-sm font-bold text-slate-700" id="pe-age">9岁</span>
+                       </div>
+                       <div class="bg-slate-50 p-3 rounded-lg">
+                          <span class="text-xs text-slate-400 block mb-1">指标(近视度数)</span>
+                          <span class="text-sm font-bold text-slate-700" id="pe-indicator">-1.25D</span>
+                       </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-3 border-t border-slate-50">
+                        <span class="text-xs text-slate-400 block mb-2">维度标签 (自动计算)</span>
+                        <div class="flex flex-wrap gap-2">
+                           <span class="px-2 py-1 bg-white border border-slate-200 text-xs text-slate-600 rounded">7-10岁</span>
+                           <span class="px-2 py-1 bg-white border border-slate-200 text-xs text-slate-600 rounded">-1.00~-0.50D</span>
+                        </div>
+                    </div>
+                  </div>
+
+                  <!-- 操作区域 -->
+                  <div class="space-y-3">
+                     <button onclick="confirmProcessEnroll()" class="w-full bg-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+                        <i class="ri-check-line text-lg"></i>
+                        确认预约 & 锁定名额
+                     </button>
+                     
+                     <button onclick="quickEnrollProcess()" class="w-full bg-white text-emerald-600 font-bold py-3.5 rounded-xl border border-emerald-100 hover:bg-emerald-50 active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+                        <i class="ri-flashlight-fill text-lg"></i>
+                        一键转入组 (快捷转化)
+                     </button>
+                     
+                     <button onclick="toggleRejectReason()" class="w-full bg-red-50 text-red-600 font-bold py-3.5 rounded-xl border border-red-100 hover:bg-red-100 active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+                        <i class="ri-close-circle-line text-lg"></i>
+                        无法入组
+                     </button>
+                  </div>
+                  
+                  <!-- 拒绝原因填写区域 (默认隐藏) -->
+                  <div id="reject-reason-container" class="hidden mt-4 animate-fade-in">
+                     <div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm">
+                        <h4 class="text-sm font-bold text-slate-800 mb-2">填写无法入组原因</h4>
+                        <textarea id="reject-reason-text" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none h-24 resize-none mb-3" placeholder="请详细描述无法入组的具体原因..."></textarea>
+                        <div class="flex gap-3">
+                           <button onclick="toggleRejectReason()" class="flex-1 py-2 text-sm text-slate-500 hover:bg-slate-100 rounded-lg">取消</button>
+                           <button onclick="submitRejectProcess()" class="flex-1 py-2 text-sm bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 shadow-md shadow-red-200">确认提交</button>
+                        </div>
+                     </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ================== 录入受试者抽屉 (Drawer) ================== -->
     <div id="enroll-drawer" class="relative z-50 hidden" aria-labelledby="slide-over-title" role="dialog"
       aria-modal="true">
@@ -3568,6 +3670,25 @@
 
       <!-- Content -->
       <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+        <!-- New CRC Task Notification -->
+        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group" onclick="handleCRCTaskNotification('102')">
+          <div class="flex justify-between items-start mb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+              <h4 class="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">新患者待确认</h4>
+            </div>
+            <span class="text-xs text-slate-400">刚刚</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed mb-2">
+            李医生提交了患者 <span class="font-bold text-slate-800">王芳</span> (139****6789) 的预约申请，请及时处理。
+          </p>
+          <div class="flex items-center justify-end">
+            <button class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+              立即处理 <i class="ri-arrow-right-line"></i>
+            </button>
+          </div>
+        </div>
+
         <!-- Message 1 -->
         <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group">
           <div class="flex justify-between items-start mb-2">

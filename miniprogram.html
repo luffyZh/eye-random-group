@@ -538,7 +538,7 @@
 					app.render(viewId, html);
 				},
 
-				renderProjectDetail: (role, projectId, subjectFilter = 'enrolled') => {
+				renderProjectDetail: (role, projectId, subjectFilter = 'enrolled', searchQuery = '') => {
 					let viewId;
 					if (role === 'doc') viewId = 'doctor-view';
 					else if (role === 'crc') viewId = 'crc-view';
@@ -555,9 +555,13 @@
 						'closed': '已关闭'
 					};
 					
-					const subjects = subjectFilter === 'all' 
-						? DB.appointments 
-						: DB.appointments.filter(s => s.status === subjectFilter);
+					let subjects = DB.appointments;
+					if (subjectFilter !== 'all') {
+						subjects = subjects.filter(s => s.status === subjectFilter);
+					}
+					if (searchQuery) {
+						subjects = subjects.filter(s => s.name.includes(searchQuery));
+					}
 
 					const html = `
 						<div class="fade-in bg-gray-50 h-full flex flex-col relative">
@@ -667,13 +671,19 @@
 									}).join('')}
 								</div>
 
-								<!-- 受试者动态表格 -->
+								<!-- 受试者表格 -->
 								<div class="p-4 pt-0">
 									<div class="flex justify-between items-center mb-3 px-1">
-										<h3 class="text-sm font-bold text-gray-900">受试者动态</h3>
-										<select onchange="app.renderProjectDetail('${role}', '${projectId}', this.value)" class="text-[10px] bg-white border border-gray-200 rounded px-1 py-0.5 outline-none focus:ring-1 focus:ring-blue-500">
-											${Object.entries(filterMap).map(([k, v]) => `<option value="${k}" ${subjectFilter === k ? 'selected' : ''}>${v}</option>`).join('')}
-										</select>
+										<h3 class="text-sm font-bold text-gray-900 whitespace-nowrap mr-2">受试者表格</h3>
+										<div class="flex items-center gap-2">
+											<div class="flex items-center border border-gray-200 rounded px-1.5 py-0.5 bg-white">
+												<input type="text" id="subject-search-input" value="${searchQuery}" placeholder="姓名" class="w-16 text-[10px] outline-none bg-transparent">
+												<i data-lucide="search" class="text-gray-400 w-3 h-3 cursor-pointer hover:text-blue-500" onclick="app.renderProjectDetail('${role}', '${projectId}', '${subjectFilter}', document.getElementById('subject-search-input').value)"></i>
+											</div>
+											<select onchange="app.renderProjectDetail('${role}', '${projectId}', this.value, document.getElementById('subject-search-input').value)" class="text-[10px] bg-white border border-gray-200 rounded px-1 py-0.5 outline-none focus:ring-1 focus:ring-blue-500">
+												${Object.entries(filterMap).map(([k, v]) => `<option value="${k}" ${subjectFilter === k ? 'selected' : ''}>${v}</option>`).join('')}
+											</select>
+										</div>
 									</div>
 									<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
 										<table class="w-full text-left text-[11px]">
@@ -884,7 +894,7 @@
 									<!-- 受试者表格 -->
 									<div class="p-4 pt-0">
 										<h3 class="text-sm font-bold text-gray-900 mb-3 px-1">
-											最新受试者动态
+											受试者表格
 										</h3>
 										<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
 											<table class="w-full text-left text-xs">
@@ -1640,13 +1650,79 @@
 																<button onclick="app.crc.oneClickEnroll('${task.id}')" class="w-full bg-white text-emerald-600 font-bold py-3 rounded-xl border border-emerald-100 hover:bg-emerald-50 transition">
 																		一键转入组 (快捷转化)
 																</button>
+																<button onclick="app.crc.openRejectDrawer('${task.id}')" class="w-full bg-red-50 text-red-600 font-bold py-3 rounded-xl border border-red-100 hover:bg-red-100 transition">
+																		无法入组
+																</button>
 														</div>
 												</div>
 										</div>
 										<div id="crc-modal-container"></div>
+										<div id="crc-reject-drawer-container"></div>
 								`;
 								app.render('crc-view', html);
 						},
+
+				openRejectDrawer: (id) => {
+					const drawerHtml = `
+						<div class="absolute inset-0 z-50 flex flex-col justify-end">
+							<!-- 遮罩 -->
+							<div class="absolute inset-0 bg-black/50 backdrop-blur-sm fade-in" onclick="document.getElementById('crc-reject-drawer-container').innerHTML = ''"></div>
+							
+							<!-- 内容卡片 -->
+							<div class="bg-white rounded-t-3xl p-6 relative z-10 animate-slide-up shadow-2xl">
+								<div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
+								
+								<h3 class="text-lg font-bold text-gray-900 mb-4">填写无法入组原因</h3>
+								
+								<div class="space-y-4">
+									<textarea id="reject-reason" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:ring-2 focus:ring-red-500 outline-none h-32 resize-none" placeholder="请详细描述无法入组的原因..."></textarea>
+									
+									<button onclick="app.crc.submitReject('${id}')" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-red-700 transition">
+										确认取消入组
+									</button>
+								</div>
+							</div>
+						</div>
+					`;
+					
+					const container = document.getElementById('crc-reject-drawer-container');
+					if (container) {
+						container.innerHTML = drawerHtml;
+					}
+				},
+
+				submitReject: (id) => {
+					const reason = document.getElementById('reject-reason').value;
+					if (!reason.trim()) {
+						alert("请输入无法入组的原因！");
+						return;
+					}
+
+					const taskIndex = DB.appointments.findIndex(a => a.id === id);
+					if (taskIndex > -1) {
+						const task = DB.appointments[taskIndex];
+						const taskName = task.name; // Capture name before update if needed, though reference is fine
+						
+						// 更新状态
+						task.status = 'closed';
+						task.rejectReason = reason;
+						
+						// 通知医生
+						DB.notifications.unshift({
+							title: '入组申请已取消',
+							content: `您推荐的 ${taskName} 已取消入组，原因：${reason}`,
+							time: utils.formatTime(),
+							type: 'error'
+						});
+						
+						alert(`已取消入组！\n原因已通知医生。`);
+						
+						// 关闭抽屉并刷新
+						document.getElementById('crc-reject-drawer-container').innerHTML = '';
+						app.crc.renderHome();
+						app.doctor.refreshBadge();
+					}
+				},
 
 				showModal: (title, content, onConfirm) => {
 					const modalHtml = `

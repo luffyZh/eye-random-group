@@ -14,7 +14,8 @@ const project1Data = [
     group: '实验组',
     groupClass: 'bg-indigo-50 text-indigo-700',
     tags: ['男', '7-10岁'],
-    status: 'enrolled'
+    status: 'enrolled',
+    doctor: '李医生'
   },
   {
     id: '--',
@@ -27,7 +28,8 @@ const project1Data = [
     group: '未入组',
     groupClass: 'text-slate-400 bg-slate-100',
     tags: [],
-    status: 'failed'
+    status: 'failed',
+    doctor: '王医生'
   },
   {
     id: 'CHILD_ELESCREEN_0003',
@@ -40,7 +42,8 @@ const project1Data = [
     group: '实验组',
     groupClass: 'bg-indigo-50 text-indigo-700',
     tags: ['男', '10-14岁'],
-    status: 'enrolled'
+    status: 'enrolled',
+    doctor: '张主任'
   },
   {
     id: 'CHILD_ELESCREEN_0004',
@@ -53,7 +56,8 @@ const project1Data = [
     group: '对照组',
     groupClass: 'bg-emerald-50 text-emerald-600',
     tags: ['女', '7-10岁'],
-    status: 'enrolled'
+    status: 'enrolled',
+    doctor: '李医生'
   },
   {
     id: 'CHILD_ELESCREEN_0005',
@@ -66,7 +70,8 @@ const project1Data = [
     group: '实验组',
     groupClass: 'bg-indigo-50 text-indigo-700',
     tags: ['男', '10-14岁'],
-    status: 'enrolled'
+    status: 'enrolled',
+    doctor: '赵医生'
   },
   {
     id: '--',
@@ -79,7 +84,8 @@ const project1Data = [
     group: '未入组',
     groupClass: 'text-slate-400 bg-slate-100',
     tags: [],
-    status: 'failed'
+    status: 'failed',
+    doctor: '王医生'
   },
   {
     id: 'CHILD_ELESCREEN_0007',
@@ -92,7 +98,8 @@ const project1Data = [
     group: '对照组',
     groupClass: 'bg-emerald-50 text-emerald-600',
     tags: ['男', '7-10岁'],
-    status: 'enrolled'
+    status: 'enrolled',
+    doctor: '张主任'
   },
   {
     id: 'CHILD_ELESCREEN_0008',
@@ -105,7 +112,8 @@ const project1Data = [
     group: '实验组',
     groupClass: 'bg-indigo-50 text-indigo-700',
     tags: ['女', '7-10岁'],
-    status: 'enrolled'
+    status: 'enrolled',
+    doctor: '李医生'
   },
   {
     id: 'CHILD_ELESCREEN_0009',
@@ -118,7 +126,8 @@ const project1Data = [
     group: '对照组',
     groupClass: 'bg-emerald-50 text-emerald-600',
     tags: ['男', '10-14岁'],
-    status: 'enrolled'
+    status: 'enrolled',
+    doctor: '赵医生'
   },
   {
     id: 'CHILD_ELESCREEN_0010',
@@ -131,7 +140,36 @@ const project1Data = [
     group: '实验组',
     groupClass: 'bg-indigo-50 text-indigo-700',
     tags: ['女', '10-14岁'],
-    status: 'enrolled'
+    status: 'enrolled',
+    doctor: '王医生'
+  },
+  {
+    id: '--',
+    screenId: '--',
+    randomId: '--',
+    drugId: '--',
+    name: '王芳',
+    age: '9岁',
+    indicator: '-1.25D',
+    group: '待入组',
+    groupClass: 'text-amber-600 bg-amber-50 border border-amber-200',
+    tags: ['女', '7-10岁'],
+    status: 'pending',
+    doctor: '李医生'
+  },
+  {
+    id: '--',
+    screenId: '--',
+    randomId: '--',
+    drugId: '--',
+    name: '张伟',
+    age: '10岁',
+    indicator: '-2.00D',
+    group: '待入组',
+    groupClass: 'text-amber-600 bg-amber-50 border border-amber-200',
+    tags: ['男', '7-10岁'],
+    status: 'pending',
+    doctor: '赵医生'
   }
 ];
 
@@ -152,7 +190,8 @@ const project2Data = [
     tags: ['男', '>60岁'],
     status: 'enrolled',
     stage: 'Stage 1',
-    isFissioned: false
+    isFissioned: false,
+    doctor: '李主任'
   },
   {
     id: 'CARDIO_0002',
@@ -170,7 +209,8 @@ const project2Data = [
     tags: ['女', '50-60岁'],
     status: 'enrolled',
     stage: 'Stage 2',
-    isFissioned: true
+    isFissioned: true,
+    doctor: '张医生'
   },
   {
     id: 'CARDIO_0005',
@@ -188,7 +228,8 @@ const project2Data = [
     tags: ['男', '>60岁'],
     status: 'enrolled',
     stage: 'Stage 2',
-    isFissioned: true
+    isFissioned: true,
+    doctor: '王主任'
   },
   {
     id: 'CARDIO_0008',
@@ -205,7 +246,8 @@ const project2Data = [
     tags: ['男', '>60岁'],
     status: 'enrolled',
     stage: 'Stage 1',
-    isFissioned: false
+    isFissioned: false,
+    doctor: '李主任'
   },
   {
      id: '--',
@@ -219,7 +261,8 @@ const project2Data = [
      groupClass: 'text-slate-400 bg-slate-100',
      tags: [],
      status: 'failed',
-     stage: '--'
+     stage: '--',
+     doctor: '张医生'
   }
 ];
 
@@ -260,7 +303,9 @@ function renderTable() {
 
     // Apply Filter
     const filterEl = document.getElementById('filter-status');
-    const filterValue = filterEl ? filterEl.value : 'participated';
+    const filterValue = filterEl ? filterEl.value : 'all';
+    const searchInput = document.getElementById('search-input');
+    const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
     if (filterValue === 'participated') {
         data = data.filter(row => row.status === 'enrolled');
@@ -270,8 +315,21 @@ function renderTable() {
         data = data.filter(row => row.status === 'enrolled');
     } else if (filterValue === 'match_failed') {
         data = data.filter(row => row.status === 'failed');
+    } else if (filterValue === 'pending') {
+        data = data.filter(row => row.status === 'pending');
+    }
+    
+    if (searchValue) {
+        data = data.filter(row => row.name.toLowerCase().includes(searchValue));
     }
     // 'all' shows everything
+
+    // Sort data: Pending first
+    data.sort((a, b) => {
+        if (a.status === 'pending' && b.status !== 'pending') return -1;
+        if (a.status !== 'pending' && b.status === 'pending') return 1;
+        return 0;
+    });
 
     // Build Thead
     let theadHtml = `
@@ -286,6 +344,7 @@ function renderTable() {
               <th class="px-6 py-4 font-semibold">指标</th>
               <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">分组</th>
               <th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">维度标签</th>
+              <th class="px-6 py-4 font-semibold">推荐医生</th>
               ${isFission ? '<th class="px-6 py-4 font-semibold group-[.blind-mode-active]:hidden">裂变状态</th>' : ''}
               <th class="px-6 py-4 font-semibold text-right">操作</th>
             </tr>
@@ -300,6 +359,8 @@ function renderTable() {
         
         if (row.status === 'failed') {
              actionButtons = `<button class="text-slate-400 hover:text-brand-600 font-medium text-sm">查看详情</button>`;
+        } else if (row.status === 'pending') {
+             actionButtons = `<button onclick="openProcessEnrollDrawer('${row.name}', '${row.doctor}', '${row.age}', '${row.indicator}')" class="text-brand-600 hover:text-brand-700 font-bold text-sm bg-brand-50 px-3 py-1 rounded-lg border border-brand-200">处理预约</button>`;
         } else if (isFission) {
             if (row.isFissioned) {
                 actionButtons = `
@@ -374,6 +435,7 @@ function renderTable() {
               <td class="px-6 py-4 group-[.blind-mode-active]:hidden">
                   <div class="flex gap-1 flex-wrap">${tagsContent || '--'}</div>
               </td>
+              <td class="px-6 py-4 font-medium text-slate-600">${row.doctor || '--'}</td>
               ${fissionStatusCell}
               <td class="px-6 py-4 text-right">${actionButtons}</td>
             </tr>
@@ -974,6 +1036,141 @@ function confirmFission() {
         };
         
     }, 1500);
+}
+
+/* ================= Process Enroll Drawer Logic ================= */
+
+function openProcessEnrollDrawer(name, doctor, age, indicator) {
+    const drawer = document.getElementById('process-enroll-drawer');
+    const backdrop = document.getElementById('process-enroll-backdrop');
+    const panel = document.getElementById('process-enroll-panel');
+    
+    // Fill Data
+    document.getElementById('pe-name').innerText = name;
+    document.getElementById('pe-avatar').innerText = name.charAt(0);
+    document.getElementById('pe-doctor').innerText = doctor;
+    document.getElementById('pe-age').innerText = age;
+    document.getElementById('pe-indicator').innerText = indicator;
+    
+    // Reset Reject Area
+    const rejectContainer = document.getElementById('reject-reason-container');
+    if (rejectContainer) rejectContainer.classList.add('hidden');
+    const rejectText = document.getElementById('reject-reason-text');
+    if (rejectText) rejectText.value = '';
+    
+    // Show Drawer
+    drawer.classList.remove('hidden');
+    setTimeout(() => {
+        backdrop.classList.remove('opacity-0');
+        panel.classList.remove('translate-x-full');
+    }, 10);
+}
+
+function closeProcessEnrollDrawer() {
+    const drawer = document.getElementById('process-enroll-drawer');
+    const backdrop = document.getElementById('process-enroll-backdrop');
+    const panel = document.getElementById('process-enroll-panel');
+    
+    backdrop.classList.add('opacity-0');
+    panel.classList.add('translate-x-full');
+    
+    setTimeout(() => {
+        drawer.classList.add('hidden');
+    }, 300);
+}
+
+function confirmProcessEnroll() {
+    alert("已确认预约并锁定名额！");
+    closeProcessEnrollDrawer();
+}
+
+function quickEnrollProcess() {
+    closeProcessEnrollDrawer();
+    
+    // Simulate delay for smooth transition
+    setTimeout(() => {
+        openEnrollDrawer();
+        
+        // Fill with current processing data
+        const name = document.getElementById('pe-name').innerText;
+        const age = document.getElementById('pe-age').innerText.replace('岁', '');
+        const indicator = document.getElementById('pe-indicator').innerText.replace('D', '');
+        
+        const nameInput = document.getElementById('input-name');
+        if (nameInput) nameInput.value = name;
+        const ageInput = document.getElementById('input-age');
+        if (ageInput) ageInput.value = age;
+        const myopiaInput = document.getElementById('input-myopia');
+        if (myopiaInput) myopiaInput.value = indicator;
+        
+        alert("已转入正式录入流程，请补全剩余信息。");
+    }, 350);
+}
+
+function toggleRejectReason() {
+    const container = document.getElementById('reject-reason-container');
+    if (container) container.classList.toggle('hidden');
+}
+
+function submitRejectProcess() {
+    const reasonText = document.getElementById('reject-reason-text');
+    const reason = reasonText ? reasonText.value : '';
+    
+    if (!reason.trim()) {
+        alert("请填写无法入组的原因");
+        return;
+    }
+    
+    alert(`已拒绝入组。\n原因：${reason}\n已通知医生。`);
+    closeProcessEnrollDrawer();
+}
+
+/* ================= CRC Task Notification Logic ================= */
+
+function handleCRCTaskNotification(taskId) {
+    // 1. Close Notification Drawer
+    closeNotificationDrawer();
+    
+    // 2. Navigate to Project Detail (Mock navigation)
+    // In a real app, this would route to the specific project. 
+    // Here we assume we are already on or navigating to the project detail view.
+    switchTab('project-detail');
+    
+    // 3. Open Enroll Drawer
+    openEnrollDrawer();
+    
+    // 4. Pre-fill Data (Mock Data based on task ID)
+    // Assuming task 102 corresponds to Wang Fang
+    if (taskId === '102') {
+        document.getElementById('enroll-source').value = '门诊'; // Mock source
+        
+        // Fill Patient Info
+        document.getElementById('input-name').value = '王芳'; // Mock name
+        document.getElementById('input-gender').value = 'female'; // Mock gender
+        document.getElementById('input-phone').value = '13912346789'; // Mock phone
+        document.getElementById('input-age').value = '9'; // Mock age
+        document.getElementById('input-myopia').value = '-1.25'; // Mock myopia
+        
+        // Pre-select Doctor (Simulate selection)
+        // Note: In a real scenario, we need to ensure options are loaded first.
+        // For this demo, we might need a timeout or direct manipulation if options exist.
+        const centerSelect = document.getElementById('enroll-center');
+        if (centerSelect) {
+             centerSelect.value = 'center_sh'; // Mock Center: Shanghai
+             updateEnrollDoctors(); // Trigger doctor list update
+             
+             // Wait for doctor list to populate
+             setTimeout(() => {
+                 const doctorSelect = document.getElementById('enroll-doctor');
+                 if (doctorSelect) doctorSelect.value = '李医生';
+             }, 100);
+        }
+        
+        // Simulate 'Other' fields if necessary (not needed for this case)
+        
+        // Show a toast or message indicating data pre-filled
+        // alert("已自动填入待处理患者信息"); // Optional
+    }
 }
 
 /* ================= Blind Mode Toggle ================= */
