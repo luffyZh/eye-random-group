@@ -713,9 +713,13 @@
 							<!-- Drawer 容器 -->
 							<div id="subject-drawer-container"></div>
 
-							<!-- CRC Float Button -->
+							<!-- Float Button -->
 							${role === 'crc' ? `
 								<button onclick="app.crc.renderEnrollForm()" class="absolute bottom-6 right-6 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-xl hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center z-20">
+									<i data-lucide="plus" width="28" height="28"></i>
+								</button>
+							` : role === 'doc' ? `
+								<button onclick="app.doctor.renderAppointmentForm()" class="absolute bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl hover:bg-blue-700 active:scale-95 transition-all flex items-center justify-center z-20">
 									<i data-lucide="plus" width="28" height="28"></i>
 								</button>
 							` : ''}
