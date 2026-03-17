@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>惟翎·科研管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.2s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* 隐藏滚动条但保留滚动功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- 1. 全局左侧导航栏 (Light Mode) -->
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col transition-all z-20 shadow-sm">
+        <div class="p-5 flex items-center gap-3 border-b border-gray-100">
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-xl shadow-sm">W</div>
+            <h1 class="text-lg font-bold text-gray-800 tracking-wide">惟翎·科研管理</h1>
+        </div>
+        
+        <nav class="flex-1 py-4 space-y-1">
+            <div class="px-5 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-2">核心模块</div>
+            
+            <a href="#" onclick="switchModule('EDC')" id="nav-EDC" class="flex items-center px-5 py-3 bg-blue-50 text-blue-700 border-r-4 border-blue-600 font-medium transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                EDC 电子数据采集
+            </a>
+            
+            <a href="#" onclick="switchModule('IWRS')" id="nav-IWRS" class="flex items-center px-5 py-3 text-gray-600 hover:bg-gray-50 hover:text-blue-600 border-r-4 border-transparent transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                IWRS 中央随机化
+            </a>
+        </nav>
+        
+        <div class="p-4 border-t border-gray-100 text-sm flex items-center bg-gray-50">
+            <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold mr-3 flex items-center justify-center border border-blue-200">PI</div>
+            <div>
+                <div class="text-gray-800 font-medium">研究者 (Admin)</div>
+                <div class="text-xs text-gray-500">上海市眼病防治中心</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 2. 右侧主内容区 -->
+    <main class="flex-1 flex flex-col relative overflow-hidden bg-gray-50/50">
+        
+        <!-- ================= 视图A：项目卡片列表 ================= -->
+        <div id="view-project-list" class="flex-1 overflow-y-auto p-8 fade-in block">
+            <header class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800" id="module-title">EDC 电子数据采集 - 项目列表</h2>
+                <p class="text-gray-500 mt-1">请选择您要操作的临床研究项目</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="project-cards-container">
+                <!-- 卡片由 JS 动态渲染 -->
+            </div>
+        </div>
+
+        <!-- ================= 视图B：项目工作台 (上下布局) ================= -->
+        <div id="view-project-dashboard" class="flex-1 flex-col hidden fade-in h-full">
+            <!-- 面包屑 -->
+            <header class="bg-white px-6 py-3 border-b border-gray-200 flex items-center shadow-sm z-10 shrink-0">
+                <button onclick="backToProjects()" class="text-gray-500 hover:text-blue-600 flex items-center transition-colors text-sm font-medium">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    返回项目列表
+                </button>
+                <span class="text-gray-300 mx-3">/</span>
+                <span class="font-semibold text-gray-800 text-sm" id="dashboard-breadcrumb">项目详情</span>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- 上：项目信息卡片 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-xl font-bold text-gray-900" id="dash-proj-name">项目名称</h2>
+                        <span id="dash-proj-status" class="text-xs font-medium px-2.5 py-1 rounded">状态</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-6" id="dash-proj-desc">项目描述内容...</p>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-100">
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">项目代号</div>
+                            <div class="text-sm font-medium text-gray-800" id="dash-proj-code">CODE</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">主要研究者 (PI)</div>
+                            <div class="text-sm font-medium text-gray-800" id="dash-proj-pi">PI Name</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">参与中心数量</div>
+                            <div class="text-sm font-medium text-gray-800" id="dash-proj-centers">0</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">当前入组人数</div>
+                            <div class="text-sm font-medium text-gray-800" id="dash-proj-enrollment">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 下：受试者数据表格 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-gray-800">受试者列表</h3>
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="搜索筛选号..." class="text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:ring-1 focus:ring-blue-500 outline-none">
+                            <button class="bg-blue-600 text-white text-sm px-4 py-1.5 rounded-md hover:bg-blue-700">添加受试者</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+                                    <th class="px-6 py-3 font-medium">筛选号</th>
+                                    <th class="px-6 py-3 font-medium">随机号</th>
+                                    <th class="px-6 py-3 font-medium">受试者缩写</th>
+                                    <th class="px-6 py-3 font-medium">入组日期</th>
+                                    <th class="px-6 py-3 font-medium">当前状态</th>
+                                    <th class="px-6 py-3 font-medium text-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 text-sm" id="subject-table-body">
+                                <!-- 表格行由 JS 动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 视图C：受试者详情 (左右布局 + 读写切换) ================= -->
+        <div id="view-subject-detail" class="flex-1 flex-col hidden fade-in h-full">
+            <!-- 面包屑与操作栏 -->
+            <header class="bg-white px-6 py-3 border-b border-gray-200 flex items-center justify-between shadow-sm z-10 shrink-0">
+                <div class="flex items-center text-sm">
+                    <button onclick="backToDashboard()" class="text-gray-500 hover:text-blue-600 flex items-center transition-colors font-medium">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        返回项目
+                    </button>
+                    <span class="text-gray-300 mx-3">/</span>
+                    <span class="font-semibold text-gray-800" id="detail-breadcrumb">受试者: XW09001</span>
+                </div>
+                <div class="flex gap-3" id="form-actions">
+                    <!-- 按钮由 JS 根据状态动态渲染 -->
+                </div>
+            </header>
+
+            <div class="flex-1 flex overflow-hidden">
+                <!-- 左侧：访视树 -->
+                <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shrink-0">
+                    <div class="p-4 border-b border-gray-100 bg-gray-50">
+                        <div class="text-xs text-gray-500 mb-1">当前受试者</div>
+                        <div class="font-bold text-gray-800 text-lg" id="sidebar-subject-id">XW09001</div>
+                    </div>
+                    <nav class="flex-1 overflow-y-auto p-3 space-y-1 no-scrollbar" id="visit-nav">
+                        <!-- 访视节点由 JS 动态生成 -->
+                    </nav>
+                </aside>
+
+                <!-- 右侧：动态表单区 -->
+                <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                        <div class="flex justify-between items-end border-b border-gray-200 pb-4 mb-6">
+                            <h2 class="text-xl font-bold text-gray-800" id="current-visit-title">加载中...</h2>
+                            <span id="edit-status-badge" class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">只读模式</span>
+                        </div>
+                        <form id="dynamic-form" class="space-y-8">
+                            <!-- 表单内容由 JS 动态生成 -->
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // ================= 核心数据模拟 =================
+
+        const projects = [
+            {
+                id: 'P001',
+                code: 'MYOPIA-2025',
+                name: '光刻微结构近视管理镜片在儿童青少年近视防控中的有效性及佩戴安全舒适性的随机对照临床研究',
+                desc: '本研究旨在评估新型光刻微结构镜片在延缓儿童青少年近视进展方面的有效性与安全性。',
+                pi: '张主任', centers: 5, status: '进行中', statusColor: 'bg-blue-100 text-blue-800'
+            },
+            {
+                id: 'P002',
+                code: 'ORTHOK-2024',
+                name: '某新型角膜塑形镜多中心随机对照临床试验',
+                desc: '评估夜戴型角膜塑形镜对低中度近视患者的视力矫正效果及角膜安全性。',
+                pi: '李教授', centers: 3, status: '已结束', statusColor: 'bg-gray-100 text-gray-600'
+            },
+            {
+                id: 'P003',
+                code: 'ATROPINE-01',
+                name: '低浓度阿托品滴眼液联合光学干预的真实世界研究',
+                desc: '观察0.01%阿托品滴眼液联合离焦眼镜在临床真实环境下的长期控制效果。',
+                pi: '王主任', centers: 8, status: '准备中', statusColor: 'bg-amber-100 text-amber-800'
+            }
+        ];
+
+        // 动态生成每个项目的10个受试者
+        const subjectsData = {};
+        projects.forEach(p => {
+            subjectsData[p.id] = Array.from({length: 10}, (_, i) => {
+                const num = String(i + 1).padStart(3, '0');
+                const isDropOut = i === 8; // 模拟第9个人退出
+                return {
+                    id: `S-${p.id}-${num}`,
+                    randomId: i < 2 ? '-' : `R${num}`, // 前两个未随机
+                    initials: ['ZSM', 'LJH', 'WXY', 'CQ', 'ZJY'][i % 5],
+                    enrollDate: `2025-10-${String((i%20)+1).padStart(2,'0')}`,
+                    status: isDropOut ? '提前退出' : (i < 2 ? '筛选中' : '随访中'),
+                    statusColor: isDropOut ? 'text-red-600 bg-red-50' : (i < 2 ? 'text-amber-600 bg-amber-50' : 'text-green-600 bg-green-50')
+                };
+            });
+        });
+
+        const visits = [
+            { id: 'v0', name: 'V0 基线期 (0M)', status: 'completed' },
+            { id: 'v1', name: 'V1 访视 (3M)', status: 'active' },
+            { id: 'v2', name: 'V2 访视 (6M)', status: 'pending' },
+            { id: 'v3', name: 'V3 访视 (9M)', status: 'pending' }
+        ];
+
+        const formSchema = {
+            "v1": [
+                {
+                    sectionTitle: "视力检查 (远)",
+                    fields: [
+                        { name: "ucva_od", label: "右眼(OD)裸眼视力", type: "text" },
+                        { name: "ucva_os", label: "左眼(OS)裸眼视力", type: "text" },
+                        { name: "bcva_od", label: "右眼(OD)最佳矫正视力", type: "text" },
+                        { name: "bcva_os", label: "左眼(OS)最佳矫正视力", type: "text" }
+                    ]
+                },
+                {
+                    sectionTitle: "屈光度检查",
+                    fields: [
+                        { name: "sphere_od", label: "右眼(OD)主觉球镜度数 (D)", type: "number" },
+                        { name: "cylinder_od", label: "右眼(OD)主觉柱镜度数 (D)", type: "number" }
+                    ]
+                }
+            ]
+        };
+
+        // 模拟已保存的表单数据
+        let currentFormData = {
+            "ucva_od": "4.8", "ucva_os": "4.9", "bcva_od": "5.0", "bcva_os": "5.0",
+            "sphere_od": "-2.50", "cylinder_od": "-0.50"
+        };
+
+        // ================= 状态管理 =================
+        let currentProject = null;
+        let currentSubject = null;
+        let currentVisit = 'v1';
+        let isEditMode = false;
+
+        // ================= 初始化与导航逻辑 =================
+        
+        window.onload = () => {
+            renderProjectCards();
+        };
+
+        function switchModule(moduleName) {
+            const navEDC = document.getElementById('nav-EDC');
+            const navIWRS = document.getElementById('nav-IWRS');
+            const activeClass = "bg-blue-50 text-blue-700 border-blue-600 font-medium".split(" ");
+            const inactiveClass = "text-gray-600 hover:bg-gray-50 hover:text-blue-600 border-transparent".split(" ");
+
+            if(moduleName === 'EDC') {
+                navEDC.classList.add(...activeClass); navEDC.classList.remove(...inactiveClass);
+                navIWRS.classList.add(...inactiveClass); navIWRS.classList.remove(...activeClass);
+                document.getElementById('module-title').innerText = "EDC 电子数据采集 - 项目列表";
+            } else {
+                navIWRS.classList.add(...activeClass); navIWRS.classList.remove(...inactiveClass);
+                navEDC.classList.add(...inactiveClass); navEDC.classList.remove(...activeClass);
+                document.getElementById('module-title').innerText = "IWRS 中央随机化 - 项目列表";
+            }
+            backToProjects();
+        }
+
+        // ================= 视图A：渲染项目列表 =================
+        function renderProjectCards() {
+            const container = document.getElementById('project-cards-container');
+            container.innerHTML = projects.map(p => `
+                <div onclick="openProject('${p.id}')" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer hover:shadow-md hover:border-blue-400 transition-all flex flex-col h-full">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="${p.statusColor} text-xs font-medium px-2.5 py-1 rounded">${p.status}</span>
+                        <span class="text-gray-400 text-xs font-mono">${p.code}</span>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-900 mb-2 line-clamp-2 leading-tight hover:text-blue-600 transition-colors">${p.name}</h3>
+                    <p class="text-sm text-gray-500 mb-4 line-clamp-2 flex-1">${p.desc}</p>
+                    <div class="flex justify-between items-center text-xs text-gray-500 border-t border-gray-100 pt-4 mt-auto">
+                        <span>PI: ${p.pi}</span>
+                        <span>中心数: ${p.centers}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ================= 视图B：打开项目工作台 =================
+        function openProject(projectId) {
+            currentProject = projects.find(p => p.id === projectId);
+            
+            // 切换视图
+            document.getElementById('view-project-list').classList.add('hidden');
+            document.getElementById('view-project-dashboard').classList.remove('hidden');
+            document.getElementById('view-project-dashboard').classList.add('flex');
+            
+            // 填充项目信息
+            document.getElementById('dash-proj-name').innerText = currentProject.name;
+            document.getElementById('dash-proj-status').className = `text-xs font-medium px-2.5 py-1 rounded ${currentProject.statusColor}`;
+            document.getElementById('dash-proj-status').innerText = currentProject.status;
+            document.getElementById('dash-proj-desc').innerText = currentProject.desc;
+            document.getElementById('dash-proj-code').innerText = currentProject.code;
+            document.getElementById('dash-proj-pi').innerText = currentProject.pi;
+            document.getElementById('dash-proj-centers').innerText = currentProject.centers;
+            document.getElementById('dash-proj-enrollment').innerText = subjectsData[projectId].length;
+
+            // 渲染受试者表格
+            const tbody = document.getElementById('subject-table-body');
+            tbody.innerHTML = subjectsData[projectId].map(s => `
+                <tr class="hover:bg-blue-50/50 transition-colors group">
+                    <td class="px-6 py-4 font-medium text-gray-900">${s.id}</td>
+                    <td class="px-6 py-4 text-gray-600">${s.randomId}</td>
+                    <td class="px-6 py-4 text-gray-600">${s.initials}</td>
+                    <td class="px-6 py-4 text-gray-600">${s.enrollDate}</td>
+                    <td class="px-6 py-4"><span class="px-2 py-1 rounded text-xs font-medium ${s.statusColor}">${s.status}</span></td>
+                    <td class="px-6 py-4 text-right space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="openSubject('${s.id}')" class="text-blue-600 hover:text-blue-800 font-medium">查看详情</button>
+                        <button class="text-gray-400 hover:text-amber-600 font-medium">退出</button>
+                        <button class="text-gray-400 hover:text-red-600 font-medium">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function backToProjects() {
+            document.getElementById('view-project-dashboard').classList.add('hidden');
+            document.getElementById('view-project-dashboard').classList.remove('flex');
+            document.getElementById('view-subject-detail').classList.add('hidden');
+            document.getElementById('view-subject-detail').classList.remove('flex');
+            document.getElementById('view-project-list').classList.remove('hidden');
+        }
+
+        // ================= 视图C：打开受试者详情 =================
+        function openSubject(subjectId) {
+            currentSubject = subjectId;
+            isEditMode = false; // 默认进入只读模式
+            
+            document.getElementById('view-project-dashboard').classList.add('hidden');
+            document.getElementById('view-project-dashboard').classList.remove('flex');
+            document.getElementById('view-subject-detail').classList.remove('hidden');
+            document.getElementById('view-subject-detail').classList.add('flex');
+            
+            document.getElementById('sidebar-subject-id').innerText = subjectId;
+            document.getElementById('detail-breadcrumb').innerText = `受试者: ${subjectId}`;
+            
+            renderVisitNav();
+            loadVisit('v1');
+        }
+
+        function backToDashboard() {
+            document.getElementById('view-subject-detail').classList.add('hidden');
+            document.getElementById('view-subject-detail').classList.remove('flex');
+            document.getElementById('view-project-dashboard').classList.remove('hidden');
+            document.getElementById('view-project-dashboard').classList.add('flex');
+        }
+
+        function renderVisitNav() {
+            const nav = document.getElementById('visit-nav');
+            nav.innerHTML = visits.map(v => {
+                const isActive = v.id === currentVisit;
+                const baseClass = isActive ? "bg-blue-50 border-blue-500 text-blue-700" : "border-transparent text-gray-600 hover:bg-gray-100";
+                return `
+                    <div onclick="loadVisit('${v.id}')" class="cursor-pointer px-4 py-3 rounded-md border-l-4 ${baseClass} transition-all font-medium text-sm">
+                        ${v.name}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ================= 表单渲染与读写切换 =================
+        function loadVisit(visitId) {
+            currentVisit = visitId;
+            renderVisitNav(); // 更新左侧高亮
+            
+            const visit = visits.find(v => v.id === visitId);
+            document.getElementById('current-visit-title').innerText = visit.name + " 数据";
+            
+            renderFormActions();
+            renderFormContent();
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            renderFormActions();
+            renderFormContent();
+        }
+
+        function saveFormData() {
+            if(isEditMode) {
+                // 模拟保存逻辑：从 input 中抓取数据存入 currentFormData
+                const form = document.getElementById('dynamic-form');
+                const formData = new FormData(form);
+                currentFormData = Object.fromEntries(formData.entries());
+                
+                // 保存后切回只读模式
+                isEditMode = false;
+                renderFormActions();
+                renderFormContent();
+                
+                // 简单提示
+                const badge = document.getElementById('edit-status-badge');
+                badge.innerText = "保存成功！";
+                badge.className = "text-xs px-2 py-1 rounded bg-green-100 text-green-700 font-medium";
+                setTimeout(() => {
+                    badge.innerText = "只读模式";
+                    badge.className = "text-xs px-2 py-1 rounded bg-gray-100 text-gray-600";
+                }, 2000);
+            }
+        }
+
+        function renderFormActions() {
+            const container = document.getElementById('form-actions');
+            const badge = document.getElementById('edit-status-badge');
+            
+            if (isEditMode) {
+                badge.innerText = "编辑模式";
+                badge.className = "text-xs px-2 py-1 rounded bg-amber-100 text-amber-700 font-medium border border-amber-200";
+                container.innerHTML = `
+                    <button onclick="toggleEditMode()" class="text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition font-medium">取消</button>
+                    <button onclick="saveFormData()" class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-sm transition font-medium">保存数据</button>
+                `;
+            } else {
+                badge.innerText = "只读模式";
+                badge.className = "text-xs px-2 py-1 rounded bg-gray-100 text-gray-600";
+                container.innerHTML = `
+                    <button class="text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition font-medium">提出质疑 (Query)</button>
+                    <button onclick="toggleEditMode()" class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md shadow-sm transition font-medium flex items-center">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        编辑数据
+                    </button>
+                `;
+            }
+        }
+
+        function renderFormContent() {
+            const schema = formSchema[currentVisit] || [];
+            const formContainer = document.getElementById('dynamic-form');
+            
+            if (schema.length === 0) {
+                formContainer.innerHTML = `<div class="text-gray-400 text-center py-16">该访视节点暂无表单配置</div>`;
+                return;
+            }
+
+            let html = '';
+            schema.forEach(section => {
+                html += `
+                    <div class="border border-gray-200 rounded-lg overflow-hidden mb-6">
+                        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-semibold text-gray-800 flex items-center">
+                            <div class="w-1 h-4 bg-blue-500 rounded mr-2"></div>
+                            ${section.sectionTitle}
+                        </div>
+                        <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                `;
+                
+                section.fields.forEach(field => {
+                    const value = currentFormData[field.name] || '';
+                    
+                    html += `<div class="flex flex-col">
+                        <label class="text-sm font-medium text-gray-500 mb-1.5">${field.label}</label>`;
+                    
+                    if (isEditMode) {
+                        // 编辑模式：渲染 Input
+                        html += `<input type="${field.type}" name="${field.name}" value="${value}"
+                            class="border border-gray-300 rounded-md p-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-shadow bg-white">`;
+                    } else {
+                        // 只读模式：渲染纯文本 (带底部细线，模拟填表感)
+                        html += `<div class="py-2 text-sm font-medium text-gray-900 border-b border-gray-100 min-h-[36px]">
+                            ${value ? value : '<span class="text-gray-300 italic">未录入</span>'}
+                        </div>`;
+                    }
+                    html += `</div>`;
+                });
+
+                html += `</div></div>`;
+            });
+
+            formContainer.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
