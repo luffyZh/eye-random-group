@@ -70,14 +70,22 @@
             </header>
 
             <div class="flex-1 overflow-y-auto p-6 space-y-6">
-                <!-- 返回链接 -->
-                <div class="flex items-center text-sm">
-                    <button onclick="backToProjects()" class="text-gray-500 hover:text-blue-600 flex items-center transition-colors font-medium">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        返回项目列表
+                <!-- 返回链接 + 添加受试者 -->
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center">
+                        <button onclick="backToProjects()" class="text-gray-500 hover:text-blue-600 flex items-center transition-colors font-medium">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            返回项目列表
+                        </button>
+                        <span class="text-gray-300 mx-3">/</span>
+                        <span class="font-semibold text-gray-800" id="dash-breadcrumb">项目详情</span>
+                    </div>
+                    <button onclick="openSubjectDrawer()" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 flex items-center shadow-sm">
+                        <svg class="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        添加受试者
                     </button>
-                    <span class="text-gray-300 mx-3">/</span>
-                    <span class="font-semibold text-gray-800" id="dash-breadcrumb">项目详情</span>
                 </div>
 
                 <!-- 上：项目信息卡片 -->
@@ -97,16 +105,27 @@
 
                 <!-- 下：受试者数据表格 -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-gray-800">受试者列表</h3>
-                        <div class="flex gap-2">
-                            <input type="text" placeholder="搜索筛选号..." class="text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:ring-1 focus:ring-blue-500 outline-none">
-                            <button onclick="openSubjectDrawer()" class="bg-blue-600 text-white text-sm px-4 py-1.5 rounded-md hover:bg-blue-700 flex items-center">
-                                <svg class="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                                添加受试者
-                            </button>
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50/50 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-gray-800">受试者列表</h3>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="flex items-center gap-1">
+                                    <select id="subject-center-filter" onchange="onSubjectFilterChange()" class="border border-gray-300 rounded-md px-2 py-1 text-sm outline-none focus:ring-1 focus:ring-blue-500">
+                                        <option value="all">全部中心</option>
+                                        <option value="上海市眼病防治中心">上海市眼病防治中心</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <select id="subject-source-filter" onchange="onSubjectFilterChange()" class="border border-gray-300 rounded-md px-2 py-1 text-sm outline-none focus:ring-1 focus:ring-blue-500">
+                                        <option value="all">全部来源</option>
+                                        <option value="门诊">门诊</option>
+                                        <option value="招募">招募</option>
+                                    </select>
+                                </div>
+                                <input id="subject-search-input" type="text" placeholder="筛选号" class="flex-1 text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:ring-1 focus:ring-blue-500 outline-none">
+                                <button onclick="applySubjectSearch()" class="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700">搜索</button>
+                                <button onclick="resetSubjectFilters()" class="text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-50">重置</button>
+                            </div>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
@@ -122,7 +141,10 @@
                                     <th class="px-6 py-3 font-medium">随机号</th>
                                     <th class="px-6 py-3 font-medium">受试者缩写</th>
                                     <th class="px-6 py-3 font-medium">受试者来源</th>
+                                    <th class="px-6 py-3 font-medium">中心</th>
+                                    <th class="px-6 py-3 font-medium">科室</th>
                                     <th class="px-6 py-3 font-medium">入组日期</th>
+                                    <th class="px-6 py-3 font-medium">结束日期</th>
                                     <th class="px-6 py-3 font-medium">当前状态</th>
                                     <th class="px-6 py-3 font-medium text-right">操作</th>
                                 </tr>
@@ -211,6 +233,9 @@
                 const enrollmentStatus = isDropOut ? '提前退出' : (i < 2 ? '筛选中' : '入组');
                 const stage = isDropOut ? '-' : (i < 2 ? '-' : (['基线','3M','6M'][(i - 2) % 3]));
                 const enrollmentStatusColor = enrollmentStatus === '提前退出' ? 'text-red-700 bg-red-50' : (enrollmentStatus === '筛选中' ? 'text-amber-700 bg-amber-50' : 'text-green-700 bg-green-50');
+                const center = '上海市眼病防治中心';
+                const department = '眼科';
+                const endDate = isDropOut || p.status === '已结束' ? `2026-01-${String((i%20)+1).padStart(2,'0')}` : '';
                 return {
                     id: `S-${p.id}-${num}`,
                     randomId: i < 2 ? '-' : `R${num}`,
@@ -219,7 +244,10 @@
                     enrollmentStatus,
                     enrollmentStatusColor,
                     stage,
-                    source: ['门诊','招募'][i % 2]
+                    source: ['门诊','招募'][i % 2],
+                    center,
+                    department,
+                    endDate
                 };
             });
         });
@@ -384,6 +412,9 @@
 
         let subjectSortField = 'enrollDate';
         let subjectSortDir = 'desc';
+        let subjectFilterCenter = 'all';
+        let subjectFilterSource = 'all';
+        let subjectSearchQuery = '';
 
         function setSubjectSort(field) {
             if (subjectSortField === field) {
@@ -392,6 +423,33 @@
                 subjectSortField = field;
                 subjectSortDir = field === 'id' ? 'asc' : 'desc';
             }
+            updateSubjectTable();
+        }
+
+        function onSubjectFilterChange() {
+            const centerSelect = document.getElementById('subject-center-filter');
+            const sourceSelect = document.getElementById('subject-source-filter');
+            subjectFilterCenter = centerSelect ? centerSelect.value : 'all';
+            subjectFilterSource = sourceSelect ? sourceSelect.value : 'all';
+            updateSubjectTable();
+        }
+
+        function applySubjectSearch() {
+            const input = document.getElementById('subject-search-input');
+            subjectSearchQuery = (input?.value || '').trim();
+            updateSubjectTable();
+        }
+
+        function resetSubjectFilters() {
+            subjectFilterCenter = 'all';
+            subjectFilterSource = 'all';
+            subjectSearchQuery = '';
+            const centerSelect = document.getElementById('subject-center-filter');
+            const sourceSelect = document.getElementById('subject-source-filter');
+            const input = document.getElementById('subject-search-input');
+            if (centerSelect) centerSelect.value = 'all';
+            if (sourceSelect) sourceSelect.value = 'all';
+            if (input) input.value = '';
             updateSubjectTable();
         }
 
@@ -424,7 +482,16 @@
 
         function updateSubjectTable() {
             if (!currentProject) return;
-            const list = subjectsData[currentProject.id].slice();
+            let list = subjectsData[currentProject.id].slice();
+            if (subjectFilterCenter !== 'all') {
+                list = list.filter(s => s.center === subjectFilterCenter);
+            }
+            if (subjectFilterSource !== 'all') {
+                list = list.filter(s => s.source === subjectFilterSource);
+            }
+            if (subjectSearchQuery) {
+                list = list.filter(s => s.id.includes(subjectSearchQuery));
+            }
             list.sort((a, b) => {
                 if (subjectSortField === 'enrollDate') {
                     const da = new Date(a.enrollDate).getTime();
@@ -444,7 +511,10 @@
                     <td class="px-6 py-4">
                         <span class="px-2 py-1 rounded text-xs font-medium ${getSourceClass(s.source)}">${s.source || '-'}</span>
                     </td>
+                    <td class="px-6 py-4 text-gray-600">${s.center || '-'}</td>
+                    <td class="px-6 py-4 text-gray-600">${s.department || '-'}</td>
                     <td class="px-6 py-4 text-gray-600">${s.enrollDate}</td>
+                    <td class="px-6 py-4 text-gray-600">${s.endDate || ''}</td>
                     <td class="px-6 py-4">
                         ${
                             s.enrollmentStatus === '提前退出' 
@@ -579,7 +649,10 @@
                 enrollmentStatus: '入组',
                 enrollmentStatusColor: 'text-green-700 bg-green-50',
                 stage: '基线',
-                source
+                source,
+                center: '上海市眼病防治中心',
+                department: '眼科',
+                endDate: ''
             };
             subjectsData[currentProject.id].push(newSubject);
             updateSubjectTable();
