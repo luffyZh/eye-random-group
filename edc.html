@@ -265,7 +265,9 @@
         const visits = [
             { id: 'v0', name: 'V0 基线期 (0M)' },
             { id: 'v1', name: 'V1 访视 (3M)' },
-            { id: 'v2', name: 'V2 访视 (6M)' }
+            { id: 'v2', name: 'V2 访视 (6M)' },
+            { id: 'v3', name: 'V3 访视 (9M)' },
+            { id: 'v4', name: 'V4 访视 (12M)' }
         ];
 
         // 模拟表单数据 (包含空值测试)
@@ -489,6 +491,159 @@
                     { id: "defocus_fitter", label: "验配师", type: "select", options: ["验配师A","验配师B","验配师C"], width: "col-span-1" },
                     { id: "defocus_receive", label: "离焦镜签收", type: "text", width: "col-span-1" },
                     { id: "defocus_date", label: "日期", type: "date", width: "col-span-1" }
+                ]
+            }
+        ];
+
+        const followUpSchema = [
+            {
+                title: "1. 离焦镜评估", type: "eye_grid",
+                rows: [
+                    { label: "是否有破损、划痕", id_od: "defocus_damage_od", id_os: "defocus_damage_os", type: "radio", options: ["否", "是"] },
+                    { label: "其他异常情况描述", id_od: "defocus_other_od", id_os: "defocus_other_os", type: "radio_with_input", options: ["无", "有"], inputId_od: "defocus_other_desc_od", inputId_os: "defocus_other_desc_os", inputLabel: "描述" }
+                ]
+            },
+            {
+                title: "2. 视力检查", type: "eye_grid",
+                rows: [
+                    { label: "裸眼视力（远）", id_od: "ucva_dist_od", id_os: "ucva_dist_os", type: "number", step: "0.01" },
+                    { label: "戴镜视力（远）", id_od: "gl_va_dist_od", id_os: "gl_va_dist_os", type: "number", step: "0.01" },
+                    { label: "最佳矫正视力（远）", id_od: "bcva_dist_od", id_os: "bcva_dist_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "3. 屈光度检查", type: "eye_grid",
+                rows: [
+                    { label: "主觉球镜度数 (D)", id_od: "subj_sph_od", id_os: "subj_sph_os", type: "number", step: "0.01" },
+                    { label: "主觉柱镜度数 (D)", id_od: "subj_cyl_od", id_os: "subj_cyl_os", type: "number", step: "0.01" },
+                    { label: "客观球镜度数 (D)", id_od: "obj_sph_od", id_os: "obj_sph_os", type: "number", step: "0.01" },
+                    { label: "客观柱镜度数 (D)", id_od: "obj_cyl_od", id_os: "obj_cyl_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "4. 调节指标", type: "grid",
+                fields: [
+                    { id: "nra", label: "负相对调节 (NRA) (D)", type: "number", step: "0.01", width: "col-span-2" },
+                    { id: "pra", label: "正相对调节 (PRA) (D)", type: "number", step: "0.01", width: "col-span-2" },
+                    { id: "bcc", label: "调节反应 (BCC) (D)", type: "number", step: "0.01", width: "col-span-4" },
+                    
+                    { id: "sep_1", type: "separator", label: "调节幅度 (AMP)", width: "col-span-4" },
+                    { id: "amp_ou", label: "双眼", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "amp_od", label: "右眼", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "amp_os", label: "左眼", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "amp_note", label: "备注", type: "text", width: "col-span-1" },
+
+                    { id: "sep_2", type: "separator", label: "调节灵敏度 (Flipper)", width: "col-span-4" },
+                    { id: "flipper_ou", label: "双眼", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "flipper_od", label: "右眼", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "flipper_os", label: "左眼", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "flipper_note", label: "备注", type: "text", width: "col-span-1" }
+                ]
+            },
+            {
+                title: "5. 眼压检查", type: "eye_grid",
+                rows: [
+                    { label: "非接触检查 (mmHg)", id_od: "iop_nc_od", id_os: "iop_nc_os", type: "number", step: "0.1" }
+                ]
+            },
+            {
+                title: "6. 眼球光学生物测量", type: "eye_grid",
+                rows: [
+                    { label: "眼轴长度 (mm)", id_od: "al_od", id_os: "al_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "7. 脉络膜检查", type: "eye_grid",
+                rows: [
+                    { label: "脉络膜厚度 (μm)", id_od: "ct_od", id_os: "ct_os", type: "number", step: "1" }
+                ]
+            },
+            {
+                title: "8. 角膜地形图", type: "eye_grid",
+                rows: [
+                    { label: "平坦K值 (D)", id_od: "k_flat_od", id_os: "k_flat_os", type: "number", step: "0.01" },
+                    { label: "陡峭K值 (D)", id_od: "k_steep_od", id_os: "k_steep_os", type: "number", step: "0.01" },
+                    { label: "角膜散光 (D)", id_od: "cyl_cornea_od", id_os: "cyl_cornea_os", type: "number", step: "0.01" },
+                    { label: "散光类型", id_od: "cyl_type_od", id_os: "cyl_type_os", type: "radio", options: ["顺规", "逆规", "其他"] },
+                    { label: "角膜直径 (mm)", id_od: "cornea_dia_od", id_os: "cornea_dia_os", type: "number", step: "0.1" },
+                    { label: "瞳孔直径 (mm)", id_od: "pupil_dia_od", id_os: "pupil_dia_os", type: "number", step: "0.1" },
+                    { label: "中央前房深度 (mm)", id_od: "acd_od", id_os: "acd_os", type: "number", step: "0.01" },
+                    { label: "中央角膜厚度 (μm)", id_od: "cct_od", id_os: "cct_os", type: "number", step: "1" }
+                ]
+            },
+            {
+                title: "9. 对比敏感度（戴镜）", type: "matrix",
+                rows: [
+                    { id: "cs_ou", label: "OU" },
+                    { id: "cs_od", label: "OD" },
+                    { id: "cs_os", label: "OS" }
+                ],
+                cols: [
+                    { id: "aulcsf", label: "AULCSF" },
+                    { id: "acuity", label: "Acuity" },
+                    { id: "c1_0", label: "1.0c/d" },
+                    { id: "c1_5", label: "1.5c/d" },
+                    { id: "c3_0", label: "3.0c/d" },
+                    { id: "c6_0", label: "6.0c/d" },
+                    { id: "c12_0", label: "12.0c/d" },
+                    { id: "c18_0", label: "18.0c/d" }
+                ],
+                cellType: "number",
+                step: "0.01"
+            },
+            {
+                title: "10. 波前像差（5mm）", type: "eye_grid",
+                rows: [
+                    { label: "总高阶像差 tHOA (μm)", id_od: "wf_thoa_od", id_os: "wf_thoa_os", type: "number", step: "0.001" },
+                    { label: "球差 Z40 (μm)", id_od: "wf_z40_od", id_os: "wf_z40_os", type: "number", step: "0.001" }
+                ]
+            },
+            {
+                title: "11. 裂隙灯检查", type: "eye_grid",
+                rows: [
+                    { label: "眼前节", id_od: "slit_antseg_od", id_os: "slit_antseg_os", type: "radio", options: ["+", "-"] }
+                ]
+            },
+            {
+                title: "12. 眼底检查", type: "eye_grid",
+                rows: [
+                    { label: "眼后节", id_od: "fundus_postseg_od", id_os: "fundus_postseg_os", type: "radio", options: ["+", "-"] }
+                ]
+            },
+            {
+                title: "13. 眼位检查", type: "eye_grid",
+                rows: [
+                    { label: "眼位", id_od: "eye_position_od", id_os: "eye_position_os", type: "radio", options: ["正视","隐斜","间歇性斜视"] }
+                ]
+            },
+            {
+                title: "14. 屈光度检查（扩瞳后）", type: "eye_grid",
+                rows: [
+                    { label: "客观球镜度数 (D)", id_od: "cycl_obj_sph_od", id_os: "cycl_obj_sph_os", type: "number", step: "0.01" },
+                    { label: "客观柱镜度数 (D)", id_od: "cycl_obj_cyl_od", id_os: "cycl_obj_cyl_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "15. 多光谱屈光地形图（扩瞳后）", type: "eye_grid",
+                rows: [
+                    { label: "TRVD", id_od: "msrt_trvd_od", id_os: "msrt_trvd_os", type: "number", step: "0.01" },
+                    { label: "RVD-0", id_od: "msrt_rvd0_od", id_os: "msrt_rvd0_os", type: "number", step: "0.01" },
+                    { label: "RVD-15", id_od: "msrt_rvd15_od", id_os: "msrt_rvd15_os", type: "number", step: "0.01" },
+                    { label: "RVD-45", id_od: "msrt_rvd45_od", id_os: "msrt_rvd45_os", type: "number", step: "0.01" },
+                    { label: "RVD-S", id_od: "msrt_rvds_od", id_os: "msrt_rvds_os", type: "number", step: "0.01" },
+                    { label: "RVD-I", id_od: "msrt_rvdi_od", id_os: "msrt_rvdi_os", type: "number", step: "0.01" },
+                    { label: "RVD-T", id_od: "msrt_rvdt_od", id_os: "msrt_rvdt_os", type: "number", step: "0.01" },
+                    { label: "RVD-N", id_od: "msrt_rvdn_od", id_os: "msrt_rvdn_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "16. 异常情况", type: "exceptions",
+                items: [
+                    { id: "dev_protocol", label: "自上次访视至本次访视有无发生方案偏离情况", linkText: "《方案偏离表》" },
+                    { id: "dev_device", label: "本次访视有无发生器械缺陷情况", linkText: "《器械缺陷表》" },
+                    { id: "dev_ae", label: "自上次访视至本次访视有无发生不良事件AE情况", linkText: "《不良事件AE表》" },
+                    { id: "dev_sae", label: "自上次访视至本次访视有无发生严重不良事件SAE情况", linkText: "《严重不良事件SAE表》" },
+                    { id: "dev_med", label: "自上次访视至本次访视有无发生合并用药情况", linkText: "《合并用药表》" }
                 ]
             }
         ];
@@ -894,58 +1049,134 @@
 
         function renderForm() {
             const container = document.getElementById('dynamic-form');
-            if(currentVisit !== 'v0') {
+            let schemaToRender = [];
+
+            if (currentVisit === 'v0') {
+                schemaToRender = formSchema;
+            } else if (['v1', 'v2', 'v3', 'v4'].includes(currentVisit)) {
+                schemaToRender = followUpSchema;
+            } else {
                 container.innerHTML = `<div class="text-gray-400 text-center py-16">该访视节点暂无表单配置</div>`;
                 renderTOC([]); 
                 return;
             }
 
             let html = '';
-            html += renderMetaCard();
-            const anchors = [{ id: 'sec-meta', title: '记录信息' }];
-            formSchema.forEach((sec, idx) => {
-                const anchorId = `sec-${idx+1}`;
-                anchors.push({ id: anchorId, title: sec.title });
-                html += `<div id="${anchorId}" class="border border-gray-200 rounded-lg overflow-hidden mb-6 shadow-sm">
-                            <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-bold text-gray-800 flex items-center">
-                                <div class="w-1 h-4 bg-blue-600 rounded mr-2"></div>${sec.title}
-                            </div><div class="p-5">`;
-                if (sec.type === 'criteria') html += renderCriteria(sec);
-                else if (sec.type === 'grid') html += renderGrid(sec);
-                else if (sec.type === 'eye_grid') html += renderEyeGrid(sec);
-                else if (sec.type === 'eye_grid_plus') html += renderEyeGridPlus(sec);
-                else if (sec.type === 'matrix') html += renderMatrix(sec);
-                html += `</div></div>`;
-            });
-            container.innerHTML = html;
-            renderTOC(anchors);
-        }
-
-        function renderMetaCard() {
-            const isBaseline = currentVisit === 'v0';
+            // 记录信息 (Meta Card)
             const invOpts = Array.from(new Set([currentProject?.pi, "张主任","李教授","王主任"].filter(Boolean)));
             const recOpts = ["张玲","高越","林慧","周倩","李娜","王珂"];
-            const fields = [
+            const metaFields = [
                 { id: 'exam_date', label: '检查日期', type: 'date' },
                 { id: 'investigator', label: '研究者', type: 'select', options: invOpts },
                 { id: 'record_date', label: '记录日期', type: 'date' },
                 { id: 'recorder', label: '记录者', type: 'select', options: recOpts }
             ];
-            if (isBaseline) fields.push({ id: 'consent_date', label: '签署知情同意书日期', type: 'date' });
-            let html = `<div id="sec-meta" class="border border-gray-200 rounded-lg overflow-hidden mb-6 shadow-sm"><div class="p-5">`;
-            html += `<div class="grid grid-cols-5 gap-x-6">`;
+            if (currentVisit === 'v0') {
+                metaFields.push({ id: 'consent_date', label: '签署知情同意书日期', type: 'date' });
+            }
+            
+            html += renderMetaCard(metaFields);
+            const anchors = [{ id: 'sec-meta', title: '记录信息' }];
+
+            schemaToRender.forEach((sec, idx) => {
+                const anchorId = `sec-${idx+1}`;
+                anchors.push({ id: anchorId, title: sec.title });
+                
+                html += `<div id="${anchorId}" class="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6 shadow-sm transition-all hover:shadow-md">
+                            <div class="bg-gray-50/80 px-5 py-3 border-b border-gray-200 font-bold text-gray-800 flex items-center">
+                                <div class="w-1 h-4 bg-blue-600 rounded mr-3"></div>${sec.title}
+                            </div>
+                            <div class="p-6">`;
+                
+                if (sec.type === 'criteria') html += renderCriteria(sec);
+                else if (sec.type === 'grid') html += renderGrid(sec);
+                else if (sec.type === 'eye_grid') html += renderEyeGrid(sec);
+                else if (sec.type === 'eye_grid_plus') html += renderEyeGridPlus(sec);
+                else if (sec.type === 'matrix') html += renderMatrix(sec);
+                else if (sec.type === 'exceptions') html += renderExceptions(sec);
+                
+                html += `   </div>
+                        </div>`;
+            });
+            
+            container.innerHTML = html;
+            renderTOC(anchors);
+        }
+
+        function renderExceptions(sec) {
+            let html = `<div class="space-y-4 divide-y divide-gray-100">`;
+            sec.items.forEach(item => {
+                const val = formData[item.id] || '';
+                html += `
+                    <div class="pt-4 first:pt-0">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex-1 flex gap-2">
+                                <span class="text-sm font-medium text-gray-700 block mb-2 sm:mb-0">${item.label}</span>
+                                ${item.linkText ? `
+                                    <a href="#" onclick="alert('即将打开: ${item.linkText}'); return false;" class="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center hover:underline">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        详见${item.linkText}
+                                    </a>
+                                ` : ''}
+                            </div>
+                            <div class="flex items-center gap-6 shrink-0">
+                                <div class="flex gap-4">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="${item.id}" value="无" ${val==='无'?'checked':''} ${!isEditMode?'disabled':''} class="form-radio text-blue-600 w-4 h-4 transition duration-150 ease-in-out">
+                                        <span class="ml-2 text-sm text-gray-700">无</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="${item.id}" value="有" ${val==='有'?'checked':''} ${!isEditMode?'disabled':''} class="form-radio text-blue-600 w-4 h-4 transition duration-150 ease-in-out">
+                                        <span class="ml-2 text-sm text-gray-700">有</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function renderMetaCard(customFields) {
+            // 如果传入了自定义字段则使用，否则使用默认逻辑 (兼容旧代码调用，虽然这里我们已经重构了调用方)
+            let fields = customFields;
+            if (!fields) {
+                const isBaseline = currentVisit === 'v0';
+                const invOpts = Array.from(new Set([currentProject?.pi, "张主任","李教授","王主任"].filter(Boolean)));
+                const recOpts = ["张玲","高越","林慧","周倩","李娜","王珂"];
+                fields = [
+                    { id: 'exam_date', label: '检查日期', type: 'date' },
+                    { id: 'investigator', label: '研究者', type: 'select', options: invOpts },
+                    { id: 'record_date', label: '记录日期', type: 'date' },
+                    { id: 'recorder', label: '记录者', type: 'select', options: recOpts }
+                ];
+                if (isBaseline) fields.push({ id: 'consent_date', label: '签署知情同意书日期', type: 'date' });
+            }
+
+            let html = `<div id="sec-meta" class="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6 shadow-sm">
+                            <div class="bg-blue-50/50 px-5 py-3 border-b border-blue-100 font-bold text-blue-800 flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                记录信息
+                            </div>
+                            <div class="p-5">`;
+            html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">`;
+            
             fields.forEach(f => {
                 const val = formData[f.id] || '';
-                html += `<div class="col-span-1 flex flex-col">
-                    <label class="text-sm font-medium text-gray-600 mb-1.5">${f.label}</label>`;
+                html += `<div class="col-span-1 flex flex-col group">
+                    <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 group-hover:text-blue-600 transition-colors">${f.label}</label>`;
                 if (!isEditMode) {
-                    html += `<div class="py-2 text-sm font-medium text-gray-900 border-b border-gray-100 min-h-[36px]">${val || '<span class="text-gray-300">--</span>'}</div>`;
+                    html += `<div class="py-2 text-sm font-medium text-gray-900 border-b border-gray-200 min-h-[36px]">${val || '<span class="text-gray-300 italic">--</span>'}</div>`;
                 } else {
                     if (f.type === 'select') {
-                        const optionsHtml = (f.options||[]).map(opt => `<option value="${opt}" ${val===opt?'selected':''}>${opt}</option>`).join('');
-                        html += `<select name="${f.id}" class="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">${optionsHtml}</select>`;
-                    } else {
-                        html += `<input type="${f.type}" name="${f.id}" value="${val}" class="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">`;
+                        html += `<div class="relative"><select name="${f.id}" class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm transition-shadow shadow-sm">
+                            <option value="">请选择</option>
+                            ${f.options.map(opt => `<option value="${opt}" ${val===opt?'selected':''}>${opt}</option>`).join('')}
+                        </select></div>`;
+                    } else if (f.type === 'date') {
+                         html += `<input type="date" name="${f.id}" value="${val}" class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-3 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm transition-shadow shadow-sm text-gray-900">`;
                     }
                 }
                 html += `</div>`;
