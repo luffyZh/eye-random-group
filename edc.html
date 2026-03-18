@@ -143,9 +143,9 @@
                                     <th class="px-6 py-3 font-medium">受试者来源</th>
                                     <th class="px-6 py-3 font-medium">中心</th>
                                     <th class="px-6 py-3 font-medium">科室</th>
+                                    <th class="px-6 py-3 font-medium">当前状态</th>
                                     <th class="px-6 py-3 font-medium">入组日期</th>
                                     <th class="px-6 py-3 font-medium">结束日期</th>
-                                    <th class="px-6 py-3 font-medium">当前状态</th>
                                     <th class="px-6 py-3 font-medium text-right">操作</th>
                                 </tr>
                             </thead>
@@ -197,8 +197,8 @@
                         </div>
                     </aside>
 
-                    <!-- 右侧：动态表单区 -->
-                    <main class="flex-1 overflow-y-auto p-6">
+                    <!-- 中间：动态表单区 -->
+                    <main id="form-scroll-container" class="flex-1 overflow-y-auto p-6">
                         <div class="w-full bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-10">
                             <div class="flex justify-between items-end border-b border-gray-200 pb-4 mb-6">
                                 <h2 class="text-2xl font-bold text-gray-800" id="current-visit-title">加载中...</h2>
@@ -209,6 +209,16 @@
                             </form>
                         </div>
                     </main>
+                    
+                    <!-- 右侧：目录 -->
+                    <aside class="w-64 shrink-0 p-6 pl-0">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full">
+                            <div class="px-5 py-3 border-b border-gray-100 bg-gray-50/80 font-bold text-gray-700 text-sm">目录</div>
+                            <nav id="toc-nav" class="p-3 space-y-1 text-sm overflow-y-auto max-h-full">
+                                <!-- 目录由 JS 动态生成 -->
+                            </nav>
+                        </div>
+                    </aside>
                 </div>
             </div>
         </div>
@@ -342,6 +352,143 @@
                     { label: "主觉柱镜度数 (D)", id_od: "subj_cyl_od", id_os: "subj_cyl_os", type: "number", step: "0.25" },
                     { label: "客观球镜度数 (D)", id_od: "obj_sph_od", id_os: "obj_sph_os", type: "number", step: "0.25" },
                     { label: "客观柱镜度数 (D)", id_od: "obj_cyl_od", id_os: "obj_cyl_os", type: "number", step: "0.25" }
+                ]
+            },
+            {
+                title: "5. 调节指标模块", type: "grid",
+                fields: [
+                    { id: "nra", label: "负相对调节 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "pra", label: "正相对调节 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "bcc", label: "调节反应 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "empty_adj_1", type: "empty", width: "col-span-1" },
+                    { id: "amp_ou", label: "调节幅度-双眼 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "amp_od", label: "调节幅度-右眼 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "amp_os", label: "调节幅度-左眼 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "amp_note", label: "调节幅度备注", type: "text", width: "col-span-1" },
+                    { id: "flipper_ou", label: "调节灵敏度-双眼 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "flipper_od", label: "调节灵敏度-右眼 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "flipper_os", label: "调节灵敏度-左眼 (D)", type: "number", step: "0.01", width: "col-span-1" },
+                    { id: "flipper_note", label: "调节灵敏度备注", type: "text", width: "col-span-1" }
+                ]
+            },
+            {
+                title: "6. 眼压检查模块", type: "eye_grid",
+                rows: [
+                    { label: "非接触眼压 (mmHg)", id_od: "iop_nct_od", id_os: "iop_nct_os", type: "number", step: "0.1" }
+                ]
+            },
+            {
+                title: "7. 眼球光学生物测量", type: "eye_grid",
+                rows: [
+                    { label: "眼轴长度 (mm)", id_od: "axial_len_od", id_os: "axial_len_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "8. 脉络膜检查模块", type: "eye_grid",
+                rows: [
+                    { label: "脉络膜厚度 (μm)", id_od: "choro_thk_od", id_os: "choro_thk_os", type: "number", step: "1" }
+                ]
+            },
+            {
+                title: "9. 角膜地形图检查模块", type: "eye_grid",
+                rows: [
+                    { label: "平坦 K 值 (D)", id_od: "k_flat_od", id_os: "k_flat_os", type: "number", step: "0.01" },
+                    { label: "陡峭 K 值 (D)", id_od: "k_steep_od", id_os: "k_steep_os", type: "number", step: "0.01" },
+                    { label: "角膜散光 (D)", id_od: "k_astig_od", id_os: "k_astig_os", type: "number", step: "0.01" },
+                    { label: "散光类型", id_od: "ast_type_od", id_os: "ast_type_os", type: "radio_with_input", options: ["顺规","逆规","其他"], inputLabel: "原因", inputId_od: "ast_type_other_od", inputId_os: "ast_type_other_os" },
+                    { label: "角膜直径 (mm)", id_od: "corneal_dia_od", id_os: "corneal_dia_os", type: "number", step: "0.1" },
+                    { label: "瞳孔直径 (mm)", id_od: "pupil_dia_od", id_os: "pupil_dia_os", type: "number", step: "0.1" },
+                    { label: "中央前房深度 (mm)", id_od: "acd_od", id_os: "acd_os", type: "number", step: "0.01" },
+                    { label: "中央角膜厚度 (μm)", id_od: "cct_od", id_os: "cct_os", type: "number", step: "1" }
+                ]
+            },
+            {
+                title: "10. 对比敏感度（试镜架）", type: "matrix",
+                rows: [
+                    { id: "cs_ou", label: "OU" },
+                    { id: "cs_od", label: "OD" },
+                    { id: "cs_os", label: "OS" }
+                ],
+                cols: [
+                    { id: "aulcsf", label: "AULCSF" },
+                    { id: "acuity", label: "Acuity" },
+                    { id: "c1_0", label: "1.0c/d" },
+                    { id: "c1_5", label: "1.5c/d" },
+                    { id: "c3_0", label: "3.0c/d" },
+                    { id: "c6_0", label: "6.0c/d" },
+                    { id: "c12_0", label: "12.0c/d" },
+                    { id: "c18_0", label: "18.0c/d" }
+                ],
+                cellType: "number",
+                step: "0.01"
+            },
+            {
+                title: "11. 视觉质量模块", type: "eye_grid",
+                rows: [
+                    { label: "MTF-cutoff (c/deg)", id_od: "mtf_cutoff_od", id_os: "mtf_cutoff_os", type: "number", step: "0.01" },
+                    { label: "OSI", id_od: "osi_od", id_os: "osi_os", type: "number", step: "0.01" },
+                    { label: "预测视力", id_od: "pred_va_od", id_os: "pred_va_os", type: "number", step: "0.01" },
+                    { label: "VA 100%", id_od: "va100_od", id_os: "va100_os", type: "number", step: "0.01" },
+                    { label: "VA 20%", id_od: "va20_od", id_os: "va20_os", type: "number", step: "0.01" },
+                    { label: "VA 9%", id_od: "va9_od", id_os: "va9_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "12. 波前像差（5mm）", type: "eye_grid",
+                rows: [
+                    { label: "总高阶像差 tHOA (μm)", id_od: "wf_thoa_od", id_os: "wf_thoa_os", type: "number", step: "0.001" },
+                    { label: "球差 Z40 (μm)", id_od: "wf_z40_od", id_os: "wf_z40_os", type: "number", step: "0.001" }
+                ]
+            },
+            {
+                title: "13. 裂隙灯检查", type: "eye_grid",
+                rows: [
+                    { label: "眼前节", id_od: "slit_antseg_od", id_os: "slit_antseg_os", type: "radio", options: ["+", "-"] }
+                ]
+            },
+            {
+                title: "14. 眼底检查", type: "eye_grid",
+                rows: [
+                    { label: "眼后节", id_od: "fundus_postseg_od", id_os: "fundus_postseg_os", type: "radio", options: ["+", "-"] }
+                ]
+            },
+            {
+                title: "15. 眼位检查", type: "eye_grid",
+                rows: [
+                    { label: "眼位", id_od: "eye_position_od", id_os: "eye_position_os", type: "radio", options: ["正视","隐斜","间歇性斜视"] }
+                ]
+            },
+            {
+                title: "16. 屈光度检查（扩瞳后）", type: "eye_grid",
+                rows: [
+                    { label: "客观球镜度数 (D)", id_od: "cycl_obj_sph_od", id_os: "cycl_obj_sph_os", type: "number", step: "0.01" },
+                    { label: "客观柱镜度数 (D)", id_od: "cycl_obj_cyl_od", id_os: "cycl_obj_cyl_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "17. 多光谱屈光地形图（扩瞳后）", type: "eye_grid",
+                rows: [
+                    { label: "TRVD", id_od: "msrt_trvd_od", id_os: "msrt_trvd_os", type: "number", step: "0.01" },
+                    { label: "RVD-0", id_od: "msrt_rvd0_od", id_os: "msrt_rvd0_os", type: "number", step: "0.01" },
+                    { label: "RVD-15", id_od: "msrt_rvd15_od", id_os: "msrt_rvd15_os", type: "number", step: "0.01" },
+                    { label: "RVD-45", id_od: "msrt_rvd45_od", id_os: "msrt_rvd45_os", type: "number", step: "0.01" },
+                    { label: "RVD-S", id_od: "msrt_rvds_od", id_os: "msrt_rvds_os", type: "number", step: "0.01" },
+                    { label: "RVD-I", id_od: "msrt_rvdi_od", id_os: "msrt_rvdi_os", type: "number", step: "0.01" },
+                    { label: "RVD-T", id_od: "msrt_rvdt_od", id_os: "msrt_rvdt_os", type: "number", step: "0.01" },
+                    { label: "RVD-N", id_od: "msrt_rvdn_od", id_os: "msrt_rvdn_os", type: "number", step: "0.01" }
+                ]
+            },
+            {
+                title: "18. 离焦镜验配参数", type: "eye_grid_plus",
+                rows: [
+                    { label: "球镜度数 (D)", id_od: "defocus_sph_od", id_os: "defocus_sph_os", type: "number", step: "0.01" },
+                    { label: "柱镜度数 (D)", id_od: "defocus_cyl_od", id_os: "defocus_cyl_os", type: "number", step: "0.01" },
+                    { label: "轴位", id_od: "defocus_axis_od", id_os: "defocus_axis_os", type: "text" }
+                ],
+                sharedFields: [
+                    { id: "defocus_fitter", label: "验配师", type: "select", options: ["验配师A","验配师B","验配师C"], width: "col-span-1" },
+                    { id: "defocus_receive", label: "离焦镜签收", type: "text", width: "col-span-1" },
+                    { id: "defocus_date", label: "日期", type: "date", width: "col-span-1" }
                 ]
             }
         ];
@@ -513,8 +660,6 @@
                     </td>
                     <td class="px-6 py-4 text-gray-600">${s.center || '-'}</td>
                     <td class="px-6 py-4 text-gray-600">${s.department || '-'}</td>
-                    <td class="px-6 py-4 text-gray-600">${s.enrollDate}</td>
-                    <td class="px-6 py-4 text-gray-600">${s.endDate || ''}</td>
                     <td class="px-6 py-4">
                         ${
                             s.enrollmentStatus === '提前退出' 
@@ -523,6 +668,8 @@
                                ${s.stage && s.stage !== '-' ? `<span class="ml-2 px-2 py-1 rounded text-xs font-medium ${getStageClass(s.stage)}">${s.stage}</span>` : ''}`
                         }
                     </td>
+                    <td class="px-6 py-4 text-gray-600">${s.enrollDate}</td>
+                    <td class="px-6 py-4 text-gray-600">${s.endDate || ''}</td>
                     <td class="px-6 py-4 text-right space-x-3">
                         <button onclick="openSubject('${s.id}')" class="text-blue-600 hover:text-blue-800 font-medium">采集数据</button>
                         <button class="text-amber-600 font-medium">退出</button>
@@ -749,21 +896,62 @@
             const container = document.getElementById('dynamic-form');
             if(currentVisit !== 'v0') {
                 container.innerHTML = `<div class="text-gray-400 text-center py-16">该访视节点暂无表单配置</div>`;
+                renderTOC([]); 
                 return;
             }
 
             let html = '';
-            formSchema.forEach(sec => {
-                html += `<div class="border border-gray-200 rounded-lg overflow-hidden mb-6 shadow-sm">
+            html += renderMetaCard();
+            const anchors = [{ id: 'sec-meta', title: '记录信息' }];
+            formSchema.forEach((sec, idx) => {
+                const anchorId = `sec-${idx+1}`;
+                anchors.push({ id: anchorId, title: sec.title });
+                html += `<div id="${anchorId}" class="border border-gray-200 rounded-lg overflow-hidden mb-6 shadow-sm">
                             <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-bold text-gray-800 flex items-center">
                                 <div class="w-1 h-4 bg-blue-600 rounded mr-2"></div>${sec.title}
                             </div><div class="p-5">`;
                 if (sec.type === 'criteria') html += renderCriteria(sec);
                 else if (sec.type === 'grid') html += renderGrid(sec);
                 else if (sec.type === 'eye_grid') html += renderEyeGrid(sec);
+                else if (sec.type === 'eye_grid_plus') html += renderEyeGridPlus(sec);
+                else if (sec.type === 'matrix') html += renderMatrix(sec);
                 html += `</div></div>`;
             });
             container.innerHTML = html;
+            renderTOC(anchors);
+        }
+
+        function renderMetaCard() {
+            const isBaseline = currentVisit === 'v0';
+            const invOpts = Array.from(new Set([currentProject?.pi, "张主任","李教授","王主任"].filter(Boolean)));
+            const recOpts = ["张玲","高越","林慧","周倩","李娜","王珂"];
+            const fields = [
+                { id: 'exam_date', label: '检查日期', type: 'date' },
+                { id: 'investigator', label: '研究者', type: 'select', options: invOpts },
+                { id: 'record_date', label: '记录日期', type: 'date' },
+                { id: 'recorder', label: '记录者', type: 'select', options: recOpts }
+            ];
+            if (isBaseline) fields.push({ id: 'consent_date', label: '签署知情同意书日期', type: 'date' });
+            let html = `<div id="sec-meta" class="border border-gray-200 rounded-lg overflow-hidden mb-6 shadow-sm"><div class="p-5">`;
+            html += `<div class="grid grid-cols-5 gap-x-6">`;
+            fields.forEach(f => {
+                const val = formData[f.id] || '';
+                html += `<div class="col-span-1 flex flex-col">
+                    <label class="text-sm font-medium text-gray-600 mb-1.5">${f.label}</label>`;
+                if (!isEditMode) {
+                    html += `<div class="py-2 text-sm font-medium text-gray-900 border-b border-gray-100 min-h-[36px]">${val || '<span class="text-gray-300">--</span>'}</div>`;
+                } else {
+                    if (f.type === 'select') {
+                        const optionsHtml = (f.options||[]).map(opt => `<option value="${opt}" ${val===opt?'selected':''}>${opt}</option>`).join('');
+                        html += `<select name="${f.id}" class="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">${optionsHtml}</select>`;
+                    } else {
+                        html += `<input type="${f.type}" name="${f.id}" value="${val}" class="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">`;
+                    }
+                }
+                html += `</div>`;
+            });
+            html += `</div></div></div>`;
+            return html;
         }
 
         function renderCriteria(sec) {
@@ -809,9 +997,13 @@
                     }
                 } else {
                     if (f.type === 'text' || f.type === 'number' || f.type === 'date') {
-                        html += `<input type="${f.type}" name="${f.id}" value="${val}" class="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">`;
+                        const stepAttr = f.type === 'number' ? ` step="${f.step || 'any'}"` : '';
+                        html += `<input type="${f.type}"${stepAttr} name="${f.id}" value="${val}" class="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">`;
                     } else if (f.type === 'radio') {
                         html += `<div class="flex gap-4 mt-2">${f.options.map(opt => `<label class="flex items-center gap-1 text-sm"><input type="radio" name="${f.id}" value="${opt}" ${val===opt?'checked':''} class="text-blue-600"> ${opt}</label>`).join('')}</div>`;
+                    } else if (f.type === 'select') {
+                        const optionsHtml = (f.options||[]).map(opt => `<option value="${opt}" ${val===opt?'selected':''}>${opt}</option>`).join('');
+                        html += `<select name="${f.id}" class="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">${optionsHtml}</select>`;
                     } else if (f.type === 'radio_with_input') {
                         const inputVal = formData[f.inputId] || '';
                         html += `<div class="flex items-center gap-4 mt-1">${f.options.map(opt => `<label class="flex items-center gap-1 text-sm"><input type="radio" name="${f.id}" value="${opt}" ${val===opt?'checked':''} onchange="formData['${f.id}']='${opt}'; renderForm()" class="text-blue-600"> ${opt}</label>`).join('')}`;
@@ -838,15 +1030,156 @@
                 const valOD = formData[row.id_od] || ''; const valOS = formData[row.id_os] || '';
                 html += `<tr><td class="py-3 px-4 text-sm font-medium text-gray-700">${row.label}</td>`;
                 if (isEditMode) {
-                    html += `<td class="py-2 px-4 border-l border-gray-100"><input type="${row.type}" step="${row.step||'any'}" name="${row.id_od}" value="${valOD}" class="border border-gray-300 rounded p-1.5 text-sm w-full focus:ring-2 focus:ring-blue-500 outline-none"></td>
-                             <td class="py-2 px-4 border-l border-gray-100"><input type="${row.type}" step="${row.step||'any'}" name="${row.id_os}" value="${valOS}" class="border border-gray-300 rounded p-1.5 text-sm w-full focus:ring-2 focus:ring-green-500 outline-none"></td>`;
+                    if (row.type === 'radio_with_input') {
+                        html += `<td class="py-2 px-4 border-l border-gray-100">
+                                    <div class="flex items-center gap-3">
+                                        ${row.options.map(opt => `<label class="flex items-center gap-1 text-sm"><input type="radio" name="${row.id_od}" value="${opt}" ${valOD===opt?'checked':''} onchange="formData['${row.id_od}']='${opt}'; renderForm()" class="text-blue-600"> ${opt}</label>`).join('')}
+                                        ${valOD === '其他' ? `<input type="text" name="${row.inputId_od}" value="${formData[row.inputId_od]||''}" placeholder="${row.inputLabel||'原因'}" class="border border-gray-300 rounded p-1.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none w-28">` : ''}
+                                    </div>
+                                  </td>
+                                  <td class="py-2 px-4 border-l border-gray-100">
+                                    <div class="flex items-center gap-3">
+                                        ${row.options.map(opt => `<label class="flex items-center gap-1 text-sm"><input type="radio" name="${row.id_os}" value="${opt}" ${valOS===opt?'checked':''} onchange="formData['${row.id_os}']='${opt}'; renderForm()" class="text-green-600"> ${opt}</label>`).join('')}
+                                        ${valOS === '其他' ? `<input type="text" name="${row.inputId_os}" value="${formData[row.inputId_os]||''}" placeholder="${row.inputLabel||'原因'}" class="border border-gray-300 rounded p-1.5 text-sm focus:ring-2 focus:ring-green-500 outline-none w-28">` : ''}
+                                    </div>
+                                  </td>`;
+                    } else if (row.type === 'radio') {
+                        html += `<td class="py-2 px-4 border-l border-gray-100">
+                                    <div class="flex items-center gap-3">
+                                        ${row.options.map(opt => `<label class="flex items-center gap-1 text-sm"><input type="radio" name="${row.id_od}" value="${opt}" ${valOD===opt?'checked':''} class="text-blue-600"> ${opt}</label>`).join('')}
+                                    </div>
+                                </td>
+                                <td class="py-2 px-4 border-l border-gray-100">
+                                    <div class="flex items-center gap-3">
+                                        ${row.options.map(opt => `<label class="flex items-center gap-1 text-sm"><input type="radio" name="${row.id_os}" value="${opt}" ${valOS===opt?'checked':''} class="text-green-600"> ${opt}</label>`).join('')}
+                                    </div>
+                                </td>`;
+                    } else if (row.type === 'select') {
+                        const makeOpts = (opts, val) => (opts||[]).map(o => {
+                            const v = (typeof o === 'object') ? (o.v ?? o.value ?? o.label) : o;
+                            const l = (typeof o === 'object') ? (o.l ?? o.label ?? o.v) : o;
+                            return `<option value="${v}" ${val===v?'selected':''}>${l}</option>`;
+                        }).join('');
+                        html += `<td class="py-2 px-4 border-l border-gray-100"><select name="${row.id_od}" class="border border-gray-300 rounded p-1.5 text-sm w-full focus:ring-2 focus:ring-blue-500 outline-none">${makeOpts(row.options, valOD)}</select></td>
+                                 <td class="py-2 px-4 border-l border-gray-100"><select name="${row.id_os}" class="border border-gray-300 rounded p-1.5 text-sm w-full focus:ring-2 focus:ring-green-500 outline-none">${makeOpts(row.options, valOS)}</select></td>`;
+                    } else {
+                        html += `<td class="py-2 px-4 border-l border-gray-100"><input type="${row.type}" step="${row.step||'any'}" name="${row.id_od}" value="${valOD}" class="border border-gray-300 rounded p-1.5 text-sm w-full focus:ring-2 focus:ring-blue-500 outline-none"></td>
+                                 <td class="py-2 px-4 border-l border-gray-100"><input type="${row.type}" step="${row.step||'any'}" name="${row.id_os}" value="${valOS}" class="border border-gray-300 rounded p-1.5 text-sm w-full focus:ring-2 focus:ring-green-500 outline-none"></td>`;
+                    }
                 } else {
-                    html += `<td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${valOD || '<span class="text-gray-300">--</span>'}</td>
-                             <td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${valOS || '<span class="text-gray-300">--</span>'}</td>`;
+                    if (row.type === 'radio_with_input') {
+                        const odExtra = valOD === '其他' ? ` <span class="text-gray-400 ml-1">| ${row.inputLabel}: <span class="text-gray-900">${formData[row.inputId_od]||'--'}</span></span>` : '';
+                        const osExtra = valOS === '其他' ? ` <span class="text-gray-400 ml-1">| ${row.inputLabel}: <span class="text-gray-900">${formData[row.inputId_os]||'--'}</span></span>` : '';
+                        html += `<td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${valOD || '<span class="text-gray-300">--</span>'}${valOD?odExtra:''}</td>
+                                 <td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${valOS || '<span class="text-gray-300">--</span>'}${valOS?osExtra:''}</td>`;
+                    } else if (row.type === 'select') {
+                        const labelFor = (opts, v) => {
+                            if (!opts) return v || '<span class="text-gray-300">--</span>';
+                            const found = opts.find(o => (typeof o === 'object' ? (o.v ?? o.value ?? o.label) : o) === v);
+                            const lbl = found ? (typeof found === 'object' ? (found.l ?? found.label ?? found.v) : found) : v;
+                            return lbl || '<span class="text-gray-300">--</span>';
+                        };
+                        html += `<td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${labelFor(row.options, valOD)}</td>
+                                 <td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${labelFor(row.options, valOS)}</td>`;
+                    } else {
+                        html += `<td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${valOD || '<span class="text-gray-300">--</span>'}</td>
+                                 <td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${valOS || '<span class="text-gray-300">--</span>'}</td>`;
+                    }
                 }
                 html += `</tr>`;
             });
             return html + `</tbody></table>`;
+        }
+
+        function renderEyeGridPlus(sec) {
+            let html = renderEyeGrid({ rows: sec.rows });
+            if (sec.sharedFields && sec.sharedFields.length > 0) {
+                html += `<div class="mt-4 pt-4 border-t border-gray-200"><div class="text-sm font-semibold text-gray-700 mb-3">共用信息</div>`;
+                html += renderGrid({ fields: sec.sharedFields });
+                html += `</div>`;
+            }
+            return html;
+        }
+
+        function renderMatrix(sec) {
+            let html = `<div class="overflow-x-auto"><table class="w-full text-left border-collapse">
+                <thead><tr class="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
+                    <th class="py-3 px-4 font-medium w-24">眼别</th>
+                    ${sec.cols.map(c => `<th class="py-3 px-4 font-medium border-l border-gray-200">${c.label}</th>`).join('')}
+                </tr></thead><tbody class="divide-y divide-gray-100">`;
+            sec.rows.forEach(r => {
+                html += `<tr><td class="py-3 px-4 text-sm font-medium text-gray-700">${r.label}</td>`;
+                sec.cols.forEach(c => {
+                    const fid = `${r.id}_${c.id}`;
+                    const val = formData[fid] || '';
+                    if (isEditMode) {
+                        const stepAttr = sec.cellType === 'number' ? ` step="${sec.step || 'any'}"` : '';
+                        html += `<td class="py-2 px-4 border-l border-gray-100"><input type="${sec.cellType || 'text'}"${stepAttr} name="${fid}" value="${val}" class="border border-gray-300 rounded p-1.5 text-sm w-full focus:ring-2 focus:ring-blue-500 outline-none"></td>`;
+                    } else {
+                        html += `<td class="py-3 px-4 border-l border-gray-100 text-sm text-gray-900">${val || '<span class="text-gray-300">--</span>'}</td>`;
+                    }
+                });
+                html += `</tr>`;
+            });
+            return html + `</tbody></table></div>`;
+        }
+
+        function renderTOC(anchors) {
+            const toc = document.getElementById('toc-nav');
+            if (!toc) return;
+            window.__tocAnchors = anchors || [];
+            toc.innerHTML = (anchors || []).map((a, i) => {
+                const isMeta = a.id === 'sec-meta';
+                const label = a.title;
+                const baseCls = "w-full text-left px-3 py-2 rounded transition";
+                const restCls = isMeta ? "font-semibold text-gray-800" : "text-gray-700";
+                return `<button data-anchor="${a.id}" onclick="scrollToAnchor('${a.id}')" class="${baseCls} ${restCls} hover:bg-blue-50 hover:text-blue-700">${label}</button>`;
+            }).join('');
+            setActiveTOC((anchors && anchors.length) ? anchors[0].id : null);
+            initTOCScrollSync();
+        }
+
+        function scrollToAnchor(id) {
+            const container = document.getElementById('form-scroll-container');
+            const el = document.getElementById(id);
+            if (!container || !el) return;
+            const cTop = container.getBoundingClientRect().top;
+            const eTop = el.getBoundingClientRect().top;
+            const offset = 8; // 微调
+            container.scrollBy({ top: eTop - cTop - offset, behavior: 'smooth' });
+        }
+
+        function setActiveTOC(id) {
+            const toc = document.getElementById('toc-nav');
+            if (!toc) return;
+            toc.querySelectorAll('button[data-anchor]').forEach(btn => {
+                const active = btn.getAttribute('data-anchor') === id;
+                btn.classList.toggle('bg-blue-50', active);
+                btn.classList.toggle('text-blue-700', active);
+                btn.classList.toggle('font-semibold', active);
+            });
+        }
+
+        function initTOCScrollSync() {
+            if (window.__tocScrollInited) return;
+            const container = document.getElementById('form-scroll-container');
+            if (!container) return;
+            const onScroll = () => {
+                const anchors = window.__tocAnchors || [];
+                if (!anchors.length) return;
+                const cTop = container.getBoundingClientRect().top;
+                let bestId = anchors[0].id;
+                let bestDelta = Infinity;
+                anchors.forEach(a => {
+                    const el = document.getElementById(a.id);
+                    if (!el) return;
+                    const delta = Math.abs(el.getBoundingClientRect().top - cTop - 8);
+                    if (delta < bestDelta) { bestDelta = delta; bestId = a.id; }
+                });
+                setActiveTOC(bestId);
+            };
+            container.addEventListener('scroll', onScroll);
+            window.__tocScrollInited = true;
         }
 
         function renderDynamicTableReadOnly(f) {
