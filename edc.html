@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>惟翎·科研管理系统</title>
     <script src="https://cdn.tailwindcss.com"></script>
+		<!-- 引入图标库 RemixIcon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
     <style>
         .fade-in { animation: fadeIn 0.2s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -95,11 +97,12 @@
                         <span id="dash-proj-status" class="text-xs font-medium px-2.5 py-1 rounded">状态</span>
                     </div>
                     <p class="text-sm text-gray-600 mb-6" id="dash-proj-desc">项目描述内容...</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-100">
-                        <div><div class="text-xs text-gray-400 mb-1">项目代号</div><div class="text-sm font-medium text-gray-800" id="dash-proj-code">CODE</div></div>
-                        <div><div class="text-xs text-gray-400 mb-1">主要研究者 (PI)</div><div class="text-sm font-medium text-gray-800" id="dash-proj-pi">PI Name</div></div>
-                        <div><div class="text-xs text-gray-400 mb-1">参与中心数量</div><div class="text-sm font-medium text-gray-800" id="dash-proj-centers">0</div></div>
-                        <div><div class="text-xs text-gray-400 mb-1">当前入组人数</div><div class="text-sm font-medium text-gray-800" id="dash-proj-enrollment">0</div></div>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 pt-4 border-t border-gray-100">
+                        <div><div class="text-xs text-gray-400 mb-1">项目代号</div><span class="text-sm font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded" id="dash-proj-code">CODE</span></div>
+                        <div><div class="text-xs text-gray-400 mb-1">主要研究者 (PI)</div><div class="text-sm font-bold text-gray-800" id="dash-proj-pi">PI Name</div></div>
+                        <div><div class="text-xs text-gray-400 mb-1">参与中心</div><div class="text-sm font-bold text-gray-800" id="dash-proj-centers">--</div></div>
+												<div><div class="text-xs text-gray-400 mb-1">申办单位</div><div class="text-sm font-bold text-gray-800" id="dash-proj-organizations">--</div></div>
+                        <div><div class="text-xs text-gray-400 mb-1">当前入组人数</div><div class="text-2xl font-bold text-blue-600 underline" id="dash-proj-enrollment">0</div></div>
                     </div>
                 </div>
 
@@ -123,8 +126,13 @@
                                     </select>
                                 </div>
                                 <input id="subject-search-input" type="text" placeholder="筛选号" class="flex-1 text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:ring-1 focus:ring-blue-500 outline-none">
-                                <button onclick="applySubjectSearch()" class="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700">搜索</button>
+                                <button onclick="applySubjectSearch()" class="text-sm bg-white text-blue-600 border border-blue-600 px-3 py-1.5 rounded-md hover:text-blue-800 hover:border-blue-800">搜索</button>
                                 <button onclick="resetSubjectFilters()" class="text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-50">重置</button>
+																<span class="mx-1 text-gray-400">｜</span>
+																<button class="flex items-center gap-1 text-sm bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700">
+																	<i class="ri-download-line"></i>
+																	导出数据
+																</button>
                             </div>
                         </div>
                     </div>
@@ -143,7 +151,7 @@
                                     <th class="px-6 py-3 font-medium">受试者来源</th>
                                     <th class="px-6 py-3 font-medium">中心</th>
                                     <th class="px-6 py-3 font-medium">科室</th>
-                                    <th class="px-6 py-3 font-medium">当前状态</th>
+                                    <th class="px-6 py-3 font-medium">当前状态<span class="text-red-600">（一期不开发这个字段）</span></th>
                                     <th class="px-6 py-3 font-medium">入组日期</th>
                                     <th class="px-6 py-3 font-medium">结束日期</th>
                                     <th class="px-6 py-3 font-medium text-right">操作</th>
@@ -230,9 +238,9 @@
     <script>
         // ================= 数据模拟与结构定义 =================
         const projects = [
-            { id: 'P001', code: 'MYOPIA-2025', name: '光刻微结构近视管理镜片在儿童青少年近视防控中的有效性及佩戴安全舒适性的随机对照临床研究', desc: '本研究旨在评估新型光刻微结构镜片在延缓儿童青少年近视进展方面的有效性与安全性。', pi: '张主任', centers: 5, status: '进行中', statusColor: 'bg-blue-100 text-blue-800' },
-            { id: 'P002', code: 'ORTHOK-2024', name: '某新型角膜塑形镜多中心随机对照临床试验', desc: '评估夜戴型角膜塑形镜对低中度近视患者的视力矫正效果及角膜安全性。', pi: '李教授', centers: 3, status: '已结束', statusColor: 'bg-gray-100 text-gray-600' },
-            { id: 'P003', code: 'ATROPINE-01', name: '低浓度阿托品滴眼液联合光学干预的真实世界研究', desc: '观察0.01%阿托品滴眼液联合离焦眼镜在临床真实环境下的长期控制效果。', pi: '王主任', centers: 8, status: '准备中', statusColor: 'bg-amber-100 text-amber-800' }
+            { id: 'P001', code: 'XW09', name: '光刻微结构近视管理镜片在儿童青少年近视防控中的有效性及佩戴安全舒适性的随机对照临床研究', desc: '本研究旨在评估新型光刻微结构镜片在延缓儿童青少年近视进展方面的有效性与安全性。', pi: '徐蔚', centers: ['上海眼病防治中心'], organizations: ['南通诺瞳奕目医疗科技有限公司'], status: '进行中', statusColor: 'bg-green-100 text-green-800' },
+            { id: 'P002', code: 'XW07', name: '某新型角膜塑形镜多中心随机对照临床试验', desc: '评估夜戴型角膜塑形镜对低中度近视患者的视力矫正效果及角膜安全性。', pi: '李教授', centers: ['上海眼病防治中心', '广东中山医院'], status: '已结束', organizations: ['南通诺瞳奕目医疗科技有限公司'], statusColor: 'bg-gray-100 text-gray-600' },
+            { id: 'P003', code: 'XW06', name: '低浓度阿托品滴眼液联合光学干预的真实世界研究', desc: '观察0.01%阿托品滴眼液联合离焦眼镜在临床真实环境下的长期控制效果。', pi: '王主任', centers: ['上海眼病防治中心'], status: '准备中', organizations: ['南通诺瞳奕目医疗科技有限公司'], statusColor: 'bg-amber-100 text-amber-800' }
         ];
 
         const subjectsData = {};
@@ -681,12 +689,16 @@
                 <div onclick="openProject('${p.id}')" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer hover:shadow-md hover:border-blue-400 transition-all flex flex-col h-full">
                     <div class="flex justify-between items-start mb-3">
                         <span class="${p.statusColor} text-xs font-medium px-2.5 py-1 rounded">${p.status}</span>
-                        <span class="text-gray-400 text-xs font-mono">${p.code}</span>
+                        <span class="bg-gray-100 text-gray-600 border border-gray-200 text-xs font-mono px-2 py-0.5 rounded-md">${p.code}</span>
                     </div>
                     <h3 class="text-base font-bold text-gray-900 mb-2 line-clamp-2 leading-tight hover:text-blue-600 transition-colors">${p.name}</h3>
                     <p class="text-sm text-gray-500 mb-4 line-clamp-2 flex-1">${p.desc}</p>
-                    <div class="flex justify-between items-center text-xs text-gray-500 border-t border-gray-100 pt-4 mt-auto">
-                        <span>PI: ${p.pi}</span><span>中心数: ${p.centers}</span>
+                    <div class="flex justify-between items-center text-xs border-t border-gray-100 pt-4 mt-auto">
+                        <span class="text-gray-500">主要研究人: <span class="text-blue-600 font-bold">${p.pi}</span></span>
+                        <span class="text-gray-500 flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <span class="font-bold">${p.centers.join(',')}</span>
+                        </span>
                     </div>
                 </div>
             `).join('');
@@ -706,7 +718,8 @@
             document.getElementById('dash-proj-desc').innerText = currentProject.desc;
             document.getElementById('dash-proj-code').innerText = currentProject.code;
             document.getElementById('dash-proj-pi').innerText = currentProject.pi;
-            document.getElementById('dash-proj-centers').innerText = currentProject.centers;
+            document.getElementById('dash-proj-centers').innerText = currentProject.centers.join(',');
+							document.getElementById('dash-proj-organizations').innerText = currentProject.organizations.join(',');
             document.getElementById('dash-proj-enrollment').innerText = subjectsData[projectId].length;
 
             updateSubjectTable();
@@ -805,33 +818,37 @@
                 return 0;
             });
             const tbody = document.getElementById('subject-table-body');
-            tbody.innerHTML = list.map(s => `
-                <tr class="hover:bg-blue-50/50 transition-colors group">
-                    <td class="px-6 py-4 font-medium text-gray-900">${s.id}</td>
-                    <td class="px-6 py-4 text-gray-600">${s.randomId}</td>
-                    <td class="px-6 py-4 text-gray-600">${s.initials}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 rounded text-xs font-medium ${getSourceClass(s.source)}">${s.source || '-'}</span>
+            tbody.innerHTML = list.map(s => {
+                const isDropout = s.enrollmentStatus === '提前退出';
+                const rowClass = isDropout ? "bg-gray-50 text-gray-400" : "hover:bg-blue-50/50 transition-colors text-gray-900 group";
+                const textClass = isDropout ? "line-through decoration-gray-400" : "";
+                
+                return `
+                <tr class="${rowClass} border-b border-gray-100 last:border-0">
+                    <td class="px-6 py-4 font-medium ${textClass}">${s.id}</td>
+                    <td class="px-6 py-4 ${isDropout ? 'text-gray-400' : 'text-gray-600'} ${textClass}">${s.randomId}</td>
+                    <td class="px-6 py-4 ${isDropout ? 'text-gray-400' : 'text-gray-600'} ${textClass}">${s.initials}</td>
+                    <td class="px-6 py-4 ${textClass}">
+                        <span class="px-2 py-1 rounded text-xs font-medium ${isDropout ? 'bg-gray-100 text-gray-400 border border-gray-200' : getSourceClass(s.source)}">${s.source || '-'}</span>
                     </td>
-                    <td class="px-6 py-4 text-gray-600">${s.center || '-'}</td>
-                    <td class="px-6 py-4 text-gray-600">${s.department || '-'}</td>
+                    <td class="px-6 py-4 ${isDropout ? 'text-gray-400' : 'text-gray-600'} ${textClass}">${s.center || '-'}</td>
+                    <td class="px-6 py-4 ${isDropout ? 'text-gray-400' : 'text-gray-600'} ${textClass}">${s.department || '-'}</td>
                     <td class="px-6 py-4">
                         ${
-                            s.enrollmentStatus === '提前退出' 
-                            ? `<span class="px-2 py-1 rounded text-xs font-medium ${s.enrollmentStatusColor}">提前退出</span>`
+                            isDropout 
+                            ? `<span class="px-2 py-1 rounded text-xs font-medium bg-red-50 text-red-600 border border-red-100">提前退出</span>`
                             : `<span class="px-2 py-1 rounded text-xs font-medium ${s.enrollmentStatusColor}">${s.enrollmentStatus}</span>
                                ${s.stage && s.stage !== '-' ? `<span class="ml-2 px-2 py-1 rounded text-xs font-medium ${getStageClass(s.stage)}">${s.stage}</span>` : ''}`
                         }
                     </td>
-                    <td class="px-6 py-4 text-gray-600">${s.enrollDate}</td>
-                    <td class="px-6 py-4 text-gray-600">${s.endDate || ''}</td>
+                    <td class="px-6 py-4 ${isDropout ? 'text-gray-400' : 'text-gray-600'} ${textClass}">${s.enrollDate}</td>
+                    <td class="px-6 py-4 ${isDropout ? 'text-gray-400' : 'text-gray-600'} ${textClass}">${s.endDate || '--'}</td>
                     <td class="px-6 py-4 text-right space-x-3">
-                        <button onclick="openSubject('${s.id}')" class="text-blue-600 hover:text-blue-800 font-medium">采集数据</button>
-                        <button class="text-amber-600 font-medium">退出</button>
-                        <button class="text-red-600 font-medium">删除</button>
+                        <button onclick="openSubject('${s.id}')" class="text-blue-600 hover:text-blue-800">查看详情</button>
+                        <button class="${isDropout ? 'text-gray-300 cursor-not-allowed' : 'text-red-600 hover:text-red-800'}" ${isDropout ? 'disabled' : ''}>退出</button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
             updateSortIndicators();
         }
 
