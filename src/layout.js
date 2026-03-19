@@ -164,7 +164,7 @@ function switchTab(tabName) {
   if (tabName === 'projects' || tabName === 'dimensions') {
     const parentMenu = document.getElementById("nav-iwrs");
     if (parentMenu) {
-      parentMenu.classList.add("active", "bg-brand-50", "text-brand-600");
+      // parentMenu.classList.add("active", "bg-brand-50", "text-brand-600");
       // 确保IWRS子菜单是展开的
       document.getElementById("iwrs-submenu").classList.remove("hidden");
       document.getElementById("nav-iwrs-arrow").style.transform = "rotate(180deg)";
@@ -172,7 +172,7 @@ function switchTab(tabName) {
   } else if (tabName === 'edc-projects' || tabName === 'edc-templates') {
     const parentMenu = document.getElementById("nav-edc");
     if (parentMenu) {
-      parentMenu.classList.add("active", "bg-brand-50", "text-brand-600");
+      // parentMenu.classList.add("active", "bg-brand-50", "text-brand-600");
       // 确保EDC子菜单是展开的
       document.getElementById("edc-submenu").classList.remove("hidden");
       document.getElementById("nav-edc-arrow").style.transform = "rotate(180deg)";
