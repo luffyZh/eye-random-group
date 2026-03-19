@@ -1,4 +1,6 @@
 function hideAllViews() {
+  const vd = document.getElementById("view-dashboard");
+  if (vd) vd.classList.add("hidden");
   document.getElementById("view-projects").classList.add("hidden");
   document.getElementById("view-project-detail").classList.add("hidden");
   document.getElementById("view-dimensions").classList.add("hidden");
@@ -7,6 +9,10 @@ function hideAllViews() {
   document.getElementById("view-centers").classList.add("hidden");
   document.getElementById("view-center-detail").classList.add("hidden");
   document.getElementById("view-users").classList.add("hidden");
+  const vedcp = document.getElementById("view-edc-projects");
+  if (vedcp) vedcp.classList.add("hidden");
+  const vedct = document.getElementById("view-edc-templates");
+  if (vedct) vedct.classList.add("hidden");
 
   document
     .querySelectorAll(".nav-item")
@@ -20,11 +26,24 @@ function hideAllViews() {
 }
 
 const routeConfig = {
+  dashboard: {
+    title: "系统总览",
+    description: "项目、中心与受试者关键指标概览",
+    permissions: [{ text: "所有角色", color: "slate" }]
+  },
   projects: {
     title: "项目管理",
     description: "管理所有临床研究项目",
     permissions: [
       { text: "所有角色", color: "slate" }
+    ]
+  },
+  "edc-projects": {
+    title: "EDC 项目管理",
+    description: "入组后数据录入的项目管理（与 IWRS 分组打通）",
+    permissions: [
+      { text: "研究者", color: "emerald" },
+      { text: "数据管理员", color: "indigo" }
     ]
   },
   dimensions: {
@@ -67,6 +86,14 @@ const routeConfig = {
     permissions: [
       { text: "开发者账户", color: "indigo" },
       { text: "超级管理员", color: "purple" }
+    ]
+  },
+  "edc-templates": {
+    title: "表单样板间",
+    description: "低代码创建表单块，拖拽表单项组合样板，支持权限",
+    permissions: [
+      { text: "系统表单", color: "indigo" },
+      { text: "用户表单", color: "emerald" }
     ]
   }
 };
@@ -123,14 +150,42 @@ function switchTab(tabName) {
      // Fallback or specific pages not in config
   }
 
+  // 清除所有导航项的激活状态
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.remove("active", "bg-brand-50", "text-brand-600");
+  });
+
   const navItem = document.getElementById("nav-" + tabName);
   if (navItem) {
-      navItem.classList.add("active", "bg-brand-50", "text-brand-600");
+    navItem.classList.add("active", "bg-brand-50", "text-brand-600");
+  }
+  
+  // 如果是二级页面，也要让对应的一级菜单高亮
+  if (tabName === 'projects' || tabName === 'dimensions') {
+    const parentMenu = document.getElementById("nav-iwrs");
+    if (parentMenu) {
+      parentMenu.classList.add("active", "bg-brand-50", "text-brand-600");
+      // 确保IWRS子菜单是展开的
+      document.getElementById("iwrs-submenu").classList.remove("hidden");
+      document.getElementById("nav-iwrs-arrow").style.transform = "rotate(180deg)";
+    }
+  } else if (tabName === 'edc-projects' || tabName === 'edc-templates') {
+    const parentMenu = document.getElementById("nav-edc");
+    if (parentMenu) {
+      parentMenu.classList.add("active", "bg-brand-50", "text-brand-600");
+      // 确保EDC子菜单是展开的
+      document.getElementById("edc-submenu").classList.remove("hidden");
+      document.getElementById("nav-edc-arrow").style.transform = "rotate(180deg)";
+    }
   }
   
   const viewItem = document.getElementById("view-" + tabName);
   if (viewItem) {
       viewItem.classList.remove("hidden");
+  }
+
+  if (tabName === "dashboard" && typeof initDashboardCharts === "function") {
+    initDashboardCharts();
   }
 
   if (tabName === "roles") {
