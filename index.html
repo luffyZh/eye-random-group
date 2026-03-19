@@ -10,6 +10,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入图标库 RemixIcon -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <!-- 图表库 ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <!-- 自定义字体 -->
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
@@ -88,16 +90,51 @@
     </div>
 
     <nav class="flex-1 py-6 space-y-2 px-3 overflow-x-hidden">
-      <a href="#" onclick="switchTab('projects')" id="nav-projects"
+      <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard"
         class="nav-item active bg-brand-50 text-brand-600 flex items-center px-4 py-3 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
-        <i class="ri-apps-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
-        <span class="nav-text transition-all duration-300 origin-left">项目管理</span>
+        <i class="ri-dashboard-2-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+        <span class="nav-text transition-all duration-300 origin-left">Dashboard 仪表盘</span>
       </a>
-      <a href="#" onclick="switchTab('dimensions')" id="nav-dimensions"
-        class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
-        <i class="ri-equalizer-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
-        <span class="nav-text transition-all duration-300 origin-left">维度管理</span>
-      </a>
+      <div class="space-y-1">
+        <button type="button" onclick="toggleEdcMenu()" id="nav-edc"
+          class="w-full nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+          <i class="ri-database-2-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+          <span class="nav-text transition-all duration-300 origin-left flex-1 text-left">EDC 电子数据采集</span>
+          <i id="nav-edc-arrow" class="ri-arrow-down-s-line text-slate-400 group-hover:text-brand-500 transition-transform duration-300" style="transform: rotate(180deg);"></i>
+        </button>
+        <div id="edc-submenu" class="pl-4 space-y-1">
+          <a href="#" onclick="switchTab('edc-projects')" id="nav-edc-projects"
+            class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+            <i class="ri-folder-2-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+            <span class="nav-text transition-all duration-300 origin-left">项目管理</span>
+          </a>
+          <a href="#" onclick="switchTab('edc-templates')" id="nav-edc-templates"
+            class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+            <i class="ri-layout-2-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+            <span class="nav-text transition-all duration-300 origin-left">表单样板间</span>
+          </a>
+        </div>
+      </div>
+      <div class="space-y-1">
+        <button type="button" onclick="toggleIwrsMenu()" id="nav-iwrs"
+          class="w-full nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+          <i class="ri-shuffle-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+          <span class="nav-text transition-all duration-300 origin-left flex-1 text-left">IWRS 中央随机化</span>
+          <i id="nav-iwrs-arrow" class="ri-arrow-down-s-line text-slate-400 group-hover:text-brand-500 transition-transform duration-300" style="transform: rotate(180deg);"></i>
+        </button>
+        <div id="iwrs-submenu" class="pl-4 space-y-1">
+          <a href="#" onclick="switchTab('projects')" id="nav-projects"
+            class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+            <i class="ri-apps-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+            <span class="nav-text transition-all duration-300 origin-left">项目管理</span>
+          </a>
+          <a href="#" onclick="switchTab('dimensions')" id="nav-dimensions"
+            class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+            <i class="ri-equalizer-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+            <span class="nav-text transition-all duration-300 origin-left">维度管理</span>
+          </a>
+        </div>
+      </div>
       <a href="#" onclick="switchTab('departments')" id="nav-departments"
         class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
         <i class="ri-hospital-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
@@ -193,6 +230,201 @@
     </header>
 
     <div class="max-w-full">
+      <!-- 页面 0：Dashboard -->
+      <div id="view-dashboard" class="p-8 space-y-6 bg-slate-50">
+        <!-- Top 3 cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1: 项目总数 -->
+          <div class="bg-white p-6 rounded-lg border border-slate-200">
+            <h3 class="text-slate-500 text-sm">项目总数</h3>
+            <p class="text-3xl font-bold text-slate-800 mt-2">2,450</p>
+            <div class="flex items-center mt-2">
+              <span class="text-green-500 text-sm flex items-center"><i class="ri-arrow-up-line"></i>20%</span>
+              <span class="text-slate-400 text-sm ml-2">last mth</span>
+            </div>
+            <div class="h-16 mt-4 flex items-end gap-1">
+              <span class="bg-emerald-500 w-1.5" style="height: 30%"></span>
+              <span class="bg-emerald-500 w-1.5" style="height: 60%"></span>
+              <span class="bg-emerald-500 w-1.5" style="height: 45%"></span>
+              <span class="bg-emerald-500 w-1.5" style="height: 80%"></span>
+              <span class="bg-emerald-500 w-1.5" style="height: 50%"></span>
+              <span class="bg-emerald-500 w-1.5" style="height: 70%"></span>
+              <span class="bg-emerald-500 w-1.5" style="height: 65%"></span>
+            </div>
+          </div>
+          <!-- Card 2: 中心总数 -->
+          <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h3 class="text-slate-500 text-sm">中心总数</h3>
+              <p class="text-3xl font-bold text-slate-800 mt-2">380</p>
+              <div class="flex items-center mt-2">
+                  <span class="text-red-500 text-sm flex items-center"><i class="ri-arrow-down-line"></i>12%</span>
+                  <span class="text-slate-400 text-sm ml-2">last mth</span>
+              </div>
+              <div class="h-16 mt-4 flex items-end gap-1">
+                <span class="bg-blue-500 w-1.5" style="height: 50%"></span>
+                <span class="bg-blue-500 w-1.5" style="height: 40%"></span>
+                <span class="bg-blue-500 w-1.5" style="height: 70%"></span>
+                <span class="bg-blue-500 w-1.5" style="height: 35%"></span>
+                <span class="bg-blue-500 w-1.5" style="height: 55%"></span>
+                <span class="bg-blue-500 w-1.5" style="height: 60%"></span>
+                <span class="bg-blue-500 w-1.5" style="height: 45%"></span>
+              </div>
+          </div>
+          <!-- Card 3: 患者总数 -->
+          <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h3 class="text-slate-500 text-sm">患者总数</h3>
+              <p class="text-3xl font-bold text-slate-800 mt-2">1,120</p>
+              <div class="flex items-center mt-2">
+                  <span class="text-green-500 text-sm flex items-center"><i class="ri-arrow-up-line"></i>18%</span>
+                  <span class="text-slate-400 text-sm ml-2">last mth</span>
+              </div>
+              <div class="h-16 mt-4 flex items-end gap-1">
+                <span class="bg-orange-500 w-1.5" style="height: 45%"></span>
+                <span class="bg-orange-500 w-1.5" style="height: 65%"></span>
+                <span class="bg-orange-500 w-1.5" style="height: 55%"></span>
+                <span class="bg-orange-500 w-1.5" style="height: 80%"></span>
+                <span class="bg-orange-500 w-1.5" style="height: 60%"></span>
+                <span class="bg-orange-500 w-1.5" style="height: 75%"></span>
+                <span class="bg-orange-500 w-1.5" style="height: 50%"></span>
+              </div>
+          </div>
+        </div>
+      
+        <!-- Main content grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left column -->
+          <div class="lg:col-span-1 space-y-6">
+            <!-- Demand health -->
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h3 class="text-slate-800 font-semibold">数据完整度</h3>
+              <p class="text-slate-500 text-sm">实时数据质量监控</p>
+              <div class="my-4 flex justify-center">
+                <div class="relative w-40 h-40">
+                  <div class="absolute inset-0 rounded-full" style="background: conic-gradient(#10b981 0% 72%, #e5e7eb 72% 100%);"></div>
+                  <div class="absolute inset-3 bg-white rounded-full flex items-center justify-center">
+                    <span class="text-2xl font-bold text-slate-800">72%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center">
+                  <p class="text-slate-800 font-bold text-lg">已达标</p>
+                  <p class="text-slate-500 text-sm">当前数据完整度已达到 72%</p>
+              </div>
+            </div>
+          <!-- Market Coverage -->
+          <div class="bg-white p-6 rounded-lg border border-slate-200">
+            <h3 class="text-slate-800 font-semibold">市场覆盖率</h3>
+            <p class="text-slate-500 text-sm mb-6">各区域中心覆盖情况</p>
+            <div class="space-y-5">
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <p class="text-sm font-medium text-slate-700">华东区</p>
+                  <span class="text-sm font-bold text-slate-800">85%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                  <div class="bg-blue-500 h-2 rounded-full" style="width: 85%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <p class="text-sm font-medium text-slate-700">华南区</p>
+                  <span class="text-sm font-bold text-slate-800">60%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                  <div class="bg-green-500 h-2 rounded-full" style="width: 60%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <p class="text-sm font-medium text-slate-700">华中区</p>
+                  <span class="text-sm font-bold text-slate-800">45%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                  <div class="bg-yellow-500 h-2 rounded-full" style="width: 45%"></div>
+                </div>
+              </div>
+               <div>
+                <div class="flex justify-between items-center mb-1">
+                  <p class="text-sm font-medium text-slate-700">华北区</p>
+                  <span class="text-sm font-bold text-slate-800">70%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                  <div class="bg-indigo-500 h-2 rounded-full" style="width: 70%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+      
+          <!-- Right column -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Revenue impact -->
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h3 class="text-slate-800 font-semibold">中心入组表现</h3>
+                      <p class="text-slate-500 text-sm">各中心患者招募趋势</p>
+                  </div>
+                  <button class="flex items-center text-sm border px-3 py-1.5 rounded-md text-slate-600 border-slate-300 hover:bg-slate-50">
+                      <i class="ri-calendar-2-line mr-2"></i> 日期
+                  </button>
+              </div>
+              <div class="mt-4">
+                  <p class="text-slate-500 text-sm">月度入组提升</p>
+                  <p class="text-3xl font-bold text-slate-800">18,880 <span class="text-green-500 text-base font-semibold">↑7.4%</span></p>
+              </div>
+              <div class="mt-4">
+                <div class="h-40 flex items-end gap-2">
+                  <div class="bg-blue-500 w-6 rounded" style="height: 20%"></div>
+                  <div class="bg-blue-500 w-6 rounded" style="height: 55%"></div>
+                  <div class="bg-blue-500 w-6 rounded" style="height: 80%"></div>
+                  <div class="bg-blue-500 w-6 rounded" style="height: 65%"></div>
+                  <div class="bg-blue-500 w-6 rounded" style="height: 75%"></div>
+                  <div class="bg-blue-500 w-6 rounded" style="height: 60%"></div>
+                  <div class="bg-blue-500 w-6 rounded" style="height: 45%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-slate-500 mt-2">
+                  <span>中心A</span><span>中心B</span><span>中心C</span><span>中心D</span><span>中心E</span><span>中心F</span><span>中心G</span>
+                </div>
+              </div>
+            </div>
+            <!-- Pricing Compliance & Rule Execution -->
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <div class="flex justify-between items-center">
+                  <div>
+                      <h3 class="text-slate-800 font-semibold">监察与稽查</h3>
+                      <p class="text-slate-500 text-sm">所有项目的执行健康度</p>
+                  </div>
+                  <button class="w-8 h-8 flex items-center justify-center rounded-full border border-slate-300 text-slate-600 hover:bg-slate-50">
+                      <i class="ri-refresh-line"></i>
+                  </button>
+              </div>
+              <div class="mt-6 space-y-6">
+                  <div>
+                      <div class="flex justify-between items-center text-sm mb-2">
+                          <p class="font-semibold text-slate-700">稽查任务</p>
+                          <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-medium">48 次</span>
+                      </div>
+                      <p class="text-slate-500 text-xs mb-2">稽查引擎</p>
+                      <div class="w-full bg-slate-200 rounded-full h-2">
+                          <div class="bg-blue-600 h-2 rounded-full" style="width: 65.9%"></div> <!-- 29/44 -->
+                      </div>
+                      <p class="text-right text-xs text-slate-500 mt-1">29/44</p>
+                  </div>
+                  <div>
+                      <div class="flex justify-between items-center text-sm mb-2">
+                          <p class="font-semibold text-slate-700">监察任务</p>
+                          <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-medium">32 次</span>
+                      </div>
+                       <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                          <div class="bg-blue-600 h-2 rounded-full" style="width: 80%"></div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- 页面 1：项目管理 -->
       <div id="view-projects" class="fade-in space-y-6 p-8">
         <!-- 筛选与操作区 -->
@@ -421,6 +653,114 @@
             </div>
 
           </div>
+        </div>
+      </div>
+      <!-- 页面：EDC 项目管理（占位） -->
+      <div id="view-edc-projects" class="hidden fade-in space-y-6 p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div class="inline-flex bg-slate-200/50 p-1 rounded-xl items-center">
+            <label class="cursor-pointer">
+              <input type="radio" name="edc-projects-filter" class="peer sr-only" checked />
+              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">全部</span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="edc-projects-filter" class="peer sr-only" />
+              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">进行中</span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="edc-projects-filter" class="peer sr-only" />
+              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">已结束</span>
+            </label>
+          </div>
+          <button class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
+            <i class="ri-add-line text-lg"></i> 新建项目
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 bg-slate-50">
+                  <th class="px-6 py-3 font-bold">项目名称</th>
+                  <th class="px-6 py-3 font-bold">阶段</th>
+                  <th class="px-6 py-3 font-bold">中心数</th>
+                  <th class="px-6 py-3 font-bold">受试者数</th>
+                  <th class="px-6 py-3 font-bold">状态</th>
+                  <th class="px-6 py-3 font-bold">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-t">
+                  <td class="px-6 py-3">近视管理镜片多中心随机试验</td>
+                  <td class="px-6 py-3">IWRS 分组 / EDC 入组录入</td>
+                  <td class="px-6 py-3">12</td>
+                  <td class="px-6 py-3">256</td>
+                  <td class="px-6 py-3"><span class="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded text-xs">进行中</span></td>
+                  <td class="px-6 py-3"><button class="text-brand-600 hover:text-brand-800">详情</button></td>
+                </tr>
+                <tr class="border-t">
+                  <td class="px-6 py-3">角膜塑形镜随访登记研究</td>
+                  <td class="px-6 py-3">EDC 入组录入</td>
+                  <td class="px-6 py-3">8</td>
+                  <td class="px-6 py-3">98</td>
+                  <td class="px-6 py-3"><span class="text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-xs">准备中</span></td>
+                  <td class="px-6 py-3"><button class="text-brand-600 hover:text-brand-800">详情</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-6 py-4 text-xs text-slate-500 border-t">
+            说明：EDC 项目管理强调“入组后数据录入”，与 IWRS 的“试验前分组”形成一体化流程；用户基本数据需打通以避免重复录入。
+          </div>
+        </div>
+      </div>
+      <!-- 页面：EDC 表单样板间（占位） -->
+      <div id="view-edc-templates" class="hidden fade-in space-y-6 p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div class="inline-flex bg-slate-200/50 p-1 rounded-xl items-center">
+            <label class="cursor-pointer">
+              <input type="radio" name="edc-templates-filter" class="peer sr-only" checked />
+              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">全部</span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="edc-templates-filter" class="peer sr-only" />
+              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">系统表单</span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="edc-templates-filter" class="peer sr-only" />
+              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">用户表单</span>
+            </label>
+          </div>
+          <button class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
+            <i class="ri-add-line text-lg"></i> 新建样板
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+            <div class="flex justify-between items-start mb-3">
+              <span class="px-2 py-1 text-xs rounded bg-indigo-50 text-indigo-700 border border-indigo-100">系统表单</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">视力筛查表单块</h3>
+            <p class="text-slate-500 text-sm mb-4">包含裸眼视力、矫正视力、检影等基础项，可拖拽到项目内使用。</p>
+            <div class="flex gap-2">
+              <button class="text-brand-600 hover:text-brand-800 text-sm">预览</button>
+              <button class="text-slate-600 hover:text-slate-800 text-sm">复制</button>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+            <div class="flex justify-between items-start mb-3">
+              <span class="px-2 py-1 text-xs rounded bg-emerald-50 text-emerald-700 border border-emerald-100">用户表单</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">屈光度检查表单块</h3>
+            <p class="text-slate-500 text-sm mb-4">包含球镜、柱镜、轴位等字段，适配近视人群检查流程。</p>
+            <div class="flex gap-2">
+              <button class="text-brand-600 hover:text-brand-800 text-sm">预览</button>
+              <button class="text-slate-600 hover:text-slate-800 text-sm">复制</button>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-xs text-slate-500">
+          说明：表单样板间提供低代码体验，可创建“表单块”，通过拖拽表单项进行组合，形成样板以复用到项目。支持权限区分（系统表单、用户表单），并支持筛选与新建。
         </div>
       </div>
 
@@ -3845,10 +4185,144 @@
 
     /* ================= 分组配置抽屉逻辑 (Config Logic) ================= */
     // Moved to src/dimensionality.js
-    // 初始化
-    switchTab("projects");
+    // IWRS 菜单折叠
+    function toggleIwrsMenu() {
+      const submenu = document.getElementById("iwrs-submenu");
+      const arrow = document.getElementById("nav-iwrs-arrow");
+      if (!submenu || !arrow) return;
+      const willShow = submenu.classList.contains("hidden");
+      submenu.classList.toggle("hidden");
+      arrow.style.transform = willShow ? "rotate(180deg)" : "rotate(0deg)";
+    }
+    function toggleEdcMenu() {
+      const submenu = document.getElementById("edc-submenu");
+      const arrow = document.getElementById("nav-edc-arrow");
+      if (!submenu || !arrow) return;
+      const willShow = submenu.classList.contains("hidden");
+      submenu.classList.toggle("hidden");
+      arrow.style.transform = willShow ? "rotate(180deg)" : "rotate(0deg)";
+    }
+    // 初始化默认视图为 Dashboard
+    switchTab("dashboard");
 
     // toggleUserDropdown and event listener moved to src/users.js
+    // Dashboard 图表初始化
+    function initDashboardCharts() {
+      const chinaEl = document.getElementById("dash-china-map");
+      const ageEl = document.getElementById("dash-age-gender");
+      const radarEl = document.getElementById("dash-radar");
+      if (!chinaEl || !ageEl || !radarEl || typeof echarts === "undefined") return;
+      window._dashCharts = window._dashCharts || {};
+      
+      const initChina = () => {
+        const chart = window._dashCharts.china || echarts.init(chinaEl);
+        window._dashCharts.china = chart;
+        const centers = [
+          { name: "上海眼病防治中心", value: 120, coord: [121.4737, 31.2304] },
+          { name: "广州中山医院", value: 95, coord: [113.2644, 23.1291] }
+        ];
+        const option = {
+          tooltip: { trigger: "item", formatter: p => `${p.data.name}<br/>受试者：${p.data.value}` },
+          geo: {
+            map: "china",
+            roam: false,
+            label: { show: false },
+            itemStyle: { areaColor: "#f1f5f9", borderColor: "#e2e8f0" },
+            emphasis: { itemStyle: { areaColor: "#e0e7ff" } }
+          },
+          series: [
+            {
+              name: "Centers",
+              type: "effectScatter",
+              coordinateSystem: "geo",
+              showEffectOn: "render",
+              rippleEffect: { brushType: "stroke", scale: 3 },
+              symbol: "pin",
+              symbolSize: 30,
+              itemStyle: { color: "#4f46e5" },
+              label: { show: true, formatter: "{b}", position: "top", color: "#334155", fontSize: 12 },
+              data: centers.map(c => ({ name: c.name, value: c.value, coord: c.coord }))
+            }
+          ]
+        };
+        const apply = () => chart.setOption(option);
+        const tryLoad = async () => {
+          if (echarts.getMap("china")) { apply(); return; }
+          const sources = [
+            "https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=100000_full",
+            "https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=100000"
+          ];
+          for (const url of sources) {
+            try {
+              const resp = await fetch(url, { mode: "cors" });
+              if (resp.ok) {
+                const geo = await resp.json();
+                echarts.registerMap("china", geo);
+                apply();
+                return;
+              }
+            } catch (_) {}
+          }
+          apply();
+        };
+        tryLoad();
+      };
+      
+      // Age & Gender Bar
+      const initAge = () => {
+        const chart = window._dashCharts.age || echarts.init(ageEl);
+        window._dashCharts.age = chart;
+        const option = {
+          tooltip: { trigger: "axis" },
+          legend: { data: ["Male", "Female"] },
+          grid: { left: 60, right: 20, top: 30, bottom: 20 },
+          xAxis: { type: "value" },
+          yAxis: { type: "category", data: ["15-24", "25-34", "35-44", "45-54", "55-64", "65+"] },
+          series: [
+            { name: "Male", type: "bar", data: [25, 40, 32, 28, 18, 10], itemStyle: { color: "#60a5fa" } },
+            { name: "Female", type: "bar", data: [22, 45, 38, 20, 15, 8], itemStyle: { color: "#34d399" } }
+          ]
+        };
+        chart.setOption(option);
+      };
+      
+      // Radar
+      const initRadar = () => {
+        const chart = window._dashCharts.radar || echarts.init(radarEl);
+        window._dashCharts.radar = chart;
+        const option = {
+          tooltip: {},
+          legend: { bottom: 0, data: ["Tiktok", "Twitter", "Facebook"] },
+          radar: {
+            indicator: [
+              { name: "Fashion", max: 100 },
+              { name: "Technology", max: 100 },
+              { name: "Cars", max: 100 },
+              { name: "Memes", max: 100 },
+              { name: "Watches", max: 100 },
+              { name: "Others", max: 100 }
+            ]
+          },
+          series: [{
+            type: "radar",
+            data: [
+              { value: [80, 65, 40, 70, 30, 55], name: "Tiktok", areaStyle: { color: "rgba(234,88,12,0.2)" } },
+              { value: [60, 75, 45, 50, 40, 60], name: "Twitter", areaStyle: { color: "rgba(59,130,246,0.2)" } },
+              { value: [50, 55, 35, 40, 45, 50], name: "Facebook", areaStyle: { color: "rgba(52,211,153,0.2)" } }
+            ]
+          }]
+        };
+        chart.setOption(option);
+      };
+      
+      initChina();
+      initAge();
+      initRadar();
+      
+      window.addEventListener("resize", () => {
+        Object.values(window._dashCharts).forEach(ch => ch && ch.resize());
+      });
+    }
   </script>
   <!-- 浮动按钮：打开小程序模拟页面 -->
   <a href="miniprogram.html" target="_blank"
