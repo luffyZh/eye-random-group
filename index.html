@@ -96,26 +96,6 @@
         <span class="nav-text transition-all duration-300 origin-left">Dashboard 仪表盘</span>
       </a>
       <div class="space-y-1">
-        <button type="button" onclick="toggleEdcMenu()" id="nav-edc"
-          class="w-full nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
-          <i class="ri-database-2-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
-          <span class="nav-text transition-all duration-300 origin-left flex-1 text-left">EDC 电子数据采集</span>
-          <i id="nav-edc-arrow" class="ri-arrow-down-s-line text-slate-400 group-hover:text-brand-500 transition-transform duration-300" style="transform: rotate(180deg);"></i>
-        </button>
-        <div id="edc-submenu" class="pl-4 space-y-1">
-          <a href="#" onclick="switchTab('edc-projects')" id="nav-edc-projects"
-            class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
-            <i class="ri-folder-2-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
-            <span class="nav-text transition-all duration-300 origin-left">项目管理</span>
-          </a>
-          <a href="#" onclick="switchTab('edc-templates')" id="nav-edc-templates"
-            class="nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
-            <i class="ri-layout-2-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
-            <span class="nav-text transition-all duration-300 origin-left">表单样板间</span>
-          </a>
-        </div>
-      </div>
-      <div class="space-y-1">
         <button type="button" onclick="toggleIwrsMenu()" id="nav-iwrs"
           class="w-full nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
           <i class="ri-shuffle-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
@@ -155,6 +135,15 @@
         <i class="ri-user-3-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
         <span class="nav-text transition-all duration-300 origin-left">用户管理</span>
       </a>
+      <!-- 增加一个分割线 -->
+      <div class="my-2 border-b border-slate-200"></div>
+      <div class="space-y-1">
+        <button type="button" onclick="switchTab('edc')" id="nav-edc"
+          class="w-full nav-item flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-xl transition-all group font-medium whitespace-nowrap overflow-hidden">
+          <i class="ri-database-2-line mr-3 text-xl text-slate-400 group-hover:text-brand-500 transition-colors flex-shrink-0"></i>
+          <span class="nav-text transition-all duration-300 origin-left flex-1 text-left">惟爱医疗软件架构</span>
+        </button>
+      </div>
     </nav>
 
     <div id="sidebar-footer" class="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex flex-row items-center justify-between transition-all duration-300 overflow-hidden">
@@ -230,6 +219,79 @@
     </header>
 
     <div class="max-w-full">
+      <div id="view-edc" class="hidden fade-in p-8 bg-slate-50">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center">
+              <i class="ri-git-branch-line text-xl"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-bold text-slate-800">惟爱医疗软件服务</h3>
+              <p class="text-xs text-slate-500 mt-0.5">仅样式树状展示，点击节点可跳转（当前仅 EDC 已配置地址）</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <div class="relative mx-auto w-[1450px] h-[760px] rounded-2xl bg-white border border-slate-100 shadow-sm">
+              <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1450 760" preserveAspectRatio="xMidYMid meet">
+                <polyline points="725,86 725,130 270,210 270,274" fill="none" stroke="#c0c7d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <polyline points="725,86 725,130 725,210 725,274" fill="none" stroke="#c0c7d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <polyline points="725,86 725,130 1180,210 1180,274" fill="none" stroke="#c0c7d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+
+                <polyline points="270,350 270,390 90,450 90,514" fill="none" stroke="#cfd6df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <polyline points="270,350 270,390 290,450 290,514" fill="none" stroke="#cfd6df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <polyline points="270,350 270,390 490,450 490,514" fill="none" stroke="#cfd6df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <polyline points="270,350 270,390 690,450 690,514" fill="none" stroke="#cfd6df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+
+                <polyline points="1180,350 1180,390 1065,450 1065,514" fill="none" stroke="#cfd6df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <polyline points="1180,350 1180,390 1295,450 1295,514" fill="none" stroke="#cfd6df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+              </svg>
+
+              <button type="button" onclick="openSystem('root')" class="absolute left-[535px] top-[34px] w-[380px] h-[52px] rounded-2xl border-2 bg-purple-700 text-white font-bold text-lg shadow-sm hover:shadow transition-shadow">
+                惟爱医疗软件服务
+              </button>
+              <span class="absolute left-[717px] top-[82px] w-4 h-4 rounded-full border-2 border-slate-300 bg-white"></span>
+
+              <button type="button" onclick="openSystem('store')" class="absolute left-[90px] top-[274px] w-[360px] h-[76px] rounded-2xl bg-blue-700 border border-blue-800 text-white font-semibold shadow-md hover:bg-blue-800 hover:shadow-lg transition-all">
+                惟爱医疗门店管理系统
+              </button>
+              <span class="absolute left-[262px] top-[266px] w-4 h-4 rounded-full border-2 border-slate-300 bg-white"></span>
+              <span class="absolute left-[262px] top-[342px] w-4 h-4 rounded-full border-2 border-slate-300 bg-white"></span>
+
+              <button type="button" onclick="openSystem('more')" class="absolute left-[545px] top-[274px] w-[360px] h-[76px] rounded-2xl bg-slate-700 border border-slate-800 text-white font-semibold shadow-md hover:bg-slate-800 hover:shadow-lg transition-all">
+                更多系统开发中...
+              </button>
+              <span class="absolute left-[717px] top-[266px] w-4 h-4 rounded-full border-2 border-slate-300 bg-white"></span>
+
+              <button type="button" onclick="openSystem('ctms')" class="absolute left-[1000px] top-[274px] w-[360px] h-[76px] rounded-2xl bg-emerald-700 border border-emerald-800 text-white font-semibold shadow-md hover:bg-emerald-800 hover:shadow-lg transition-all">
+                惟爱医疗科研管理系统（CTMS）
+              </button>
+              <span class="absolute left-[1172px] top-[266px] w-4 h-4 rounded-full border-2 border-slate-300 bg-white"></span>
+              <span class="absolute left-[1172px] top-[342px] w-4 h-4 rounded-full border-2 border-slate-300 bg-white"></span>
+
+              <button type="button" onclick="openSystem('crm')" class="absolute left-[0px] top-[514px] w-[180px] h-[66px] rounded-2xl bg-blue-50 border border-blue-200 text-slate-800 text-sm font-medium shadow-sm hover:bg-blue-100 hover:border-blue-300 transition-colors">
+                客户CRM档案管理系统
+              </button>
+              <button type="button" onclick="openSystem('schedule')" class="absolute left-[200px] top-[514px] w-[180px] h-[66px] rounded-2xl bg-blue-50 border border-blue-200 text-slate-800 text-sm font-medium shadow-sm hover:bg-blue-100 hover:border-blue-300 transition-colors">
+                门店预约排班系统
+              </button>
+              <button type="button" onclick="openSystem('erp')" class="absolute left-[400px] top-[514px] w-[180px] h-[66px] rounded-2xl bg-blue-50 border border-blue-200 text-slate-800 text-sm font-medium shadow-sm hover:bg-blue-100 hover:border-blue-300 transition-colors">
+                门店ERP系统
+              </button>
+              <button type="button" onclick="openSystem('pos')" class="absolute left-[600px] top-[514px] w-[180px] h-[66px] rounded-2xl bg-blue-50 border border-blue-200 text-slate-800 text-sm font-medium shadow-sm hover:bg-blue-100 hover:border-blue-300 transition-colors">
+                单据收银系统
+              </button>
+
+              <button type="button" onclick="openSystem('iwrs')" class="absolute left-[970px] top-[514px] w-[190px] h-[66px] rounded-2xl bg-emerald-50 border border-emerald-200 text-slate-800 text-sm font-medium shadow-sm hover:bg-emerald-100 hover:border-emerald-300 transition-colors">
+                中央随机化分组系统（IWRS）
+              </button>
+              <button type="button" onclick="openSystem('edc')" class="underline absolute left-[1200px] top-[514px] w-[190px] h-[66px] rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-sm font-semibold shadow-sm hover:bg-emerald-100 hover:shadow-md transition-all">
+                电子数据采集系统（EDC）
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- 页面 0：Dashboard -->
       <div id="view-dashboard" class="p-8 space-y-6 bg-slate-50">
         <!-- Top 3 cards -->
@@ -655,115 +717,6 @@
           </div>
         </div>
       </div>
-      <!-- 页面：EDC 项目管理（占位） -->
-      <div id="view-edc-projects" class="hidden fade-in space-y-6 p-8">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div class="inline-flex bg-slate-200/50 p-1 rounded-xl items-center">
-            <label class="cursor-pointer">
-              <input type="radio" name="edc-projects-filter" class="peer sr-only" checked />
-              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">全部</span>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="edc-projects-filter" class="peer sr-only" />
-              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">进行中</span>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="edc-projects-filter" class="peer sr-only" />
-              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">已结束</span>
-            </label>
-          </div>
-          <button class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
-            <i class="ri-add-line text-lg"></i> 新建项目
-          </button>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
-          <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
-              <thead>
-                <tr class="text-left text-slate-500 bg-slate-50">
-                  <th class="px-6 py-3 font-bold">项目名称</th>
-                  <th class="px-6 py-3 font-bold">阶段</th>
-                  <th class="px-6 py-3 font-bold">中心数</th>
-                  <th class="px-6 py-3 font-bold">受试者数</th>
-                  <th class="px-6 py-3 font-bold">状态</th>
-                  <th class="px-6 py-3 font-bold">操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="border-t">
-                  <td class="px-6 py-3">近视管理镜片多中心随机试验</td>
-                  <td class="px-6 py-3">IWRS 分组 / EDC 入组录入</td>
-                  <td class="px-6 py-3">12</td>
-                  <td class="px-6 py-3">256</td>
-                  <td class="px-6 py-3"><span class="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded text-xs">进行中</span></td>
-                  <td class="px-6 py-3"><button class="text-brand-600 hover:text-brand-800">详情</button></td>
-                </tr>
-                <tr class="border-t">
-                  <td class="px-6 py-3">角膜塑形镜随访登记研究</td>
-                  <td class="px-6 py-3">EDC 入组录入</td>
-                  <td class="px-6 py-3">8</td>
-                  <td class="px-6 py-3">98</td>
-                  <td class="px-6 py-3"><span class="text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-xs">准备中</span></td>
-                  <td class="px-6 py-3"><button class="text-brand-600 hover:text-brand-800">详情</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="px-6 py-4 text-xs text-slate-500 border-t">
-            说明：EDC 项目管理强调“入组后数据录入”，与 IWRS 的“试验前分组”形成一体化流程；用户基本数据需打通以避免重复录入。
-          </div>
-        </div>
-      </div>
-      <!-- 页面：EDC 表单样板间（占位） -->
-      <div id="view-edc-templates" class="hidden fade-in space-y-6 p-8">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div class="inline-flex bg-slate-200/50 p-1 rounded-xl items-center">
-            <label class="cursor-pointer">
-              <input type="radio" name="edc-templates-filter" class="peer sr-only" checked />
-              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">全部</span>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="edc-templates-filter" class="peer sr-only" />
-              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">系统表单</span>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="edc-templates-filter" class="peer sr-only" />
-              <span class="block px-4 py-2 rounded-lg text-sm font-medium text-slate-500 peer-checked:bg-white peer-checked:text-brand-600 peer-checked:shadow-sm transition-all">用户表单</span>
-            </label>
-          </div>
-          <button class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-2 transition-all transform hover:scale-105">
-            <i class="ri-add-line text-lg"></i> 新建样板
-          </button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-            <div class="flex justify-between items-start mb-3">
-              <span class="px-2 py-1 text-xs rounded bg-indigo-50 text-indigo-700 border border-indigo-100">系统表单</span>
-            </div>
-            <h3 class="text-lg font-bold text-slate-800 mb-1">视力筛查表单块</h3>
-            <p class="text-slate-500 text-sm mb-4">包含裸眼视力、矫正视力、检影等基础项，可拖拽到项目内使用。</p>
-            <div class="flex gap-2">
-              <button class="text-brand-600 hover:text-brand-800 text-sm">预览</button>
-              <button class="text-slate-600 hover:text-slate-800 text-sm">复制</button>
-            </div>
-          </div>
-          <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-            <div class="flex justify-between items-start mb-3">
-              <span class="px-2 py-1 text-xs rounded bg-emerald-50 text-emerald-700 border border-emerald-100">用户表单</span>
-            </div>
-            <h3 class="text-lg font-bold text-slate-800 mb-1">屈光度检查表单块</h3>
-            <p class="text-slate-500 text-sm mb-4">包含球镜、柱镜、轴位等字段，适配近视人群检查流程。</p>
-            <div class="flex gap-2">
-              <button class="text-brand-600 hover:text-brand-800 text-sm">预览</button>
-              <button class="text-slate-600 hover:text-slate-800 text-sm">复制</button>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-xs text-slate-500">
-          说明：表单样板间提供低代码体验，可创建“表单块”，通过拖拽表单项进行组合，形成样板以复用到项目。支持权限区分（系统表单、用户表单），并支持筛选与新建。
-        </div>
-      </div>
-
       <!-- 页面 4：科室管理 (新增) -->
       <div id="view-departments" class="hidden fade-in space-y-6 p-8">
         <div class="flex justify-start mb-6">
@@ -4185,6 +4138,19 @@
 
     /* ================= 分组配置抽屉逻辑 (Config Logic) ================= */
     // Moved to src/dimensionality.js
+    const SYSTEM_URLS = {
+      edc: "https://weiaihealth-software.github.io/ctms-prd/"
+    };
+
+    function openSystem(key) {
+      const url = SYSTEM_URLS[key];
+      if (url) {
+        window.open(url, "_blank");
+        return;
+      }
+      window.alert("该系统地址暂未配置");
+    }
+
     // IWRS 菜单折叠
     function toggleIwrsMenu() {
       const submenu = document.getElementById("iwrs-submenu");
@@ -4194,15 +4160,6 @@
       submenu.classList.toggle("hidden");
       arrow.style.transform = willShow ? "rotate(180deg)" : "rotate(0deg)";
     }
-    function toggleEdcMenu() {
-      const submenu = document.getElementById("edc-submenu");
-      const arrow = document.getElementById("nav-edc-arrow");
-      if (!submenu || !arrow) return;
-      const willShow = submenu.classList.contains("hidden");
-      submenu.classList.toggle("hidden");
-      arrow.style.transform = willShow ? "rotate(180deg)" : "rotate(0deg)";
-    }
-    // 初始化默认视图为 Dashboard
     switchTab("dashboard");
 
     // toggleUserDropdown and event listener moved to src/users.js
